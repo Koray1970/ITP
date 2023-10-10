@@ -7,6 +7,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="splashbackground1">#063389</color>
-    <color name="splashbackground2">#0493F0</color>
+    <color name="grayprimary">#FF545F71</color>
+    <color name="splashbackground1">#FF063389</color>
+    <color name="splashbackground2">#FF0493F0</color>
+    <color name="startbuttonbackground">#FF545F71</color>
+    <color name="startbuttonbackgrounddisabled">#FF545F71</color>
 </resources>

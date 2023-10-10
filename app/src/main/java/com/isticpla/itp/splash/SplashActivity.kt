@@ -1,28 +1,28 @@
 package com.isticpla.itp.splash
 
-import android.media.Image
+import android.content.Context
 import android.os.Bundle
-import android.view.Window
-import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Card
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PageSize
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,7 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,30 +40,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
+import com.isticpla.itp.defaultText
+import com.isticpla.itp.defaultTextTitle
+import com.isticpla.itp.dummydata.AppIntroData
+import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.splash.ui.theme.ITPTheme
-import kotlinx.coroutines.MainScope
+import com.isticpla.itp.uimodules.DefaultRoundedCornerButton
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.io.File
 
+@AndroidEntryPoint
 class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,6 +140,7 @@ fun Splash(
 fun StartSelectCulture(
     navController: NavController,
 ) {
+    var context = LocalContext.current.applicationContext
     var cultureDropdownExpandState by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -147,54 +148,171 @@ fun StartSelectCulture(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(painter = painterResource(id = R.drawable.logo_blue), contentDescription = null)
+        Spacer(modifier = Modifier.height(40.dp))
         Box(
             modifier = Modifier
-                .wrapContentWidth()
+                .width(265.dp)
                 .wrapContentSize(Alignment.TopStart)
         ) {
             OutlinedCard(
-                modifier = Modifier.width(300.dp),
+                modifier = Modifier
+                    .width(265.dp)
+                    .height(51.dp)
+                    .border(1.dp, Color(0x9BA5B7FF), RoundedCornerShape(6.dp)),
+                shape = RoundedCornerShape(6.dp),
                 onClick = { cultureDropdownExpandState = true }) {
                 ListItem(
-                    headlineContent = { Text("Lisan Seçiniz") },
-                    supportingContent = {
-                        Text("Secondary text that is long and perhaps goes onto another line")
-                    },
-                    leadingContent = {
-                        Icon(
-                            Icons.Filled.ArrowDropDown,
-                            contentDescription = null,
+                    headlineContent = {
+                        Text(
+                            "Lisan Seçiniz",
+                            style = TextStyle(color = Color.Gray, fontWeight = FontWeight.Bold)
                         )
                     },
-                    trailingContent = { Text("meta") }
+                    supportingContent = {
+                        Text(
+                            "Türkçe",
+                            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                        )
+                    },
+                    leadingContent = {
+                        Image(
+                            painter = painterResource(id = R.drawable.flg_tr),
+                            modifier = Modifier.size(48.dp),
+                            contentDescription = null
+                        )
+                    },
+                    trailingContent = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_expand_more_24),
+                            contentDescription = null
+                        )
+                    }
                 )
             }
             DropdownMenu(
+                modifier = Modifier.width(265.dp),
                 expanded = cultureDropdownExpandState,
                 onDismissRequest = { cultureDropdownExpandState = false }) {
                 DropdownMenuItem(
-                    text = { Text("Edit") },
-                    onClick = { /* Handle edit! */ },
+                    text = { Text("Türkçe") },
+                    onClick = { cultureDropdownExpandState = false },
                     leadingIcon = {
-                        Icon(
-                            Icons.Outlined.Edit,
+                        Image(
+                            painter = painterResource(id = R.drawable.flg_tr),
+                            modifier = Modifier.size(38.dp),
                             contentDescription = null
                         )
                     })
                 DropdownMenuItem(
-                    text = { Text("Settings") },
-                    onClick = { /* Handle settings! */ },
+                    text = { Text("English") },
+                    onClick = { cultureDropdownExpandState = false },
                     leadingIcon = {
-                        Icon(
-                            Icons.Outlined.Settings,
+                        Image(
+                            painter = painterResource(id = R.drawable.flg_uk),
+                            modifier = Modifier.size(38.dp),
                             contentDescription = null
                         )
                     })
+                DropdownMenuItem(
+                    text = { Text("Français") },
+                    onClick = { cultureDropdownExpandState = false },
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.flg_fr),
+                            modifier = Modifier.size(38.dp),
+                            contentDescription = null
+                        )
+                    })
+                DropdownMenuItem(
+                    text = { Text("Deutsch") },
+                    onClick = { cultureDropdownExpandState = false },
+                    leadingIcon = {
+                        Image(
+                            painter = painterResource(id = R.drawable.flg_de),
+                            modifier = Modifier.size(38.dp),
+                            contentDescription = null
+                        )
+                    })
+
             }
         }
+        Spacer(modifier = Modifier.height(16.dp))
+        DefaultRoundedCornerButton(
+            context = context,
+            modifier = Modifier
+                .width(265.dp)
+                .height(48.dp),
+            title = "Başla",
+            onclick = fun() { navController.navigate("appintro") })
 
+        Spacer(modifier = Modifier.height(26.dp))
+        Text(
+            text = "Kaydolarak Şartlarımızı kabul etmiş olursunuz. Verilerinizi nasıl kullandığımızı Gizlilik Politikamızda görün.",
+            style = TextStyle(
+                fontFamily = poppinFamily,
+                fontSize = 16.sp,
+                color = Color(0x545F71FF),
+                textAlign = TextAlign.Center
+            ),
+            modifier = Modifier.width(320.dp)
+        )
     }
 }
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun AppIntro(navController: NavController) {
+    val context = LocalContext.current.applicationContext
+    val pagerState = rememberPagerState(pageCount = { 5 })
+    Column(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        HorizontalPager(
+            pageSize = PageSize.Fill,
+            state = pagerState,
+            modifier = Modifier.fillMaxSize()
+        ) { page ->
+            AppIntroData().forEach {
+                AppIntroItem(context, it.img, it.title, it.content)
+            }
+        }
+    }
+
+}
+
+@Composable
+internal fun AppIntroItem(
+    context: Context,
+    spotImage: Int,
+    title: String,
+    content: String,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+       /* verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally*/
+    ) {
+        Image(
+            painter = painterResource(id = spotImage),
+            contentDescription = null
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = title,
+            style = defaultTextTitle(context = context),
+            textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = content,
+            style = defaultTextTitle(context = context), textAlign = TextAlign.Center
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Image(painter = painterResource(id = R.drawable.wizardpgr01), contentDescription = null)
+    }
+}
+
 
 /*
 @Preview(showBackground = true)
