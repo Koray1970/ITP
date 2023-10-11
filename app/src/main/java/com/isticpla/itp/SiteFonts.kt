@@ -31,16 +31,5 @@ val poppinFamily = FontFamily(
     Font(googleFont = fontName, fontProvider = provider, style = FontStyle.Italic)
 )
 
-fun defaultTextTitle(context: Context)=TextStyle(
-    fontFamily = poppinFamily,
-    fontWeight = FontWeight.Bold,
-    fontSize=26.sp,
-    color = Color(context.getColor(R.color.grayprimary))
-)
-fun defaultText (context: Context)=TextStyle(
-    fontFamily = poppinFamily,
-    fontWeight = FontWeight.Normal,
-    fontSize=16.sp,
-    color = Color(context.getColor(R.color.grayprimary))
-)
+
 

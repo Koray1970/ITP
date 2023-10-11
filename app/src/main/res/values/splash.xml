@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="reg100">Telefon Numaranız Nedir?</string>
+    <string name="reg102">ITP\'deki herkesin gerçek olmasını sağlayarak topluluğumuzu koruyoruz</string>
+    <string name="reg103">Telefon numaranız</string>
+    <string name="reg104">Özel bildirim, güncelleme ve haberler hakkında tarafımla e-posta ve SMS ile iletişime geçilmesini istiyorum.</string>
+    <string name="reg105.1">Üyelik Sözleşmesini </string>
+    <string name="reg105.2">okudum ve kabul ediyorum.</string>
+    <string name="reg106">Burada yer alan bilgilerinizi asla kimseyle paylaşmıyoruz, bilgilerinizi profilinizden değiştirebilirsiniz!</string>
+    <string name="reg200">Telefon Numaranızı Doğrulayın!</string>
+    <string name="reg201">SMS yoluyla gönderdiğimiz kodu giriniz!\n%s</string>
+    <string name="reg202">Kod almadınız mı?</string>
+    <string name="reg203">Tekrar Gönder</string>
+    <string name="reg300">Hesabınızı oluşturun</string>
+    <string name="reg301">Başlamak için bilgilerinizi tamamlayın!</string>
+    <string name="reg302">Hesabınızı oluşturun</string>
+    <string name="reg303">Hesabınızı oluşturun</string>
+    <string name="reg400">İşletmenizi ekleyin</string>
+    <string name="reg401">İşletmenizin bilgilerini giriniz!</string>
+    <string name="reg402">İşletme Logo</string>
+    <string name="reg403">1024 x 1024, .png, .jpg</string>
+    <string name="reg404">İşletme Adı (zorunlu)</string>
+    <string name="reg405">İşletmedeki Pozisyonunuz</string>
+    <string name="reg406">Logo Yükle</string>
+    <string name="reg500">İşletmenizin satış alanlarını seçin</string>
+    <string name="reg501">Bu bilgileri işletmenizi daha yakından tanımak ve daha doğru tavsiyeler paylaşmak için istiyoruz</string>
+    <string name="reg502">Sektörler</string>
+    <string name="reg503">Seçilen sektörler</string>
+</resources>

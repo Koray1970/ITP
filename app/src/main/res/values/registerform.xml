@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="adiniz">Adınız</string>
+    <string name="soyadiniz">Soyadınız</string>
+    <string name="epostaadresiniz">E-posta adresiniz</string>
+    <string name="gun">Gün</string>
+    <string name="ay">Ay</string>
+    <string name="yil">Yıl</string>
+    <string name="ulke">Ülke</string>
+    <string name="referanskodu">Referans Kodu</string>
+    <string name="referanskodunuz">Referans kodunuz</string>
+</resources>

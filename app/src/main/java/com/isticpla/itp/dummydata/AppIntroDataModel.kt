@@ -44,3 +44,11 @@ fun AppIntroData(): ArrayList<AppIntroDataModel> {
     )
     return listofAppIntroData
 }
+val listofAraeCodes =
+    listOf<Pair<String, String>>(
+        Pair("TR", "+ 90"),
+        Pair("US", "+1"),
+        Pair("GB", "+44"),
+        Pair("DE", "+49"),
+        Pair("GR", "+30")
+    )

@@ -1,4 +1,4 @@
-package com.isticpla
+package com.isticpla.itp
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

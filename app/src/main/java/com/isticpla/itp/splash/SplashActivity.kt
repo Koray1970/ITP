@@ -6,30 +6,35 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +45,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
@@ -52,12 +58,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
-import com.isticpla.itp.defaultText
-import com.isticpla.itp.defaultTextTitle
 import com.isticpla.itp.dummydata.AppIntroData
+import com.isticpla.itp.helpers.GetScreenSize
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.splash.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.DefaultRoundedCornerButton
@@ -68,11 +74,13 @@ import kotlinx.coroutines.delay
 class SplashActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             ITPTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
+                        .safeDrawingPadding()
                         .fillMaxSize()
                         .padding(0.dp),
                     color = MaterialTheme.colorScheme.background
@@ -263,21 +271,57 @@ fun StartSelectCulture(
 @Composable
 fun AppIntro(navController: NavController) {
     val context = LocalContext.current.applicationContext
-    val pagerState = rememberPagerState(pageCount = { 5 })
-    Column(
-        modifier = Modifier.fillMaxSize()
+    val screenSize = GetScreenSize()
+    val listofIntro = AppIntroData()
+    val pagerState = rememberPagerState(pageCount = { listofIntro.size })
+
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = { navController.navigate("signup") }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_skip_next_24),
+                    contentDescription = null
+                )
+            }
+        },
+        floatingActionButtonPosition = FabPosition.EndOverlay
     ) {
-        HorizontalPager(
-            pageSize = PageSize.Fill,
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
-            AppIntroData().forEach {
-                AppIntroItem(context, it.img, it.title, it.content)
+        Column(Modifier.padding(it)) {
+            HorizontalPager(
+                state = pagerState,
+            ) { ix ->
+                val appIntro = listofIntro[ix]
+                AppIntroItem(
+                    context,
+                    appIntro.img,
+                    appIntro.title,
+                    screenSize.height,
+                    appIntro.content
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .height(50.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                repeat(listofIntro.size) { iteration ->
+                    val color =
+                        if (pagerState.currentPage == iteration) Color.DarkGray else Color.LightGray
+                    Box(
+                        modifier = Modifier
+                            .padding(2.dp)
+                            .clip(CircleShape)
+                            .background(color)
+                            .size(20.dp)
+
+                    )
+                }
+
             }
         }
     }
-
 }
 
 @Composable
@@ -285,12 +329,16 @@ internal fun AppIntroItem(
     context: Context,
     spotImage: Int,
     title: String,
+    screenHeight: Int,
     content: String,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-       /* verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally*/
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height((screenHeight * .9).dp)
+            .padding(10.dp, 0.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
             painter = painterResource(id = spotImage),
@@ -305,11 +353,11 @@ internal fun AppIntroItem(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = content,
-            style = defaultTextTitle(context = context), textAlign = TextAlign.Center
+            style = defaultText(context = context), textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(20.dp))
 
-        Image(painter = painterResource(id = R.drawable.wizardpgr01), contentDescription = null)
+        //Image(painter = painterResource(id = R.drawable.wizardpgr01), contentDescription = null)
     }
 }
 

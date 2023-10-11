@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">ITP</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="devamet">Devam Et</string>
+    <string name="degistir">Değiştir</string>
+    <string name="doğrula">Doğrula</string>
+    <string name="title_activity_sign_up">SignUpActivity</string>
 </resources>
