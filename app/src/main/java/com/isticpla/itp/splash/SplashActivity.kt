@@ -86,6 +86,7 @@ class SplashActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavigate()
+
                 }
             }
         }

@@ -9,6 +9,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grayprimary">#FF545F71</color>
     <color name="neutral90">#FF303030</color>
+    <color name="blueff1c84ff">#ff1c84ff</color>
+    <color name="grayff8391a1">#FF8391A1</color>
+    <color name="grayffc1c1c1">#FFC1C1C1</color>
     <color name="splashbackground1">#FF063389</color>
     <color name="splashbackground2">#FF0493F0</color>
     <color name="startbuttonbackground">#FF545F71</color>
