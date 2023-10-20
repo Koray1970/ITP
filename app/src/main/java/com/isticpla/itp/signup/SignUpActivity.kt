@@ -1,11 +1,15 @@
 package com.isticpla.itp.signup
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,11 +20,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -38,14 +46,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
+import com.isticpla.itp.data.CountryList
+import com.isticpla.itp.data.countryListDB
 import com.isticpla.itp.signup.ui.theme.ITPTheme
+import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.defaultTextFieldColor
+import java.time.LocalDate
+import java.util.Date
 
 class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,18 +86,36 @@ class SignUpActivity : ComponentActivity() {
 lateinit var context: Context
 
 @Composable
-fun SingUpHeader(context: Context, title: String, subtitle: String) {
-    Text(
-        text = title,//context.getString(R.string.reg100),
-        style = signupHeader(context),
-        modifier = Modifier.fillMaxWidth()
-    )
-    Spacer(modifier = Modifier.height(16.dp))
-    Text(
-        text = subtitle,//context.getString(R.string.reg102),
-        style = signupSubTitle(context),
-        modifier = Modifier.fillMaxWidth()
-    )
+fun SingUpHeader(context: Context, request: SignUpHeaderRequest) {
+    if (request.title != null && request.subtitle != null) {
+        Text(
+            text = request.title!!,//context.getString(R.string.reg100),
+            style = signupHeader(context),
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = request.subtitle!!,//context.getString(R.string.reg102),
+            style = signupSubTitle(context),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+    if (request.annotatedStringRequest != null) {
+        val anno = request.annotatedStringRequest!!.annotatedString
+        ClickableText(
+            text = anno,
+            onClick = { offset ->
+                anno.getStringAnnotations(
+                    tag = request.annotatedStringRequest!!.tag,
+                    start = offset,
+                    end = offset
+                )
+                    .firstOrNull()
+                    ?.let {
+                        request.annotatedStringRequest!!.event.invoke()
+                    }
+            })
+    }
     Spacer(modifier = Modifier.height(80.dp))
 }
 
@@ -97,11 +134,10 @@ fun SignUp(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SingUpHeader(
-            context,
-            context.getString(R.string.reg100),
-            context.getString(R.string.reg102)
-        )
+        val headerReq = SignUpHeaderRequest()
+        headerReq.title = context.getString(R.string.reg100)
+        headerReq.subtitle = context.getString(R.string.reg102)
+        SingUpHeader(context, headerReq)
         AreaPhoneTextField(modifier = Modifier, context)
         Spacer(modifier = Modifier.height(20.dp))
         Row(
@@ -159,9 +195,9 @@ fun SignUp(navController: NavController) {
                 .height(48.dp),
             shape = RoundedCornerShape(6.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(context.getColor(R.color.grayprimary)),
+                containerColor = AppColors.primaryGrey,//Color(context.getColor(R.color.gray99))
                 contentColor = Color.White,
-                disabledContainerColor = Color(context.getColor(R.color.grayprimary)),
+                disabledContainerColor = AppColors.primaryGrey,//Color(context.getColor(R.color.gray99))
                 disabledContentColor = Color.White
             )
         ) {
@@ -179,15 +215,17 @@ fun SignUp(navController: NavController) {
 }
 
 @Composable
-fun VerifyPhoneNumber(navController: NavController) {
+fun VerifyPhoneNumber(
+    navController: NavController
+) {
     context = LocalContext.current.applicationContext
     var ph1 by rememberSaveable { mutableStateOf("") }
-    val textFieldinactive = Pair<Int, Int>(
-        context.getColor(R.color.grayfff7f8f9),
-        context.getColor(R.color.grayffe8ecf4)
+    val textFieldinactive = Pair<Color, Color>(
+        AppColors.grey_109,//context.getColor(R.color.gray109),
+        AppColors.grey_113//context.getColor(R.color.gray107)
     )
     val textFieldactive =
-        Pair<Int, Int>(context.getColor(R.color.white), context.getColor(R.color.blueff0495f1))
+        Pair<Color, Color>(Color.White, AppColors.blue_104)//context.getColor(R.color.blue002)
     //color > first background, second border
     var ph1FocusColor by remember { mutableStateOf(textFieldinactive) }
     var ph2 by rememberSaveable { mutableStateOf("") }
@@ -197,6 +235,7 @@ fun VerifyPhoneNumber(navController: NavController) {
     var ph4 by rememberSaveable { mutableStateOf("") }
     var ph4FocusColor by remember { mutableStateOf(textFieldinactive) }
     val maxChar = 1
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -209,11 +248,14 @@ fun VerifyPhoneNumber(navController: NavController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SingUpHeader(
-                context,
-                context.getString(R.string.reg200),
-                String.format(context.getString(R.string.reg201), "+905336221493")
-            )
+            val headerReq = SignUpHeaderRequest()
+            headerReq.annotatedStringRequest = AnnotatedStringRequest()
+            headerReq.annotatedStringRequest!!.annotatedString =
+                sendCodeAgainString("+905555555555")
+            headerReq.annotatedStringRequest!!.tag = "changephonenumber"
+            headerReq.annotatedStringRequest!!.event = { navController.navigate("signup") }
+            SingUpHeader(context, headerReq)
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -232,7 +274,7 @@ fun VerifyPhoneNumber(navController: NavController) {
                         .width(67.dp)
                         .height(60.dp)
                         .border(
-                            1.dp, Color(ph1FocusColor.second),
+                            1.dp, ph1FocusColor.second,
                             RoundedCornerShape(8.dp)
                         ),
                     keyboardOptions = KeyboardOptions(
@@ -240,7 +282,10 @@ fun VerifyPhoneNumber(navController: NavController) {
                         imeAction = ImeAction.Next,
                         autoCorrect = false
                     ),
-                    colors = defaultTextFieldColor(context.getColor(R.color.grayff1e232c))
+                    colors = defaultTextFieldColor(
+                        Color.Transparent,
+                        AppColors.grey_115
+                    )//context.getColor(R.color.gray111)
                 )
                 Spacer(Modifier.weight(1f))
                 TextField(
@@ -257,7 +302,7 @@ fun VerifyPhoneNumber(navController: NavController) {
                         .width(67.dp)
                         .height(60.dp)
                         .border(
-                            1.dp, Color(ph2FocusColor.second),
+                            1.dp, ph2FocusColor.second,
                             RoundedCornerShape(8.dp)
                         ),
                     keyboardOptions = KeyboardOptions(
@@ -265,7 +310,10 @@ fun VerifyPhoneNumber(navController: NavController) {
                         imeAction = ImeAction.Next,
                         autoCorrect = false
                     ),
-                    colors = defaultTextFieldColor(context.getColor(R.color.grayff1e232c))
+                    colors = defaultTextFieldColor(
+                        Color.Transparent,
+                        AppColors.grey_115
+                    )//context.getColor(R.color.gray111)
                 )
                 Spacer(Modifier.weight(1f))
                 TextField(
@@ -282,7 +330,7 @@ fun VerifyPhoneNumber(navController: NavController) {
                         .width(67.dp)
                         .height(60.dp)
                         .border(
-                            1.dp, Color(ph3FocusColor.second),
+                            1.dp, ph3FocusColor.second,
                             RoundedCornerShape(8.dp)
                         ),
                     keyboardOptions = KeyboardOptions(
@@ -290,7 +338,10 @@ fun VerifyPhoneNumber(navController: NavController) {
                         imeAction = ImeAction.Next,
                         autoCorrect = false
                     ),
-                    colors = defaultTextFieldColor(context.getColor(R.color.grayff1e232c))
+                    colors = defaultTextFieldColor(
+                        Color.Transparent,
+                        AppColors.grey_115
+                    )//context.getColor(R.color.gray111)
                 )
                 Spacer(Modifier.weight(1f))
                 TextField(
@@ -307,14 +358,17 @@ fun VerifyPhoneNumber(navController: NavController) {
                         .width(67.dp)
                         .height(60.dp)
                         .border(
-                            1.dp, Color(ph4FocusColor.second),
+                            1.dp, ph4FocusColor.second,
                             RoundedCornerShape(8.dp)
                         ),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         autoCorrect = false
                     ),
-                    colors = defaultTextFieldColor(context.getColor(R.color.grayff1e232c))
+                    colors = defaultTextFieldColor(
+                        Color.Transparent,
+                        AppColors.grey_115
+                    )//context.getColor(R.color.gray111)
                 )
 
             }
@@ -326,9 +380,9 @@ fun VerifyPhoneNumber(navController: NavController) {
                     .height(48.dp),
                 shape = RoundedCornerShape(6.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(context.getColor(R.color.grayprimary)),
+                    containerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
                     contentColor = Color.White,
-                    disabledContainerColor = Color(context.getColor(R.color.grayprimary)),
+                    disabledContainerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
                     disabledContentColor = Color.White
                 )
             ) {
@@ -340,23 +394,360 @@ fun VerifyPhoneNumber(navController: NavController) {
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))
-            Text(
-                text = "Kod almadınız mı?",
-                style = signupSegmentTitle(context),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Text(
-                text = "Tekrar Gönder",
-                style = signupBlueText(context),
-                modifier = Modifier.fillMaxWidth()
-            )
+            val sendCodeAgain = "Tekrar Gönder"
+            val sendCodeAgainString = buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        color = AppColors.primaryGrey,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                )
+                { append("Kod almadınız mı?\n") }
+                val end = length + sendCodeAgain.length
+                addStringAnnotation(
+                    tag = "sendcodeagain",
+                    annotation = "",
+                    start = length,
+                    end = end
+                )
+                withStyle(
+                    style = SpanStyle(
+                        color = AppColors.blue_104,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Normal
+                    )
+                )
+                { append(sendCodeAgain) }
+
+            }
+            ClickableText(
+                text = sendCodeAgainString,
+                onClick = { offset ->
+                    sendCodeAgainString.getStringAnnotations(
+                        tag = "sendcodeagain",
+                        start = offset,
+                        end = offset
+                    )
+                        .firstOrNull()
+                        ?.let { navController.navigate("signup") }
+                })
+
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateUserAccount(navController: NavController) {
+    context = LocalContext.current.applicationContext
+    var nameValue by rememberSaveable { mutableStateOf("") }
+    var nameError by remember { mutableStateOf(false) }
+    val nameMaxLength = 60
+    var lastNameValue by rememberSaveable { mutableStateOf("") }
+    var lastNameError by remember { mutableStateOf(false) }
+    val lastNameMaxLength = 60
+    var emailValue by rememberSaveable { mutableStateOf("") }
+    var emailError by remember { mutableStateOf(false) }
+    val emailMaxLength = 360
 
+    val birthDateoptions = (1..31).toList()
+    var birthDateexpanded by remember { mutableStateOf(false) }
+    var birthDateselectedOptionText by remember { mutableStateOf("") }
+
+    val birthMonthoptions = (1..12).toList()
+    var birthMonthexpanded by remember { mutableStateOf(false) }
+    var birthMonthselectedOptionText by remember { mutableStateOf("") }
+
+    val pastyear = LocalDate.now().minusYears(80L).year
+    val thisyear = LocalDate.now().year
+    val birthYearoptions = (pastyear..thisyear).toList()
+    var birthYearexpanded by remember { mutableStateOf(false) }
+    var birthYearselectedOptionText by remember { mutableStateOf("") }
+
+
+    val countryoptions = countryListDB
+    var countryexpanded by remember { mutableStateOf(false) }
+    var countryselectedOptionText by remember { mutableStateOf("") }
+
+    var referanceCodeValue by rememberSaveable { mutableStateOf("") }
+    var referanceCodeError by remember { mutableStateOf(false) }
+    val referanceCodeMaxLength = 16
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp),
+    ) { innerpadding ->
+        Column(
+            modifier = Modifier.padding(innerpadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Row(
+                modifier = Modifier
+                    .padding(top = 72.dp)
+                    .height(10.dp)
+                    .fillMaxWidth()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(.33f)
+                        .height(10.dp)
+                        .background(color = AppColors.yellow_100)
+                )
+                Spacer(modifier = Modifier.weight(.05f))
+                Box(
+                    modifier = Modifier
+                        .weight(.33f)
+                        .height(10.dp)
+                        .background(color = AppColors.grey_127)
+                )
+                Spacer(modifier = Modifier.weight(.05f))
+                Box(
+                    modifier = Modifier
+                        .weight(.33f)
+                        .height(10.dp)
+                        .background(color = AppColors.grey_127)
+                )
+            }
+            val headerReq = SignUpHeaderRequest()
+            headerReq.title = "Hesabınızı oluşturun"
+            headerReq.subtitle = "Başlamak için bilgilerinizi tamamlayın!"
+            SingUpHeader(context = context, request = headerReq)
+            Row() {
+                TextField(
+                    value = nameValue,
+                    onValueChange = {
+                        if (it.length <= nameMaxLength)
+                            nameValue = it
+                    },
+                    isError = nameError,
+                    label = { Text(text = "Adınız") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        autoCorrect = false,
+                        capitalization = KeyboardCapitalization.Words
+                    ),
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
+                    colors = defaultTextFieldColor(Color.Transparent, AppColors.primaryGrey)
+                )
+                Spacer(modifier = Modifier.width(10.dp))
+                TextField(
+                    value = lastNameValue,
+                    onValueChange = {
+                        if (it.length <= lastNameMaxLength)
+                            lastNameValue = it
+                    },
+                    isError = lastNameError,
+                    label = { Text(text = "Soyadınız") },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Text,
+                        autoCorrect = false,
+                        capitalization = KeyboardCapitalization.Words
+                    ),
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
+                    colors = defaultTextFieldColor(Color.Transparent, AppColors.primaryGrey)
+                )
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            TextField(
+                value = emailValue,
+                onValueChange = {
+                    if (it.length <= emailMaxLength)
+                        emailValue = it
+                },
+                isError = emailError,
+                label = { Text(text = "E-posta adresiniz") },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Email,
+                    autoCorrect = false,
+                    capitalization = KeyboardCapitalization.None
+                ),
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
+                colors = defaultTextFieldColor(Color.Transparent, AppColors.primaryGrey)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                ExposedDropdownMenuBox(
+                    modifier = Modifier.weight(.33f),
+                    expanded = birthDateexpanded,
+                    onExpandedChange = { birthDateexpanded = !birthDateexpanded },
+                ) {
+                    TextField(
+                        // The `menuAnchor` modifier must be passed to the text field for correctness.
+                        modifier = Modifier
+                            .menuAnchor()
+                            .weight(.33f),
+                        value = birthDateselectedOptionText,
+                        onValueChange = { birthDateselectedOptionText = it },
+                        label = { Text("Gün") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = birthDateexpanded) },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    )
+                    // filter options based on text field value
+                    val filteringOptions =
+                        birthDateoptions.filter {
+                            it.toString().contains(birthDateselectedOptionText, ignoreCase = true)
+                        }
+                    if (filteringOptions.isNotEmpty()) {
+                        ExposedDropdownMenu(
+                            expanded = birthDateexpanded,
+                            onDismissRequest = { birthDateexpanded = false },
+                        ) {
+                            birthDateoptions.forEach { selectionOption ->
+                                DropdownMenuItem(
+                                    text = { Text(selectionOption.toString()) },
+                                    onClick = {
+                                        birthDateselectedOptionText = selectionOption.toString()
+                                        birthDateexpanded = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                ExposedDropdownMenuBox(
+                    modifier = Modifier.weight(.33f),
+                    expanded = birthMonthexpanded,
+                    onExpandedChange = { birthMonthexpanded = !birthMonthexpanded },
+                ) {
+                    TextField(
+                        // The `menuAnchor` modifier must be passed to the text field for correctness.
+                        modifier = Modifier
+                            .menuAnchor()
+                            .weight(.33f),
+                        value = birthMonthselectedOptionText,
+                        onValueChange = { birthMonthselectedOptionText = it },
+                        label = { Text("Ay") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = birthMonthexpanded) },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    )
+                    // filter options based on text field value
+                    val filteringOptions =
+                        birthMonthoptions.filter {
+                            it.toString().contains(birthMonthselectedOptionText, ignoreCase = true)
+                        }
+                    if (filteringOptions.isNotEmpty()) {
+                        ExposedDropdownMenu(
+                            expanded = birthMonthexpanded,
+                            onDismissRequest = { birthMonthexpanded = false },
+                        ) {
+                            birthMonthoptions.forEach { selectionOption ->
+                                DropdownMenuItem(
+                                    text = { Text(selectionOption.toString()) },
+                                    onClick = {
+                                        birthMonthselectedOptionText = selectionOption.toString()
+                                        birthMonthexpanded = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                )
+                            }
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.width(10.dp))
+                ExposedDropdownMenuBox(
+                    modifier = Modifier.weight(.33f),
+                    expanded = birthYearexpanded,
+                    onExpandedChange = { birthYearexpanded = !birthYearexpanded },
+                ) {
+                    TextField(
+                        // The `menuAnchor` modifier must be passed to the text field for correctness.
+                        modifier = Modifier
+                            .menuAnchor()
+                            .weight(.33f),
+                        value = birthYearselectedOptionText,
+                        onValueChange = { birthYearselectedOptionText = it },
+                        label = { Text("Yıl") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = birthYearexpanded) },
+                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    )
+                    // filter options based on text field value
+                    val filteringOptions =
+                        birthYearoptions.filter {
+                            it.toString().contains(birthYearselectedOptionText, ignoreCase = true)
+                        }
+                    if (filteringOptions.isNotEmpty()) {
+                        ExposedDropdownMenu(
+                            expanded = birthYearexpanded,
+                            onDismissRequest = { birthYearexpanded = false },
+                        ) {
+                            birthYearoptions.forEach { selectionOption ->
+                                DropdownMenuItem(
+                                    text = { Text(selectionOption.toString()) },
+                                    onClick = {
+                                        birthYearselectedOptionText = selectionOption.toString()
+                                        birthYearexpanded = false
+                                    },
+                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+            ExposedDropdownMenuBox(
+                modifier = Modifier.fillMaxWidth(),
+                expanded = countryexpanded,
+                onExpandedChange = { countryexpanded = !countryexpanded },
+            ) {
+                TextField(
+                    // The `menuAnchor` modifier must be passed to the text field for correctness.
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                        .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
+                    readOnly=true,
+                    value = countryselectedOptionText,
+                    onValueChange = { countryselectedOptionText = it },
+                    label = { Text("Ülke") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = countryexpanded) },
+                    //colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                    keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType= KeyboardType.Ascii),
+                    colors= defaultTextFieldColor(Color.Transparent,AppColors.primaryGrey)
+                )
+                // filter options based on text field value
+                val filteringOptions =
+                    countryoptions.filter {
+                        it.toString().contains(countryselectedOptionText, ignoreCase = true)
+                    }
+                if (filteringOptions.isNotEmpty()) {
+                    ExposedDropdownMenu(
+                        expanded = countryexpanded,
+                        onDismissRequest = { countryexpanded = false },
+                    ) {
+                        countryoptions.forEach { selectionOption ->
+                            DropdownMenuItem(
+                                text = { Text(selectionOption.name .toString()) },
+                                onClick = {
+                                    countryselectedOptionText = selectionOption.name.toString()
+                                    countryexpanded = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(10.dp))
+        }
+    }
 }
 
 @Composable

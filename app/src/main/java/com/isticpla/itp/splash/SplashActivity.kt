@@ -66,6 +66,7 @@ import com.isticpla.itp.dummydata.AppIntroData
 import com.isticpla.itp.helpers.GetScreenSize
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.splash.ui.theme.ITPTheme
+import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.DefaultRoundedCornerButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -114,8 +115,8 @@ fun Splash(
                 .drawWithCache {
                     val gradient = Brush.verticalGradient(
                         colors = listOf(
-                            Color(context.getColor(R.color.splashbackground1)),
-                            Color(context.getColor(R.color.splashbackground2))
+                           AppColors.blue_100,//Color(context.getColor(R.color.splashbackground1))
+                            AppColors.blue_102 //Color(context.getColor(R.color.splashbackground2))
                         ),
                         startY = size.height / 3,
                         endY = size.height

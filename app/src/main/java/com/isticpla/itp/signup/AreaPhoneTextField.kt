@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.isticpla.itp.R
+import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.defaultTextFieldColor
 
 @Composable
@@ -96,7 +97,8 @@ fun AreaPhoneTextField(modifier: Modifier = Modifier, context: Context) {
                     keyboardType = KeyboardType.Phone,
                     autoCorrect = false
                 ),
-                colors = defaultTextFieldColor(context.getColor(R.color.grayprimary))
+                colors = defaultTextFieldColor(Color.White, AppColors.primaryGrey)
+                //colors = defaultTextFieldColor(context.getColor(R.color.grayprimary))
             )
             /*Text(
                 text = "Phone Number",

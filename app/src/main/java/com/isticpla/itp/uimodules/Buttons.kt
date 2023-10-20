@@ -30,8 +30,8 @@ fun DefaultRoundedCornerButton(
             onClick = onclick ,
             shape = RoundedCornerShape(6.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(context.getColor(R.color.startbuttonbackground)),
-                disabledContainerColor = Color(context.getColor(R.color.startbuttonbackgrounddisabled)),
+                containerColor = AppColors.primaryGrey,//Color(context.getColor(R.color.startbuttonbackground))
+                disabledContainerColor = AppColors.primaryGreyDisabled,//Color(context.getColor(R.color.startbuttonbackgrounddisabled))
                 contentColor = Color.White,
                 disabledContentColor = Color.White
             )

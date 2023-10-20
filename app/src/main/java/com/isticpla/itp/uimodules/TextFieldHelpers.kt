@@ -6,18 +6,21 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.ui.graphics.Color
 import com.isticpla.itp.R
 
-fun defaultTextFieldColor(textColor:Int) = TextFieldColors(
-    unfocusedContainerColor = Color.White,
-    focusedContainerColor = Color.White,
-    focusedTextColor = Color(textColor),
-    unfocusedTextColor = Color(textColor),
-    disabledTextColor = Color(textColor),
+fun defaultTextFieldColor(containerColor:Color, textColor: Color) = TextFieldColors(
+    unfocusedContainerColor =containerColor,
+    focusedContainerColor = containerColor,
+    focusedTextColor = textColor,
+    unfocusedTextColor = textColor,
+    disabledTextColor = textColor,
     errorTextColor = Color.Red,
-    disabledContainerColor = Color.White,
-    errorContainerColor = Color.White,
+    disabledContainerColor = containerColor,
+    errorContainerColor = containerColor,
     cursorColor = Color.DarkGray,
     errorCursorColor = Color.DarkGray,
-    textSelectionColors = TextSelectionColors(handleColor=Color.White,backgroundColor=Color.White),
+    textSelectionColors = TextSelectionColors(
+        handleColor = AppColors.blue_104,
+        backgroundColor = AppColors.blue_104
+    ),
     focusedIndicatorColor = Color.White,
     unfocusedIndicatorColor = Color.White,
     disabledIndicatorColor = Color.White,
