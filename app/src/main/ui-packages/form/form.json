@@ -1,0 +1,381 @@
+{
+  "name": "form",
+  "version": 32,
+  "source-key": {
+    "type": "figma",
+    "file": "yQXJKUnyYRHU1QC0JEi1uh",
+    "node": "2125:7269",
+    "version": "4380033532",
+    "component-id": "18822c40b7f5c5c71829ebced74bdaf1130011b7"
+  },
+  "default": "Form",
+  "design": {
+    "atoms": [
+      {
+        "type": "group",
+        "id": "top_level",
+        "root": "true"
+      },
+      {
+        "type": "group",
+        "id": "Enter OTP (Input)"
+      },
+      {
+        "type": "vector",
+        "id": "blank"
+      },
+      {
+        "type": "group",
+        "id": "3"
+      },
+      {
+        "type": "group",
+        "id": "5"
+      },
+      {
+        "type": "group",
+        "id": "1"
+      },
+      {
+        "type": "vector",
+        "id": "blank1"
+      },
+      {
+        "type": "text",
+        "id": "3_1"
+      },
+      {
+        "type": "vector",
+        "id": "Rectangle 2"
+      },
+      {
+        "type": "text",
+        "id": "5_1"
+      },
+      {
+        "type": "vector",
+        "id": "Rectangle 3"
+      },
+      {
+        "type": "text",
+        "id": "1_1"
+      }
+    ],
+    "modes": {
+      "Form": {
+        "rules": [
+          {
+            "id": "top_level",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "proportional",
+                "value": "1.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "shrink"
+              }
+            },
+            "cross-axis-align": "end",
+            "children": [
+              "Enter OTP (Input)"
+            ],
+            "item-spacing": "10.0",
+            "clip-content": "false"
+          },
+          {
+            "id": "Enter OTP (Input)",
+            "border-radius": "8.0",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "proportional",
+                "value": "1.0"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "60.0"
+              }
+            },
+            "is-structured": "false",
+            "children": [
+              "blank",
+              "3",
+              "5",
+              "1"
+            ],
+            "clip-content": "false"
+          },
+          {
+            "id": "blank",
+            "border-radius": "8.0",
+            "alignment": {
+              "horizontal": {
+                "attachment": "start",
+                "offset": "248.3837890625"
+              },
+              "vertical": {
+                "attachment": "start",
+                "offset": "0.0"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "66.6162109375"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "60.0"
+              }
+            },
+            "vector-content": "blank.svg"
+          },
+          {
+            "id": "3",
+            "border-radius": "8.0",
+            "alignment": {
+              "horizontal": {
+                "attachment": "start",
+                "offset": "165.589111328125"
+              },
+              "vertical": {
+                "attachment": "start",
+                "offset": "0.0"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "66.6162109375"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "60.0"
+              }
+            },
+            "is-structured": "false",
+            "children": [
+              "blank1",
+              "3_1"
+            ],
+            "clip-content": "false"
+          },
+          {
+            "id": "5",
+            "border-radius": "8.0",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "66.6162109375"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "60.0"
+              }
+            },
+            "is-structured": "false",
+            "children": [
+              "Rectangle 2",
+              "5_1"
+            ],
+            "clip-content": "false"
+          },
+          {
+            "id": "1",
+            "border-radius": "8.0",
+            "alignment": {
+              "horizontal": {
+                "attachment": "start",
+                "offset": "82.794677734375"
+              },
+              "vertical": {
+                "attachment": "start",
+                "offset": "0.0"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "66.6162109375"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "60.0"
+              }
+            },
+            "is-structured": "false",
+            "children": [
+              "Rectangle 3",
+              "1_1"
+            ],
+            "clip-content": "false"
+          },
+          {
+            "id": "blank1",
+            "border-radius": "8.0",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "66.6162109375"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "60.0"
+              }
+            },
+            "vector-content": "blank1.svg"
+          },
+          {
+            "id": "3_1",
+            "alignment": {
+              "horizontal": {
+                "attachment": "start",
+                "offset": "27.59814453125"
+              },
+              "vertical": {
+                "attachment": "start",
+                "offset": "17.0"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "11.419921875"
+              },
+              "height-constraints": {
+                "sizing-mode": "shrink"
+              }
+            },
+            "font-weight": "700.0",
+            "color": {
+              "alpha": "1.0",
+              "hue": "218.57142857142856",
+              "saturation": "0.3181818181818182",
+              "value": "0.17254901960784313"
+            },
+            "text-content": "3",
+            "overflow": "visible",
+            "max-lines": "-1",
+            "text-align": "left",
+            "text-size": "22.0",
+            "line-height": "1.200000069358132",
+            "typeface": "Urbanist"
+          },
+          {
+            "id": "Rectangle 2",
+            "border-radius": "8.0",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "66.6162109375"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "60.0"
+              }
+            },
+            "vector-content": "rectangle_2.svg"
+          },
+          {
+            "id": "5_1",
+            "alignment": {
+              "horizontal": {
+                "attachment": "start",
+                "offset": "27.59814453125"
+              },
+              "vertical": {
+                "attachment": "start",
+                "offset": "17.0"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "12.37158203125"
+              },
+              "height-constraints": {
+                "sizing-mode": "shrink"
+              }
+            },
+            "font-weight": "700.0",
+            "color": {
+              "alpha": "1.0",
+              "hue": "218.57142857142856",
+              "saturation": "0.3181818181818182",
+              "value": "0.17254901960784313"
+            },
+            "text-content": "5",
+            "overflow": "visible",
+            "max-lines": "-1",
+            "text-align": "left",
+            "text-size": "22.0",
+            "line-height": "1.200000069358132",
+            "typeface": "Urbanist"
+          },
+          {
+            "id": "Rectangle 3",
+            "border-radius": "8.0",
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "66.6162109375"
+              },
+              "height-constraints": {
+                "sizing-mode": "fixed",
+                "value": "60.0"
+              }
+            },
+            "vector-content": "rectangle_3.svg"
+          },
+          {
+            "id": "1_1",
+            "alignment": {
+              "horizontal": {
+                "attachment": "start",
+                "offset": "29.50146484375"
+              },
+              "vertical": {
+                "attachment": "start",
+                "offset": "17.0"
+              }
+            },
+            "size-constraints": {
+              "width-constraints": {
+                "sizing-mode": "fixed",
+                "value": "7.61328125"
+              },
+              "height-constraints": {
+                "sizing-mode": "shrink"
+              }
+            },
+            "font-weight": "700.0",
+            "color": {
+              "alpha": "1.0",
+              "hue": "218.57142857142856",
+              "saturation": "0.3181818181818182",
+              "value": "0.17254901960784313"
+            },
+            "text-content": "1",
+            "overflow": "visible",
+            "max-lines": "-1",
+            "text-align": "left",
+            "text-size": "22.0",
+            "line-height": "1.200000069358132",
+            "typeface": "Urbanist"
+          }
+        ]
+      }
+    }
+  },
+  "previews": [
+    {
+      "design": "Form",
+      "size": {
+        "width": 315.0,
+        "height": 60.0
+      }
+    }
+  ],
+  "adin-component-search-paths": [],
+  "image-search-paths": [],
+  "vector-search-paths": []
+}
