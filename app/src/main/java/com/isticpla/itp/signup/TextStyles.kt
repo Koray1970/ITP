@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.isticpla.itp.R
@@ -15,7 +16,7 @@ fun signupHeader(context: Context)= TextStyle(
     fontFamily = poppinFamily,
     fontStyle=FontStyle.Normal,
     fontWeight = FontWeight.Bold,
-    lineHeight = 5.em,
+    lineHeight = 1.2.em,
     fontSize=24.sp,
     color = Color(context.getColor(R.color.grayprimary))
 )
@@ -47,13 +48,17 @@ fun signupSegmentTitle(context: Context)= TextStyle(
     lineHeight = 22.4.sp,
     fontSize=16.sp,
     color = Color(context.getColor(R.color.neutral90))
-)
-fun signupPhoneComboBox(context: Context)= TextStyle(
+)fun signupBlueText(context: Context)= TextStyle(
     fontFamily = poppinFamily,
     fontStyle=FontStyle.Normal,
-    fontWeight = FontWeight.W400,
-    fontSize=14.sp,
-    color = Color(context.getColor(R.color.neutral90))
+    fontWeight = FontWeight.Bold,
+    fontSize=15.sp,
+    color = Color(context.getColor(R.color.blueff0495f1))
+)
+fun validatePhoneTextFieldTextStyle(context: Context)=TextStyle(
+    textAlign = TextAlign.Center,
+    fontSize = 22.sp,
+    fontWeight = FontWeight.Bold
 )
 fun signCheckBoxColors(context:Context):CheckboxColors = CheckboxColors(
     checkedCheckmarkColor = Color.White,
