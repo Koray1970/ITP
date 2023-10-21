@@ -38,7 +38,6 @@ import com.isticpla.itp.uimodules.defaultTextFieldColor
 
 @Composable
 fun AreaPhoneTextField(modifier: Modifier = Modifier, context: Context) {
-
     var fieldValue by rememberSaveable { mutableStateOf("") }
     val mMaxLength = 15
     Row(
@@ -97,25 +96,8 @@ fun AreaPhoneTextField(modifier: Modifier = Modifier, context: Context) {
                     keyboardType = KeyboardType.Phone,
                     autoCorrect = false
                 ),
-                colors = defaultTextFieldColor(Color.White, AppColors.primaryGrey)
-                //colors = defaultTextFieldColor(context.getColor(R.color.grayprimary))
+                colors = defaultTextFieldColor(null, true)
             )
-            /*Text(
-                text = "Phone Number",
-                color = Color(0xffc1c1c1),
-                lineHeight = 11.67.em,
-                style = TextStyle(
-                    fontSize = 12.sp),
-                modifier = Modifier
-                    .fillMaxWidth())
-            Text(
-                text = "Phone Number",
-                color = Color(0xff545f71),
-                lineHeight = 10.em,
-                style = TextStyle(
-                    fontSize = 14.sp),
-                modifier = Modifier
-                    .fillMaxWidth())*/
         }
     }
 }

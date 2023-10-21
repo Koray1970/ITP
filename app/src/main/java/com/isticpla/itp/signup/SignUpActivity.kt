@@ -58,13 +58,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
-import com.isticpla.itp.data.CountryList
 import com.isticpla.itp.data.countryListDB
 import com.isticpla.itp.signup.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.DropDownTextField
+import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
 import com.isticpla.itp.uimodules.defaultTextFieldColor
+import com.isticpla.itp.uimodules.dropdownMenuItemColors
+import com.isticpla.itp.uimodules.dropdownTextFieldColors
 import java.time.LocalDate
-import java.util.Date
 
 class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,8 +75,9 @@ class SignUpActivity : ComponentActivity() {
             ITPTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Color.White
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White),
                 ) {
                     AppNavigate()
                 }
@@ -127,10 +130,18 @@ fun SignUp(navController: NavController) {
     var phoneNumberValue by remember { mutableStateOf("") }
     val (approveCheckedState, onStateChangeApprove) = remember { mutableStateOf(true) }
     val (pcontractCheckedState, onStateChangepContract) = remember { mutableStateOf(false) }
+    Scaffold(
+        modifier=Modifier.fillMaxSize(),
+        containerColor=Color.White
+    ) {
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp),
+            .padding(horizontal = 20.dp)
+            .background(Color.White)
+        ,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -212,11 +223,12 @@ fun SignUp(navController: NavController) {
             modifier = Modifier.padding(start = 16.dp)
         )
     }
+    }
 }
 
 @Composable
 fun VerifyPhoneNumber(
-    navController: NavController
+    navController: NavController,
 ) {
     context = LocalContext.current.applicationContext
     var ph1 by rememberSaveable { mutableStateOf("") }
@@ -282,10 +294,7 @@ fun VerifyPhoneNumber(
                         imeAction = ImeAction.Next,
                         autoCorrect = false
                     ),
-                    colors = defaultTextFieldColor(
-                        Color.Transparent,
-                        AppColors.grey_115
-                    )//context.getColor(R.color.gray111)
+                    colors = defaultTextFieldColor(null, true)
                 )
                 Spacer(Modifier.weight(1f))
                 TextField(
@@ -310,10 +319,7 @@ fun VerifyPhoneNumber(
                         imeAction = ImeAction.Next,
                         autoCorrect = false
                     ),
-                    colors = defaultTextFieldColor(
-                        Color.Transparent,
-                        AppColors.grey_115
-                    )//context.getColor(R.color.gray111)
+                    colors = defaultTextFieldColor(null, true)
                 )
                 Spacer(Modifier.weight(1f))
                 TextField(
@@ -338,10 +344,7 @@ fun VerifyPhoneNumber(
                         imeAction = ImeAction.Next,
                         autoCorrect = false
                     ),
-                    colors = defaultTextFieldColor(
-                        Color.Transparent,
-                        AppColors.grey_115
-                    )//context.getColor(R.color.gray111)
+                    colors = defaultTextFieldColor(null, true)
                 )
                 Spacer(Modifier.weight(1f))
                 TextField(
@@ -365,10 +368,7 @@ fun VerifyPhoneNumber(
                         keyboardType = KeyboardType.Number,
                         autoCorrect = false
                     ),
-                    colors = defaultTextFieldColor(
-                        Color.Transparent,
-                        AppColors.grey_115
-                    )//context.getColor(R.color.gray111)
+                    colors = defaultTextFieldColor(null, true)
                 )
 
             }
@@ -452,24 +452,33 @@ fun CreateUserAccount(navController: NavController) {
     var emailError by remember { mutableStateOf(false) }
     val emailMaxLength = 360
 
-    val birthDateoptions = (1..31).toList()
-    var birthDateexpanded by remember { mutableStateOf(false) }
-    var birthDateselectedOptionText by remember { mutableStateOf("") }
+    val birthDateoptions = arrayListOf<Pair<String, String>>()
+    (1..31).forEach {
+        birthDateoptions.add(Pair(it.toString(), it.toString()))
+    }
+    var birthDateexpanded = remember { mutableStateOf(false) }
+    var birthDateselectedOptionText = remember { mutableStateOf("") }
 
-    val birthMonthoptions = (1..12).toList()
-    var birthMonthexpanded by remember { mutableStateOf(false) }
-    var birthMonthselectedOptionText by remember { mutableStateOf("") }
+    val birthMonthoptions = arrayListOf<Pair<String, String>>()
+    (1..12).forEach {
+        birthMonthoptions.add(Pair(it.toString(), it.toString()))
+    }
+    var birthMonthexpanded = remember { mutableStateOf(false) }
+    var birthMonthselectedOptionText = remember { mutableStateOf("") }
 
     val pastyear = LocalDate.now().minusYears(80L).year
     val thisyear = LocalDate.now().year
-    val birthYearoptions = (pastyear..thisyear).toList()
-    var birthYearexpanded by remember { mutableStateOf(false) }
-    var birthYearselectedOptionText by remember { mutableStateOf("") }
+    val birthYearoptions = arrayListOf<Pair<String, String>>()
+    (pastyear..thisyear).forEach {
+        birthYearoptions.add(Pair(it.toString(), it.toString()))
+    }
+    var birthYearexpanded = remember { mutableStateOf(false) }
+    var birthYearselectedOptionText = remember { mutableStateOf("") }
 
 
     val countryoptions = countryListDB
-    var countryexpanded by remember { mutableStateOf(false) }
-    var countryselectedOptionText by remember { mutableStateOf("") }
+    var countryexpanded = remember { mutableStateOf(false) }
+    var countryselectedOptionText = remember { mutableStateOf("") }
 
     var referanceCodeValue by rememberSaveable { mutableStateOf("") }
     var referanceCodeError by remember { mutableStateOf(false) }
@@ -479,6 +488,7 @@ fun CreateUserAccount(navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = 20.dp),
+        containerColor = Color.White
     ) { innerpadding ->
         Column(
             modifier = Modifier.padding(innerpadding),
@@ -533,7 +543,7 @@ fun CreateUserAccount(navController: NavController) {
                     modifier = Modifier
                         .weight(1f)
                         .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                    colors = defaultTextFieldColor(Color.Transparent, AppColors.primaryGrey)
+                    colors = defaultTextFieldColor(null, true)
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 TextField(
@@ -553,7 +563,7 @@ fun CreateUserAccount(navController: NavController) {
                     modifier = Modifier
                         .weight(1f)
                         .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                    colors = defaultTextFieldColor(Color.Transparent, AppColors.primaryGrey)
+                    colors = defaultTextFieldColor(null, true)
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
@@ -574,177 +584,83 @@ fun CreateUserAccount(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                colors = defaultTextFieldColor(Color.Transparent, AppColors.primaryGrey)
+                colors =defaultTextFieldColor(null, true)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.weight(.33f),
-                    expanded = birthDateexpanded,
-                    onExpandedChange = { birthDateexpanded = !birthDateexpanded },
-                ) {
-                    TextField(
-                        // The `menuAnchor` modifier must be passed to the text field for correctness.
-                        modifier = Modifier
-                            .menuAnchor()
-                            .weight(.33f),
-                        value = birthDateselectedOptionText,
-                        onValueChange = { birthDateselectedOptionText = it },
-                        label = { Text("Gün") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = birthDateexpanded) },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                DropDownTextField(
+                    request = DropDowndTextFieldRequest(
+                        exposedDropdownMenuBoxModifier = Modifier.weight(.33f),
+                        label = "Gün",
+                        selectedOptionText = birthDateselectedOptionText,
+                        expended = birthDateexpanded,
+                        listOfOptions = birthDateoptions,
+                        textFieldModifier = Modifier
+                            .weight(.33f)
+                            .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
+                        textFieldReadOnly = true,
+                        textfieldColors = defaultTextFieldColor(null, true),
+                        menuItemColors = dropdownMenuItemColors(null, true),
+                        menuItemModifier = null
                     )
-                    // filter options based on text field value
-                    val filteringOptions =
-                        birthDateoptions.filter {
-                            it.toString().contains(birthDateselectedOptionText, ignoreCase = true)
-                        }
-                    if (filteringOptions.isNotEmpty()) {
-                        ExposedDropdownMenu(
-                            expanded = birthDateexpanded,
-                            onDismissRequest = { birthDateexpanded = false },
-                        ) {
-                            birthDateoptions.forEach { selectionOption ->
-                                DropdownMenuItem(
-                                    text = { Text(selectionOption.toString()) },
-                                    onClick = {
-                                        birthDateselectedOptionText = selectionOption.toString()
-                                        birthDateexpanded = false
-                                    },
-                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                                )
-                            }
-                        }
-                    }
-                }
+                )
                 Spacer(modifier = Modifier.width(10.dp))
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.weight(.33f),
-                    expanded = birthMonthexpanded,
-                    onExpandedChange = { birthMonthexpanded = !birthMonthexpanded },
-                ) {
-                    TextField(
-                        // The `menuAnchor` modifier must be passed to the text field for correctness.
-                        modifier = Modifier
-                            .menuAnchor()
-                            .weight(.33f),
-                        value = birthMonthselectedOptionText,
-                        onValueChange = { birthMonthselectedOptionText = it },
-                        label = { Text("Ay") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = birthMonthexpanded) },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                DropDownTextField(
+                    request = DropDowndTextFieldRequest(
+                        exposedDropdownMenuBoxModifier = Modifier.weight(.33f),
+                        label = "Ay",
+                        selectedOptionText = birthMonthselectedOptionText,
+                        expended = birthMonthexpanded,
+                        listOfOptions = birthMonthoptions,
+                        textFieldModifier = Modifier
+                            .weight(.33f)
+                            .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
+                        textFieldReadOnly = true,
+                        textfieldColors = defaultTextFieldColor(null, true),
+                        menuItemColors = dropdownMenuItemColors(null, true),
+                        menuItemModifier = null
                     )
-                    // filter options based on text field value
-                    val filteringOptions =
-                        birthMonthoptions.filter {
-                            it.toString().contains(birthMonthselectedOptionText, ignoreCase = true)
-                        }
-                    if (filteringOptions.isNotEmpty()) {
-                        ExposedDropdownMenu(
-                            expanded = birthMonthexpanded,
-                            onDismissRequest = { birthMonthexpanded = false },
-                        ) {
-                            birthMonthoptions.forEach { selectionOption ->
-                                DropdownMenuItem(
-                                    text = { Text(selectionOption.toString()) },
-                                    onClick = {
-                                        birthMonthselectedOptionText = selectionOption.toString()
-                                        birthMonthexpanded = false
-                                    },
-                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                                )
-                            }
-                        }
-                    }
-                }
+                )
                 Spacer(modifier = Modifier.width(10.dp))
-                ExposedDropdownMenuBox(
-                    modifier = Modifier.weight(.33f),
-                    expanded = birthYearexpanded,
-                    onExpandedChange = { birthYearexpanded = !birthYearexpanded },
-                ) {
-                    TextField(
-                        // The `menuAnchor` modifier must be passed to the text field for correctness.
-                        modifier = Modifier
-                            .menuAnchor()
-                            .weight(.33f),
-                        value = birthYearselectedOptionText,
-                        onValueChange = { birthYearselectedOptionText = it },
-                        label = { Text("Yıl") },
-                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = birthYearexpanded) },
-                        colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                DropDownTextField(
+                    request = DropDowndTextFieldRequest(
+                        exposedDropdownMenuBoxModifier = Modifier.weight(.33f),
+                        label = "Yıl",
+                        selectedOptionText = birthYearselectedOptionText,
+                        expended = birthYearexpanded,
+                        listOfOptions = birthYearoptions,
+                        textFieldModifier = Modifier
+                            .weight(.33f)
+                            .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
+                        textFieldReadOnly = true,
+                        textfieldColors = defaultTextFieldColor(null, true),
+                        menuItemColors = dropdownMenuItemColors(null, true),
+                        menuItemModifier = null
                     )
-                    // filter options based on text field value
-                    val filteringOptions =
-                        birthYearoptions.filter {
-                            it.toString().contains(birthYearselectedOptionText, ignoreCase = true)
-                        }
-                    if (filteringOptions.isNotEmpty()) {
-                        ExposedDropdownMenu(
-                            expanded = birthYearexpanded,
-                            onDismissRequest = { birthYearexpanded = false },
-                        ) {
-                            birthYearoptions.forEach { selectionOption ->
-                                DropdownMenuItem(
-                                    text = { Text(selectionOption.toString()) },
-                                    onClick = {
-                                        birthYearselectedOptionText = selectionOption.toString()
-                                        birthYearexpanded = false
-                                    },
-                                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                                )
-                            }
-                        }
-                    }
-                }
+                )
             }
             Spacer(modifier = Modifier.height(10.dp))
-            ExposedDropdownMenuBox(
-                modifier = Modifier.fillMaxWidth(),
-                expanded = countryexpanded,
-                onExpandedChange = { countryexpanded = !countryexpanded },
-            ) {
-                TextField(
-                    // The `menuAnchor` modifier must be passed to the text field for correctness.
-                    modifier = Modifier
-                        .menuAnchor()
+            DropDownTextField(
+                request = DropDowndTextFieldRequest(
+                    exposedDropdownMenuBoxModifier = Modifier.fillMaxWidth(),
+                    label = "Ülke",
+                    selectedOptionText = countryselectedOptionText,
+                    expended = countryexpanded,
+                    listOfOptions = countryListDB,
+                    textFieldModifier = Modifier
+                        //.menuAnchor()
                         .fillMaxWidth()
                         .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                    readOnly=true,
-                    value = countryselectedOptionText,
-                    onValueChange = { countryselectedOptionText = it },
-                    label = { Text("Ülke") },
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = countryexpanded) },
-                    //colors = ExposedDropdownMenuDefaults.textFieldColors(),
-                    keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType= KeyboardType.Ascii),
-                    colors= defaultTextFieldColor(Color.Transparent,AppColors.primaryGrey)
+                    textFieldReadOnly = true,
+                    textfieldColors = defaultTextFieldColor(null, true),
+                    menuItemColors = dropdownMenuItemColors(null, true),
+                    menuItemModifier = null
                 )
-                // filter options based on text field value
-                val filteringOptions =
-                    countryoptions.filter {
-                        it.toString().contains(countryselectedOptionText, ignoreCase = true)
-                    }
-                if (filteringOptions.isNotEmpty()) {
-                    ExposedDropdownMenu(
-                        expanded = countryexpanded,
-                        onDismissRequest = { countryexpanded = false },
-                    ) {
-                        countryoptions.forEach { selectionOption ->
-                            DropdownMenuItem(
-                                text = { Text(selectionOption.name .toString()) },
-                                onClick = {
-                                    countryselectedOptionText = selectionOption.name.toString()
-                                    countryexpanded = false
-                                },
-                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                            )
-                        }
-                    }
-                }
-            }
+            )
+
             Spacer(modifier = Modifier.height(10.dp))
         }
     }
