@@ -25,6 +25,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -65,6 +67,7 @@ import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.AppIntroData
 import com.isticpla.itp.helpers.GetScreenSize
 import com.isticpla.itp.poppinFamily
+import com.isticpla.itp.signup.signupSubmitButton
 import com.isticpla.itp.splash.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.DefaultRoundedCornerButton
@@ -150,7 +153,7 @@ fun Splash(
 fun StartSelectCulture(
     navController: NavController,
 ) {
-    var context = LocalContext.current.applicationContext
+    val context = LocalContext.current.applicationContext
     var cultureDropdownExpandState by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -247,21 +250,33 @@ fun StartSelectCulture(
             }
         }
         Spacer(modifier = Modifier.height(16.dp))
-        DefaultRoundedCornerButton(
-            context = context,
+        Button(
+            onClick = { navController.navigate("appintro") },
             modifier = Modifier
                 .width(265.dp)
                 .height(48.dp),
-            title = "Başla",
-            onclick = fun() { navController.navigate("appintro") })
-
+            shape = RoundedCornerShape(6.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
+                contentColor = Color.White,
+                disabledContainerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
+                disabledContentColor = Color.White
+            )
+        ) {
+            Text(text = "Başla", style = signupSubmitButton(context))
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(id = R.drawable.arrow_right),
+                contentDescription = null
+            )
+        }
         Spacer(modifier = Modifier.height(26.dp))
         Text(
             text = "Kaydolarak Şartlarımızı kabul etmiş olursunuz. Verilerinizi nasıl kullandığımızı Gizlilik Politikamızda görün.",
             style = TextStyle(
                 fontFamily = poppinFamily,
                 fontSize = 16.sp,
-                color = Color(0x545F71FF),
+                color = AppColors.primaryGrey,
                 textAlign = TextAlign.Center
             ),
             modifier = Modifier.width(320.dp)

@@ -52,3 +52,11 @@ val listofAraeCodes =
         Pair("DE", "+49"),
         Pair("GR", "+30")
     )
+val listofEmployeePosition =
+    listOf<Pair<String, String>>(
+        Pair("CEO", "ceo"),
+        Pair("Position 1", "position1"),
+        Pair("Position 2", "position2"),
+        Pair("Position 3", "position3"),
+        Pair("Position 4", "position4")
+    )
