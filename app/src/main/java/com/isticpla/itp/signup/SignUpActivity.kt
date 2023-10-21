@@ -131,98 +131,100 @@ fun SignUp(navController: NavController) {
     val (approveCheckedState, onStateChangeApprove) = remember { mutableStateOf(true) }
     val (pcontractCheckedState, onStateChangepContract) = remember { mutableStateOf(false) }
     Scaffold(
-        modifier=Modifier.fillMaxSize(),
-        containerColor=Color.White
-    ) {
-
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp)
-            .background(Color.White)
-        ,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        val headerReq = SignUpHeaderRequest()
-        headerReq.title = context.getString(R.string.reg100)
-        headerReq.subtitle = context.getString(R.string.reg102)
-        SingUpHeader(context, headerReq)
-        AreaPhoneTextField(modifier = Modifier, context)
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .toggleable(
-                    value = approveCheckedState,
-                    onValueChange = { onStateChangeApprove(!approveCheckedState) },
-                    role = Role.Checkbox
-                )
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = approveCheckedState,
-                onCheckedChange = null, // null recommended for accessibility with screenreaders
-                colors = signCheckBoxColors(context)
-            )
-            Text(
-                text = "Özel bildirim, güncelleme ve haberler hakkında tarafımla e-posta ve SMS ile iletişime geçilmesini istiyorum.",
-                style = signupCheckboxLabel(context),
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .toggleable(
-                    value = pcontractCheckedState,
-                    onValueChange = { onStateChangepContract(!pcontractCheckedState) },
-                    role = Role.Checkbox
-                )
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = pcontractCheckedState,
-                onCheckedChange = null, // null recommended for accessibility with screenreaders
-                colors = signCheckBoxColors(context)
-            )
-            Text(
-                text = "Üyelik Sözleşmesini okudum ve kabul ediyorum.",
-                style = signupCheckboxLabel(context),
-                modifier = Modifier.padding(start = 16.dp)
-            )
-        }
-        Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = { navController.navigate("verifyphonenumber") },
+        modifier = Modifier.fillMaxSize(),
+        containerColor = Color.White
+    ) { innerpadding ->
+        
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            shape = RoundedCornerShape(6.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = AppColors.primaryGrey,//Color(context.getColor(R.color.gray99))
-                contentColor = Color.White,
-                disabledContainerColor = AppColors.primaryGrey,//Color(context.getColor(R.color.gray99))
-                disabledContentColor = Color.White
-            )
+                .padding(innerpadding)
+                .fillMaxSize()
+                .padding(horizontal = 20.dp)
+                .background(Color.White),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Devam Et", style = signupSubmitButton(context))
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(painter = painterResource(id = R.drawable.arrow_right), contentDescription = null)
+            val headerReq = SignUpHeaderRequest()
+            headerReq.title = context.getString(R.string.reg100)
+            headerReq.subtitle = context.getString(R.string.reg102)
+            SingUpHeader(context, headerReq)
+            AreaPhoneTextField(modifier = Modifier, context)
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .toggleable(
+                        value = approveCheckedState,
+                        onValueChange = { onStateChangeApprove(!approveCheckedState) },
+                        role = Role.Checkbox
+                    )
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = approveCheckedState,
+                    onCheckedChange = null, // null recommended for accessibility with screenreaders
+                    colors = signCheckBoxColors(context)
+                )
+                Text(
+                    text = "Özel bildirim, güncelleme ve haberler hakkında tarafımla e-posta ve SMS ile iletişime geçilmesini istiyorum.",
+                    style = signupCheckboxLabel(context),
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .toggleable(
+                        value = pcontractCheckedState,
+                        onValueChange = { onStateChangepContract(!pcontractCheckedState) },
+                        role = Role.Checkbox
+                    )
+                    .padding(horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = pcontractCheckedState,
+                    onCheckedChange = null, // null recommended for accessibility with screenreaders
+                    colors = signCheckBoxColors(context)
+                )
+                Text(
+                    text = "Üyelik Sözleşmesini okudum ve kabul ediyorum.",
+                    style = signupCheckboxLabel(context),
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(
+                onClick = { navController.navigate("verifyphonenumber") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                shape = RoundedCornerShape(6.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppColors.primaryGrey,//Color(context.getColor(R.color.gray99))
+                    contentColor = Color.White,
+                    disabledContainerColor = AppColors.primaryGrey,//Color(context.getColor(R.color.gray99))
+                    disabledContentColor = Color.White
+                )
+            ) {
+                Text(text = "Devam Et", style = signupSubmitButton(context))
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_right),
+                    contentDescription = null
+                )
+            }
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                text = "Burada yer alan bilgilerinizi asla kimseyle paylaşmıyoruz, bilgilerinizi profilinizden değiştirebilirsiniz!",
+                style = signupSegmentTitle(context),
+                modifier = Modifier.padding(start = 16.dp)
+            )
         }
-        Spacer(modifier = Modifier.height(30.dp))
-        Text(
-            text = "Burada yer alan bilgilerinizi asla kimseyle paylaşmıyoruz, bilgilerinizi profilinizden değiştirebilirsiniz!",
-            style = signupSegmentTitle(context),
-            modifier = Modifier.padding(start = 16.dp)
-        )
-    }
     }
 }
 
@@ -584,7 +586,7 @@ fun CreateUserAccount(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                colors =defaultTextFieldColor(null, true)
+                colors = defaultTextFieldColor(null, true)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Row(
