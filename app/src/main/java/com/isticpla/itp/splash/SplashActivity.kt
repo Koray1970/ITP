@@ -86,8 +86,9 @@ class SplashActivity : ComponentActivity() {
                     modifier = Modifier
                         .safeDrawingPadding()
                         .fillMaxSize()
+                        .background(Color.White)
                         .padding(0.dp),
-                    color = MaterialTheme.colorScheme.background
+                    color = Color.White
                 ) {
                     AppNavigate()
 
@@ -108,8 +109,7 @@ fun Splash(
         modifier = Modifier
             .fillMaxSize()
             .padding(0.dp)
-
-
+            .background(Color.White)
     ) {
         Image(
             modifier = Modifier
@@ -118,7 +118,7 @@ fun Splash(
                 .drawWithCache {
                     val gradient = Brush.verticalGradient(
                         colors = listOf(
-                           AppColors.blue_100,//Color(context.getColor(R.color.splashbackground1))
+                            AppColors.blue_100,//Color(context.getColor(R.color.splashbackground1))
                             AppColors.blue_102 //Color(context.getColor(R.color.splashbackground2))
                         ),
                         startY = size.height / 3,
@@ -155,132 +155,147 @@ fun StartSelectCulture(
 ) {
     val context = LocalContext.current.applicationContext
     var cultureDropdownExpandState by remember { mutableStateOf(false) }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(painter = painterResource(id = R.drawable.logo_blue), contentDescription = null)
-        Spacer(modifier = Modifier.height(40.dp))
-        Box(
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        floatingActionButton = {
+            FloatingActionButton(onClick = { navController.navigate("home") }) {
+                Icon(painter = painterResource(id = R.drawable.baseline_arrow_forward_24), contentDescription = null)
+            }
+        },
+        floatingActionButtonPosition = FabPosition.EndOverlay
+    ) { innerpadding ->
+        Column(
             modifier = Modifier
-                .width(265.dp)
-                .wrapContentSize(Alignment.TopStart)
+                .fillMaxSize()
+                .padding(innerpadding)
+                .background(Color.White),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedCard(
+            Image(painter = painterResource(id = R.drawable.logo_blue), contentDescription = null)
+            Spacer(modifier = Modifier.height(40.dp))
+            Box(
                 modifier = Modifier
                     .width(265.dp)
-                    .height(51.dp)
-                    .border(1.dp, Color(0x9BA5B7FF), RoundedCornerShape(6.dp)),
+                    .wrapContentSize(Alignment.TopStart)
+            ) {
+                OutlinedCard(
+                    modifier = Modifier
+                        .width(265.dp)
+                        .height(51.dp)
+                        .border(1.dp, Color(0x9BA5B7FF), RoundedCornerShape(6.dp)),
+                    shape = RoundedCornerShape(6.dp),
+                    onClick = { cultureDropdownExpandState = true }) {
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                "Lisan Seçiniz",
+                                style = TextStyle(color = Color.Gray, fontWeight = FontWeight.Bold)
+                            )
+                        },
+                        supportingContent = {
+                            Text(
+                                "Türkçe",
+                                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                            )
+                        },
+                        leadingContent = {
+                            Image(
+                                painter = painterResource(id = R.drawable.flg_tr),
+                                modifier = Modifier.size(48.dp),
+                                contentDescription = null
+                            )
+                        },
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.baseline_expand_more_24),
+                                contentDescription = null
+                            )
+                        }
+                    )
+                }
+                DropdownMenu(
+                    modifier = Modifier.width(265.dp),
+                    expanded = cultureDropdownExpandState,
+                    onDismissRequest = { cultureDropdownExpandState = false }) {
+                    DropdownMenuItem(
+                        text = { Text("Türkçe") },
+                        onClick = { cultureDropdownExpandState = false },
+                        leadingIcon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.flg_tr),
+                                modifier = Modifier.size(38.dp),
+                                contentDescription = null
+                            )
+                        })
+                    DropdownMenuItem(
+                        text = { Text("English") },
+                        onClick = { cultureDropdownExpandState = false },
+                        leadingIcon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.flg_uk),
+                                modifier = Modifier.size(38.dp),
+                                contentDescription = null
+                            )
+                        })
+                    DropdownMenuItem(
+                        text = { Text("Français") },
+                        onClick = { cultureDropdownExpandState = false },
+                        leadingIcon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.flg_fr),
+                                modifier = Modifier.size(38.dp),
+                                contentDescription = null
+                            )
+                        })
+                    DropdownMenuItem(
+                        text = { Text("Deutsch") },
+                        onClick = { cultureDropdownExpandState = false },
+                        leadingIcon = {
+                            Image(
+                                painter = painterResource(id = R.drawable.flg_de),
+                                modifier = Modifier.size(38.dp),
+                                contentDescription = null
+                            )
+                        })
+
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Button(
+                onClick = { navController.navigate("appintro") },
+                modifier = Modifier
+                    .width(265.dp)
+                    .height(48.dp),
                 shape = RoundedCornerShape(6.dp),
-                onClick = { cultureDropdownExpandState = true }) {
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            "Lisan Seçiniz",
-                            style = TextStyle(color = Color.Gray, fontWeight = FontWeight.Bold)
-                        )
-                    },
-                    supportingContent = {
-                        Text(
-                            "Türkçe",
-                            style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                        )
-                    },
-                    leadingContent = {
-                        Image(
-                            painter = painterResource(id = R.drawable.flg_tr),
-                            modifier = Modifier.size(48.dp),
-                            contentDescription = null
-                        )
-                    },
-                    trailingContent = {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_expand_more_24),
-                            contentDescription = null
-                        )
-                    }
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
+                    contentColor = Color.White,
+                    disabledContainerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
+                    disabledContentColor = Color.White
+                )
+            ) {
+                Text(text = "Başla", style = signupSubmitButton(context))
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    painter = painterResource(id = R.drawable.arrow_right),
+                    contentDescription = null
                 )
             }
-            DropdownMenu(
-                modifier = Modifier.width(265.dp),
-                expanded = cultureDropdownExpandState,
-                onDismissRequest = { cultureDropdownExpandState = false }) {
-                DropdownMenuItem(
-                    text = { Text("Türkçe") },
-                    onClick = { cultureDropdownExpandState = false },
-                    leadingIcon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.flg_tr),
-                            modifier = Modifier.size(38.dp),
-                            contentDescription = null
-                        )
-                    })
-                DropdownMenuItem(
-                    text = { Text("English") },
-                    onClick = { cultureDropdownExpandState = false },
-                    leadingIcon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.flg_uk),
-                            modifier = Modifier.size(38.dp),
-                            contentDescription = null
-                        )
-                    })
-                DropdownMenuItem(
-                    text = { Text("Français") },
-                    onClick = { cultureDropdownExpandState = false },
-                    leadingIcon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.flg_fr),
-                            modifier = Modifier.size(38.dp),
-                            contentDescription = null
-                        )
-                    })
-                DropdownMenuItem(
-                    text = { Text("Deutsch") },
-                    onClick = { cultureDropdownExpandState = false },
-                    leadingIcon = {
-                        Image(
-                            painter = painterResource(id = R.drawable.flg_de),
-                            modifier = Modifier.size(38.dp),
-                            contentDescription = null
-                        )
-                    })
-
-            }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = { navController.navigate("appintro") },
-            modifier = Modifier
-                .width(265.dp)
-                .height(48.dp),
-            shape = RoundedCornerShape(6.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
-                contentColor = Color.White,
-                disabledContainerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
-                disabledContentColor = Color.White
-            )
-        ) {
-            Text(text = "Başla", style = signupSubmitButton(context))
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                painter = painterResource(id = R.drawable.arrow_right),
-                contentDescription = null
+            Spacer(modifier = Modifier.height(26.dp))
+            Text(
+                text = "Kaydolarak Şartlarımızı kabul etmiş olursunuz. Verilerinizi nasıl kullandığımızı Gizlilik Politikamızda görün.",
+                style = TextStyle(
+                    fontFamily = poppinFamily,
+                    fontSize = 16.sp,
+                    color = AppColors.primaryGrey,
+                    textAlign = TextAlign.Center
+                ),
+                modifier = Modifier.width(320.dp)
             )
         }
-        Spacer(modifier = Modifier.height(26.dp))
-        Text(
-            text = "Kaydolarak Şartlarımızı kabul etmiş olursunuz. Verilerinizi nasıl kullandığımızı Gizlilik Politikamızda görün.",
-            style = TextStyle(
-                fontFamily = poppinFamily,
-                fontSize = 16.sp,
-                color = AppColors.primaryGrey,
-                textAlign = TextAlign.Center
-            ),
-            modifier = Modifier.width(320.dp)
-        )
     }
 }
 
@@ -293,6 +308,10 @@ fun AppIntro(navController: NavController) {
     val pagerState = rememberPagerState(pageCount = { listofIntro.size })
 
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp)
+            .background(Color.White),
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate("signup") }) {
                 Icon(
@@ -303,7 +322,11 @@ fun AppIntro(navController: NavController) {
         },
         floatingActionButtonPosition = FabPosition.EndOverlay
     ) {
-        Column(Modifier.padding(it)) {
+        Column(
+            Modifier
+                .padding(it)
+                .background(Color.White)
+        ) {
             HorizontalPager(
                 state = pagerState,
             ) { ix ->
@@ -352,6 +375,7 @@ internal fun AppIntroItem(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .background(Color.White)
             .height((screenHeight * .9).dp)
             .padding(10.dp, 0.dp),
         verticalArrangement = Arrangement.Center,

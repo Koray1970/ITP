@@ -28,17 +28,16 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -51,6 +50,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -72,6 +72,8 @@ import androidx.navigation.NavController
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
 import com.isticpla.itp.data.countryListDB
+import com.isticpla.itp.dummydata.BusinessTypeItem
+import com.isticpla.itp.dummydata.listofBusiness
 import com.isticpla.itp.dummydata.listofEmployeePosition
 import com.isticpla.itp.signup.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
@@ -83,6 +85,7 @@ import com.isticpla.itp.uimodules.dropdownTextFieldColors
 import java.time.LocalDate
 
 class SignUpActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -90,8 +93,8 @@ class SignUpActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White),
+                        .fillMaxSize().padding(0.dp).background(Color.White),
+                    color=MaterialTheme.colorScheme.background
                 ) {
                     AppNavigate()
                 }
@@ -143,7 +146,9 @@ fun SignUp(navController: NavController) {
     val (approveCheckedState, onStateChangeApprove) = remember { mutableStateOf(true) }
     val (pcontractCheckedState, onStateChangepContract) = remember { mutableStateOf(false) }
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
         containerColor = Color.White
     ) { innerpadding ->
 
@@ -265,11 +270,14 @@ fun VerifyPhoneNumber(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
+            .padding(0.dp)
+            .background(Color.White)
             .padding(horizontal = 20.dp),
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.White)
                 .padding(innerPadding),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -500,12 +508,16 @@ fun CreateUserAccount(navController: NavController) {
 
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 20.dp),
+            .fillMaxWidth()
+            .background(Color.White)
+            .padding(0.dp),
         containerColor = Color.White
     ) { innerpadding ->
         Column(
-            modifier = Modifier.padding(innerpadding),
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -741,6 +753,7 @@ fun CreateUserAccount(navController: NavController) {
                     contentDescription = null
                 )
             }
+            Spacer(modifier = Modifier.height(70.dp))
         }
     }
 }
@@ -757,11 +770,15 @@ fun AddYourBusiness(navController: NavController) {
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp),
+            .background(Color.White)
+            .padding(0.dp),
         containerColor = Color.White
     ) { innerpadding ->
         Column(
-            modifier = Modifier.padding(innerpadding),
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -916,17 +933,24 @@ fun AddYourBusiness(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChooseBusinessSalesAreas(navController: NavController) {
     val context = LocalContext.current.applicationContext
+    var selectedBusinessTypes = mutableListOf<BusinessTypeItem>()
+    //var flowselectedBusinessTypes = Flow<ArrayList<BusinessTypeItem>>()
+
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 20.dp),
+            .background(Color.White),
         containerColor = Color.White
     ) { innerpadding ->
         Column(
-            modifier = Modifier.padding(innerpadding),
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
@@ -969,8 +993,8 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.grey_124
                 ),
-                textAlign= TextAlign.Left,
-                modifier=Modifier.fillMaxWidth()
+                textAlign = TextAlign.Left,
+                modifier = Modifier.fillMaxWidth()
             )
             Row(
                 modifier = Modifier
@@ -980,26 +1004,49 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                         rememberScrollState()
                     ),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start)
+                horizontalArrangement = Arrangement.spacedBy(3.dp, Alignment.Start)
             ) {
-                (1..8).forEach {
+                listofBusiness.forEach { b ->
+                    var isDisabledBussing by remember { mutableStateOf(true) }
                     Card(
                         colors = CardColors(
                             containerColor = AppColors.grey_133,
                             contentColor = AppColors.primaryGrey,
-                            disabledContainerColor = AppColors.grey_134,
+                            disabledContainerColor = AppColors.grey_133,
                             disabledContentColor = AppColors.grey_135
                         ),
+                        enabled = isDisabledBussing,
                         shape = RoundedCornerShape(5.dp),
-                        modifier = Modifier.padding(all = 10.dp)
-
+                        modifier = Modifier
+                            .padding(all = 10.dp)
+                            .width(70.dp)
+                            .height(92.dp)
+                            .alpha(if (!isDisabledBussing) .25f else 1f),
+                        onClick = {
+                            selectedBusinessTypes.add(b)
+                            isDisabledBussing = false
+                        }
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_warning_24),
-                            contentDescription = null
-                        )
-                        Spacer(modifier = Modifier.height(10.dp))
-                        Text(text = "Metal")
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                painter = painterResource(id = b.icon),
+                                contentDescription = null,
+                                tint = AppColors.primaryGrey
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = b.label,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = AppColors.primaryGrey
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -1010,12 +1057,62 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = AppColors.grey_124
-                )
+                ),
+                textAlign = TextAlign.Left,
+                modifier = Modifier.fillMaxWidth()
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .horizontalScroll(
+                        rememberScrollState()
+                    ),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(3.dp, Alignment.Start)
+            ) {
+                selectedBusinessTypes.forEach { b ->
+                    Card(
+                        colors = CardColors(
+                            containerColor = AppColors.primaryGrey,
+                            contentColor = Color.White,
+                            disabledContainerColor = AppColors.primaryGrey,
+                            disabledContentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(5.dp),
+                        modifier = Modifier
+                            .padding(all = 10.dp)
+                            .width(70.dp)
+                            .height(92.dp),
+                        onClick = {
+
+                        }
+                    ) {
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Icon(
+                                painter = painterResource(id = b.icon),
+                                contentDescription = null,
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = b.label,
+                                style = TextStyle(
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                )
+                            )
+                        }
+                    }
+                }
+            }
 
             Spacer(modifier = Modifier.height(40.dp))
             Button(
-                onClick = { },//navController.navigate("choosebusinesssalesareas")
+                onClick = { navController.navigate("home")},//
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -1034,6 +1131,7 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                     contentDescription = null
                 )
             }
+            Spacer(modifier = Modifier.height(70.dp))
         }
     }
 }

@@ -44,6 +44,7 @@ fun AppIntroData(): ArrayList<AppIntroDataModel> {
     )
     return listofAppIntroData
 }
+
 val listofAraeCodes =
     listOf<Pair<String, String>>(
         Pair("TR", "+ 90"),
@@ -60,3 +61,14 @@ val listofEmployeePosition =
         Pair("Position 3", "position3"),
         Pair("Position 4", "position4")
     )
+
+data class BusinessTypeItem(val id: Int, val icon: Int, val label: String)
+
+val listofBusiness = listOf<BusinessTypeItem>(
+    BusinessTypeItem(1,R.drawable.ico_metal,"Metal"),
+    BusinessTypeItem(2,R.drawable.ico_wood,"Ağaç"),
+    BusinessTypeItem(3,R.drawable.ico_plastic,"Plastik"),
+    BusinessTypeItem(4,R.drawable.ico_glass,"Cam"),
+    BusinessTypeItem(5,R.drawable.ico_textile,"Tekstil"),
+    BusinessTypeItem(6,R.drawable.ico_others,"Diğer")
+)
