@@ -29,5 +29,8 @@ class AppColors {
 
         //yellow colors
         val yellow_100 = Color(0xFFFFCE42)
+
+        //red colors
+        val red_100 = Color(0xffe23e3e)
     }
 }
