@@ -16,14 +16,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 
+
 data class DropDowndTextFieldRequest(
     var exposedDropdownMenuBoxModifier: Modifier?,
     var label: String,
     var selectedOptionText: MutableState<String>,
     var expended: MutableState<Boolean>,
-    var listOfOptions: List<Pair<String,String>>,
+    var listOfOptions: List<Pair<String, String>>,
     var textFieldModifier: Modifier,
-    var textFieldReadOnly:Boolean,
+    var textFieldReadOnly: Boolean,
     var textfieldColors: TextFieldColors,
     var menuItemColors: MenuItemColors?,
     var menuItemModifier: Modifier?,
@@ -39,7 +40,9 @@ fun DropDownTextField(request: DropDowndTextFieldRequest) = ExposedDropdownMenuB
 ) {
     TextField(
         // The `menuAnchor` modifier must be passed to the text field for correctness.
-        modifier = if (request!!.textFieldModifier != null) request!!.textFieldModifier!!.then(Modifier.menuAnchor()) else Modifier.menuAnchor(),
+        modifier = if (request!!.textFieldModifier != null) request!!.textFieldModifier!!.then(
+            Modifier.menuAnchor()
+        ) else Modifier.menuAnchor(),
         readOnly = request.textFieldReadOnly,
         value = request!!.selectedOptionText.value,
         onValueChange = { request!!.selectedOptionText.value = it },
@@ -81,7 +84,7 @@ fun DropDownTextField(request: DropDowndTextFieldRequest) = ExposedDropdownMenuB
 
 fun dropdownTextFieldColors(request: DropDownTextFieldColorRequest?, isDefault: Boolean) =
     TextFieldColors(
-        unfocusedContainerColor =if (isDefault) Color.White else request!!.container.unfocus,
+        unfocusedContainerColor = if (isDefault) Color.White else request!!.container.unfocus,
         focusedContainerColor = if (isDefault) Color.White else request!!.container.focused,
         disabledContainerColor = if (isDefault) Color.White else request!!.container.disabled,
         errorContainerColor = if (isDefault) Color.White else request!!.container.error,

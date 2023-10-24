@@ -73,15 +73,10 @@ val listofBusiness = listOf<BusinessTypeItem>(
     BusinessTypeItem(6, R.drawable.ico_others, "Diğer")
 )
 
-data class ShopDetails(val id: Int, val label: String, val address: String)
 
-val listofShopDetails = listOf<ShopDetails>(
-    ShopDetails(1, "Tilman's Hamburger", "Neuenfelderstraße 84, Hamburg"),
-    ShopDetails(2, "Lu Bu Soul Food", "Christophstraße 7A, 80538 München"),
-    ShopDetails(3, "Caffe Vinica", "Schönfeldstraße 24, 80539 München")
-)
 val listofShops = listOf<Pair<String, String>>(
-    Pair("1", "Tilman's Hamburger"),
-    Pair("2", "Lu Bu Soul Food"),
-    Pair("3", "Caffe Vinica")
+    Pair<String, String>("Tilman's Hamburger \nNeuenfelderstraße 84, Hamburg","1"),
+    Pair<String, String>("Lu Bu Soul Food\nChristophstraße 7A, 80538 München","2"),
+    Pair<String, String>("Caffe Vinica\nSchönfeldstraße 24, 80539 München","3")
 )
+

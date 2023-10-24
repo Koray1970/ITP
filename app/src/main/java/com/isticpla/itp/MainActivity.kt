@@ -27,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.material.bottomappbar.BottomAppBar
+import com.isticpla.itp.home.HomeSectionHeader
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
 
@@ -68,8 +70,7 @@ fun Home(navController: NavController) {
     Log.v("MainActitivity", "${configuration.screenWidthDp}")
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(vertical = 0.dp),
+            .fillMaxSize(),
         containerColor = Color.White,
         topBar = { HomeTopBar(context) },
         bottomBar = { HomeBottomBar(context) }
@@ -79,10 +80,10 @@ fun Home(navController: NavController) {
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(innerpadding)
-            //.background(Color.White)
+                .padding(innerpadding).padding(horizontal = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("deneme")
+            HomeSectionHeader()
         }
     }
 }
