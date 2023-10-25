@@ -37,9 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.isticpla.itp.home.HomeSectionHeader
-import com.isticpla.itp.home.HomeSectionSectors
+import com.isticpla.itp.home.*
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
 
@@ -86,6 +84,10 @@ fun Home(navController: NavController) {
         ) {
             HomeSectionHeader()
             HomeSectionSectors()
+            HomeSectionDesigns()
+            HomeSectionCampains()
+            HomeSectionInStockSales()
+            HomeSectionSectorNews()
         }
     }
 }

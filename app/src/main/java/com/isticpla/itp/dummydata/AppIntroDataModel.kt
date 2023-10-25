@@ -79,4 +79,17 @@ val listofShops = listOf<Pair<String, String>>(
     Pair<String, String>("Lu Bu Soul Food\nChristophstraße 7A, 80538 München","2"),
     Pair<String, String>("Caffe Vinica\nSchönfeldstraße 24, 80539 München","3")
 )
-
+val listofDesigns = listOf<Pair<Int, String>>(
+    Pair<Int, String>(R.mipmap.model_01,"Spor Giyim"),
+    Pair<Int, String>(R.mipmap.model_02,"Punk Giyim"),
+    Pair<Int, String>(R.mipmap.model_03,"Abiye Giyim"),
+    Pair<Int, String>(R.mipmap.model_04,"Vintage Giyim"),
+    Pair<Int, String>(R.mipmap.model_05,"Grunge Giyim"),
+)
+data class HomeCampaignItem(val id:Int, val uitype:Int, val image:Int,val title:String,val subTitle:String)
+val listofHomeCampaigns = listOf<HomeCampaignItem>(
+    HomeCampaignItem(1,1,R.mipmap.tmodel_01,"For Slim & Beauty","Sale up to 40%"),
+    HomeCampaignItem(2,1,R.mipmap.tmodel_02,"Most Sexy & Fabulous Design","Summer Collection 2023"),
+    HomeCampaignItem(3,2,R.mipmap.tmodel_03,"The Office Life","T-Shirts"),
+    HomeCampaignItem(4,2,R.mipmap.tmodel_04,"Elegant Design","Dresses"),
+)
