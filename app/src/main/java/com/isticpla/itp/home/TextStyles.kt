@@ -31,3 +31,15 @@ val homeSectorDesignCardLabel= TextStyle(
     fontSize = 12.sp,
     color = AppColors.grey_141,
 )
+val homeSectorCampaignCardSpot= TextStyle(
+    fontFamily = poppinFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 12.sp,
+    color = AppColors.grey_138,
+)
+val homeSectorCampaignCardTitle= TextStyle(
+    fontFamily = poppinFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 20.sp,
+    color = AppColors.grey_147
+)

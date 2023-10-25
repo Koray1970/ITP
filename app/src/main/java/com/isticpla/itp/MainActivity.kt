@@ -85,7 +85,7 @@ fun Home(navController: NavController) {
             HomeSectionHeader()
             HomeSectionSectors()
             HomeSectionDesigns()
-            HomeSectionCampains()
+            HomeSectionCampaigns()
             HomeSectionInStockSales()
             HomeSectionSectorNews()
         }
