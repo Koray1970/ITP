@@ -73,6 +73,7 @@ fun signupBlueText(context: Context) = TextStyle(
 )
 
 fun validatePhoneTextFieldTextStyle(context: Context) = TextStyle(
+    fontFamily = poppinFamily,
     textAlign = TextAlign.Center,
     fontSize = 22.sp,
     fontWeight = FontWeight.Bold

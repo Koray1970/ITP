@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.material.bottomappbar.BottomAppBar
 import com.isticpla.itp.home.HomeSectionHeader
+import com.isticpla.itp.home.HomeSectionSectors
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
 
@@ -84,6 +85,7 @@ fun Home(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeSectionHeader()
+            HomeSectionSectors()
         }
     }
 }
