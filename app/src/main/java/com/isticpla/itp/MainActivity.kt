@@ -37,9 +37,12 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -81,7 +84,7 @@ fun Home(navController: NavController) {
     Scaffold(modifier = Modifier.fillMaxSize(),
         containerColor = Color.White,
         topBar = { HomeTopBar(context, navController) },
-        bottomBar = { HomeBottomBar(context) }) { innerpadding ->
+        bottomBar = { Bg() }) { innerpadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -169,6 +172,16 @@ fun HomeBottomBar(context: Context) = BottomAppBar(containerColor = Color.White,
             )
         }
     })
+
+@Composable
+fun Bg() = Column(
+    modifier = Modifier.height(150.dp).paint(
+        painterResource(id = R.mipmap.beyazbg),
+        contentScale = ContentScale.Crop
+    )
+) {
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
