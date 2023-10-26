@@ -45,7 +45,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.isticpla.itp.dummydata.listofMessages
 import com.isticpla.itp.dummydata.listofNotifications
+import com.isticpla.itp.dummydata.listofTasks
 import com.isticpla.itp.home.*
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
@@ -249,14 +251,166 @@ fun Notifications(navController: NavController) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Jobs(navController: NavController) {
     val context = LocalContext.current.applicationContext
+    Scaffold(containerColor = Color.White, topBar = {
+        MediumTopAppBar(
+            colors = TopAppBarColors(
+                containerColor = Color.White, scrolledContainerColor = Color.White,
+                navigationIconContentColor = AppColors.primaryGrey,
+                titleContentColor = AppColors.primaryGrey,
+                actionIconContentColor = AppColors.primaryGrey,
+            ),
+            title = { Text("Görevler", style = homeSubSectionTitle) },
+            actions = {
+                IconButton(onClick = { navController.navigate("home") }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_home_24),
+                        contentDescription = null
+                    )
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate("home") }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_left),
+                        contentDescription = null
+                    )
+                }
+            }
+        )
+    }) { innerpadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp)
+        ) {
+            Text("Aşağıdaki Görevleri Tamamlayınız!", style = homeSubSectionSubTitle)
+            listofTasks.forEach { b ->
+                ListItem(
+                    colors = ListItemColors(
+                        containerColor = Color.White,
+                        headlineColor = AppColors.primaryGrey,
+                        supportingTextColor = AppColors.grey_130,
+                        leadingIconColor = AppColors.grey_130,
+                        trailingIconColor = AppColors.grey_130,
+                        overlineColor = AppColors.grey_130,
+                        disabledHeadlineColor = AppColors.primaryGrey,
+                        disabledLeadingIconColor = AppColors.grey_130,
+                        disabledTrailingIconColor = AppColors.grey_130
+                    ),
+                    headlineContent = { Text(b.title, style = notficationListHeader) },
+                    supportingContent = {
+                        Text(
+                            text = b.subTitle ?: "", style = notficationListSupportingtext
+                        )
+                    },
+                    leadingContent = {
+                        Text(
+                            b.date, style = notficationListDate, modifier = Modifier.width(60.dp)
+                        )
+                    },
+                )
+                HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
+            }
+            Spacer(modifier = Modifier.height(26.dp))
+            Text("Daha Öncekiler", style = homeSubSectionSubTitle)
+            var lastone = listofNotifications.last()
+            ListItem(
+                headlineContent = { Text(lastone.title, style = notficationListHeader) },
+                supportingContent = {
+                    Text(
+                        text = lastone.subTitle ?: "", style = notficationListSupportingtext
+                    )
+                },
+                leadingContent = { Text(lastone.date, style = notficationListDate) },
+            )
+            HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
+        }
+    }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Messages(navController: NavController) {
     val context = LocalContext.current.applicationContext
+    Scaffold(containerColor = Color.White, topBar = {
+        MediumTopAppBar(
+            colors = TopAppBarColors(
+                containerColor = Color.White, scrolledContainerColor = Color.White,
+                navigationIconContentColor = AppColors.primaryGrey,
+                titleContentColor = AppColors.primaryGrey,
+                actionIconContentColor = AppColors.primaryGrey,
+            ),
+            title = { Text("Mesajlar", style = homeSubSectionTitle) },
+            actions = {
+                IconButton(onClick = { navController.navigate("home") }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_home_24),
+                        contentDescription = null
+                    )
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate("home") }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_left),
+                        contentDescription = null
+                    )
+                }
+            }
+        )
+    }) { innerpadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp)
+        ) {
+            Text("Yeni", style = homeSubSectionSubTitle)
+            listofMessages.take(1).forEach { b ->
+                ListItem(
+                    colors = ListItemColors(
+                        containerColor = Color.White,
+                        headlineColor = AppColors.primaryGrey,
+                        supportingTextColor = AppColors.grey_130,
+                        leadingIconColor = AppColors.grey_130,
+                        trailingIconColor = AppColors.grey_130,
+                        overlineColor = AppColors.grey_130,
+                        disabledHeadlineColor = AppColors.primaryGrey,
+                        disabledLeadingIconColor = AppColors.grey_130,
+                        disabledTrailingIconColor = AppColors.grey_130
+                    ),
+                    headlineContent = { Text(b.title, style = notficationListHeader) },
+                    supportingContent = {
+                        Text(
+                            text = b.subTitle ?: "", style = notficationListSupportingtext
+                        )
+                    },
+                    leadingContent = {
+                        Text(
+                            b.date, style = notficationListDate, modifier = Modifier.width(60.dp)
+                        )
+                    },
+                )
+                HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
+            }
+            Spacer(modifier = Modifier.height(26.dp))
+            Text("Daha Öncekiler", style = homeSubSectionSubTitle)
+            var lastone = listofMessages.last()
+            ListItem(
+                headlineContent = { Text(lastone.title, style = notficationListHeader) },
+                supportingContent = {
+                    Text(
+                        text = lastone.subTitle ?: "", style = notficationListSupportingtext
+                    )
+                },
+                leadingContent = { Text(lastone.date, style = notficationListDate) },
+            )
+            HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
+        }
+    }
 }
 
 /*
