@@ -10,21 +10,29 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.isticpla.itp.dummydata.listofNotifications
 import com.isticpla.itp.home.*
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
@@ -67,19 +76,16 @@ fun Home(navController: NavController) {
     val context = LocalContext.current.applicationContext
     val configuration = LocalConfiguration.current
     Log.v("MainActitivity", "${configuration.screenWidthDp}")
-    Scaffold(
-        modifier = Modifier
-            .fillMaxSize(),
+    Scaffold(modifier = Modifier.fillMaxSize(),
         containerColor = Color.White,
-        topBar = { HomeTopBar(context) },
-        bottomBar = { HomeBottomBar(context) }
-    )
-    { innerpadding ->
+        topBar = { HomeTopBar(context, navController) },
+        bottomBar = { HomeBottomBar(context) }) { innerpadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(innerpadding).padding(horizontal = 10.dp),
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeSectionHeader()
@@ -94,40 +100,39 @@ fun Home(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar(context: Context) = TopAppBar(
-    title = { Text("") },
-    navigationIcon = {
+fun HomeTopBar(context: Context, navController: NavController) =
+    TopAppBar(title = { Text("") }, navigationIcon = {
         Icon(
             painter = painterResource(id = R.drawable.home_logo),
             contentDescription = null,
             tint = AppColors.grey_138
         )
-    },
-    actions = {
-        IconButton(onClick = { }) {
-            Icon(painter = painterResource(id = R.drawable.ico_messages), contentDescription = null)
+    }, actions = {
+        IconButton(onClick = { navController.navigate("home/messages") }) {
+            Icon(
+                painter = painterResource(id = R.drawable.ico_messages),
+                contentDescription = null
+            )
         }
-        IconButton(onClick = { }) {
+        IconButton(onClick = { navController.navigate("home/jobs") }) {
             Icon(painter = painterResource(id = R.drawable.ico_task), contentDescription = null)
         }
-        IconButton(onClick = { }) {
+        IconButton(onClick = { navController.navigate("home/notifications") }) {
             Icon(
                 painter = painterResource(id = R.drawable.ico_notifications),
                 contentDescription = null
             )
         }
-    },
-    colors = TopAppBarDefaults.topAppBarColors(
+    }, colors = TopAppBarDefaults.topAppBarColors(
         containerColor = Color.White,
         navigationIconContentColor = AppColors.grey_138,
         actionIconContentColor = AppColors.grey_138
     )
-)
+    )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeBottomBar(context: Context) = BottomAppBar(
-    containerColor = Color.White,
+fun HomeBottomBar(context: Context) = BottomAppBar(containerColor = Color.White,
     modifier = Modifier
         .shadow(25.dp, RectangleShape, true)
         .padding(0.dp),
@@ -149,27 +154,99 @@ fun HomeBottomBar(context: Context) = BottomAppBar(
         }
         IconButton(onClick = { }) {
             Image(
-                painter = painterResource(id = R.drawable.menu_i_profile),
-                contentDescription = null
+                painter = painterResource(id = R.drawable.menu_i_profile), contentDescription = null
             )
         }
     },
     floatingActionButton = {
         FloatingActionButton(
-            onClick = { /*TODO*/ },
-            shape = CircleShape
+            onClick = { /*TODO*/ }, shape = CircleShape
         ) {
             Image(
-                painter = painterResource(id = R.drawable.menu_red_add),
-                contentDescription = null
+                painter = painterResource(id = R.drawable.menu_red_add), contentDescription = null
             )
         }
-    }
-)
+    })
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Notifications(navController: NavController) {
     val context = LocalContext.current.applicationContext
+    Scaffold(containerColor = Color.White, topBar = {
+        MediumTopAppBar(
+            colors = TopAppBarColors(
+                containerColor = Color.White, scrolledContainerColor = Color.White,
+                navigationIconContentColor = Color.White,
+                titleContentColor = Color.White,
+                actionIconContentColor = Color.White,
+            ),
+            title = { Text("Bildirimler", style = homeSubSectionTitle) },
+            actions = {
+                IconButton(onClick = { navController.navigate("home") }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_home_24),
+                        contentDescription = null
+                    )
+                }
+            },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigate("home") }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_left),
+                        contentDescription = null
+                    )
+                }
+            }
+        )
+    }) { innerpadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp)
+        ) {
+            Text("Yeni", style = homeSubSectionSubTitle)
+            listofNotifications.take(4).forEach { b ->
+                ListItem(
+                    colors = ListItemColors(
+                        containerColor = Color.White,
+                        headlineColor = AppColors.primaryGrey,
+                        supportingTextColor = AppColors.grey_130,
+                        leadingIconColor = AppColors.grey_130,
+                        trailingIconColor = AppColors.grey_130,
+                        overlineColor = AppColors.grey_130,
+                        disabledHeadlineColor = AppColors.primaryGrey,
+                        disabledLeadingIconColor = AppColors.grey_130,
+                        disabledTrailingIconColor = AppColors.grey_130
+                    ),
+                    headlineContent = { Text(b.title, style = notficationListHeader) },
+                    supportingContent = {
+                        Text(
+                            text = b.subTitle ?: "", style = notficationListSupportingtext
+                        )
+                    },
+                    leadingContent = {
+                        Text(
+                            b.date, style = notficationListDate, modifier = Modifier.width(60.dp)
+                        )
+                    },
+                )
+                HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
+            }
+            Spacer(modifier = Modifier.height(26.dp))
+            Text("Daha Öncekiler", style = homeSubSectionSubTitle)
+            var lastone = listofNotifications.last()
+            ListItem(
+                headlineContent = { Text(lastone.title, style = notficationListHeader) },
+                supportingContent = {
+                    Text(
+                        text = lastone.subTitle ?: "", style = notficationListSupportingtext
+                    )
+                },
+                leadingContent = { Text(lastone.date, style = notficationListDate) },
+            )
+            HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
+        }
+    }
 }
 
 @Composable

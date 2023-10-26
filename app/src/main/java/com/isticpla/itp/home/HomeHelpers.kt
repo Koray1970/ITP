@@ -5,17 +5,19 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -29,7 +31,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
@@ -44,16 +50,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.listofBusiness
 import com.isticpla.itp.dummydata.listofDesigns
 import com.isticpla.itp.dummydata.listofHomeCampaigns
+import com.isticpla.itp.dummydata.listofHomeSectorNews
 import com.isticpla.itp.dummydata.listofShops
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.DropDownTextField
@@ -250,14 +255,14 @@ fun HomeSectionDesigns() = Column() {
                     onClick = {}
                 ) {
                     Image(
-                        painter = painterResource(id = b.first),
+                        painter = painterResource(id = b.image),
                         contentDescription = null,
                         contentScale = ContentScale.Crop
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = b.second,
+                    text = b.title,
                     modifier = Modifier.padding(start = 8.dp),
                     style = homeSectorDesignCardLabel
                 )
@@ -352,31 +357,26 @@ fun HomeSectionCampaigns() = Column() {
                 }
 
                 else -> {
-                    Card(
-                        modifier = Modifier.padding(bottom = 16.dp).wrapContentSize(),
-                        shape = RoundedCornerShape(8.dp),
-                        colors = CardColors(
-                            containerColor = AppColors.grey_144,
-                            contentColor = AppColors.grey_147,
-                            disabledContainerColor = AppColors.grey_144,
-                            disabledContentColor = AppColors.grey_147
-                        ),
-                        onClick = {}
-                    ) {
-                        Row() {
-                            Box(
-                                modifier = Modifier
-                                    .wrapContentHeight()
-                                    .width(90.dp)
-                                    .background(Color.Cyan),
-                                contentAlignment = Alignment.CenterStart
-                            ) {
-                                Image(
+                    if (b.imPosition == 1) {
+                        Card(
+                            modifier = Modifier
+                                .padding(bottom = 16.dp)
+                                .requiredWidth(IntrinsicSize.Min)
+                                .paint(
+                                    sizeToIntrinsics = true,
                                     painter = painterResource(id = b.image),
-                                    contentScale = ContentScale.Crop,
-                                    contentDescription = null
-                                )
-                            }
+                                    contentScale = ContentScale.Fit,
+                                    alignment = Alignment.CenterStart
+                                ),
+                            shape = RoundedCornerShape(8.dp),
+                            colors = CardColors(
+                                containerColor = AppColors.grey_144,
+                                contentColor = AppColors.grey_147,
+                                disabledContainerColor = AppColors.grey_144,
+                                disabledContentColor = AppColors.grey_147
+                            ),
+                            onClick = {}
+                        ) {
                             Column(
                                 modifier = Modifier
                                     .wrapContentWidth(Alignment.Start)
@@ -401,12 +401,143 @@ fun HomeSectionCampaigns() = Column() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSectionInStockSales() {
-
+fun HomeSectionInStockSales() = Column() {
+    Spacer(modifier = Modifier.height(40.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text("Stoklu Satışlar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
+        Spacer(modifier = Modifier.weight(1f))
+        TextButton(
+            onClick = { },
+        ) {
+            Text("Hepsini Göster", style = homeSectorShowAll)
+        }
+    }
+    Spacer(modifier = Modifier.height(3.dp))
+    Row(
+        modifier = Modifier.horizontalScroll(rememberScrollState())
+    ) {
+        listofDesigns.forEach { b ->
+            Column(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Card(
+                    shape = RoundedCornerShape(8.dp),
+                    colors = CardColors(
+                        containerColor = Color.Transparent,
+                        contentColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = Color.Transparent
+                    ),
+                    modifier = Modifier
+                        .width(140.dp)
+                        .height(210.dp),
+                    onClick = {}
+                ) {
+                    Image(
+                        painter = painterResource(id = b.image),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = b.title,
+                    modifier = Modifier.padding(start = 8.dp),
+                    style = homeSectorDesignCardLabel
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = b.price,
+                    modifier = Modifier.padding(start = 8.dp),
+                    style = homeSectorDesignCardPriceLabel
+                )
+            }
+        }
+    }
 }
 
 @Composable
-fun HomeSectionSectorNews() {
+fun HomeSectionSectorNews() = Column() {
+    Spacer(modifier = Modifier.height(40.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text("Sektörel Haberler", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
+        Spacer(modifier = Modifier.weight(1f))
+        TextButton(
+            onClick = { },
+        ) {
+            Text("Hepsini Göster", style = homeSectorShowAll)
+        }
+    }
+    Spacer(modifier = Modifier.height(3.dp))
+    Column(
+        modifier = Modifier.horizontalScroll(rememberScrollState())
+    ) {
+        listofHomeSectorNews.forEach { b ->
+            ListItem(
+                modifier = Modifier.clickable {  },
+                colors = ListItemColors(
+                    containerColor = Color.Transparent,
+                    headlineColor = AppColors.primaryGrey,
+                    leadingIconColor = Color.Transparent,
+                    overlineColor = Color.Transparent,
+                    supportingTextColor = AppColors.primaryGrey,
+                    trailingIconColor = AppColors.primaryGrey,
+                    disabledHeadlineColor = AppColors.primaryGrey,
+                    disabledLeadingIconColor = Color.Transparent,
+                    disabledTrailingIconColor = AppColors.primaryGrey,
+                ),
+                headlineContent = {
+                    Text(
+                        b.title,
+                        modifier = Modifier.requiredWidth(260.dp),
+                        style = homeSectorNewsTitle
+                    )
+                },
+                supportingContent = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            b.content,
+                            modifier = Modifier.requiredWidth(260.dp),
+                            style = homeSectorNewsContent
+                        )
+                        Text(b.date, style = homeSectorNewsDate)
+                    }
+                },
+                leadingContent = {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp, 48.dp)
+                            .clip(RoundedCornerShape(6.dp)),
+                    ) {
+                        Image(
+                            painter = painterResource(id = b.icon),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop
+                        )
+                    }
 
+                },
+                trailingContent = {
+                    IconButton(onClick = {}) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_keyboard_arrow_right_24),
+                            contentDescription = null,
+                        )
+                    }
+                }
+            )
+            HorizontalDivider(thickness =  1.dp, color = AppColors.primaryGreyDisabled)
+        }
+    }
 }
