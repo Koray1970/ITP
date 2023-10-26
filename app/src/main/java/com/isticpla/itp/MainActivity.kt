@@ -176,9 +176,9 @@ fun Notifications(navController: NavController) {
         MediumTopAppBar(
             colors = TopAppBarColors(
                 containerColor = Color.White, scrolledContainerColor = Color.White,
-                navigationIconContentColor = Color.White,
-                titleContentColor = Color.White,
-                actionIconContentColor = Color.White,
+                navigationIconContentColor = AppColors.primaryGrey,
+                titleContentColor = AppColors.primaryGrey,
+                actionIconContentColor = AppColors.primaryGrey,
             ),
             title = { Text("Bildirimler", style = homeSubSectionTitle) },
             actions = {
