@@ -47,6 +47,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.isticpla.itp.dummydata.listofMessages
 import com.isticpla.itp.dummydata.listofNotifications
@@ -54,6 +55,7 @@ import com.isticpla.itp.dummydata.listofTasks
 import com.isticpla.itp.home.*
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -77,7 +79,10 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Home(navController: NavController) {
+fun Home(
+    navController: NavController,
+    homeViewMode: HomeViewMode = hiltViewModel()
+) {
     val context = LocalContext.current.applicationContext
     val configuration = LocalConfiguration.current
     Log.v("MainActitivity", "${configuration.screenWidthDp}")
@@ -93,12 +98,12 @@ fun Home(navController: NavController) {
                 .padding(horizontal = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            HomeSectionHeader()
-            HomeSectionSectors()
-            HomeSectionDesigns()
-            HomeSectionCampaigns()
-            HomeSectionInStockSales()
-            HomeSectionSectorNews()
+            HomeSectionHeader(homeViewMode)
+            HomeSectionSectors(homeViewMode)
+            HomeSectionDesigns(homeViewMode)
+            HomeSectionCampaigns(homeViewMode)
+            HomeSectionInStockSales(homeViewMode)
+            HomeSectionSectorNews(homeViewMode)
         }
     }
 }
@@ -175,10 +180,12 @@ fun HomeBottomBar(context: Context) = BottomAppBar(containerColor = Color.White,
 
 @Composable
 fun Bg() = Column(
-    modifier = Modifier.height(150.dp).paint(
-        painterResource(id = R.mipmap.beyazbg),
-        contentScale = ContentScale.Crop
-    )
+    modifier = Modifier
+        .height(150.dp)
+        .paint(
+            painterResource(id = R.mipmap.beyazbg),
+            contentScale = ContentScale.Crop
+        )
 ) {
 
 }

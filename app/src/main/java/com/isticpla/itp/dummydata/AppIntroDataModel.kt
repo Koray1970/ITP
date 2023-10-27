@@ -91,6 +91,14 @@ val listofDesigns = listOf<HomeDesignItem>(
     HomeDesignItem(5, R.mipmap.model_05, "Grunge Giyim", "$17.99"),
 )
 
+val listofStokSale = listOf<HomeDesignItem>(
+    HomeDesignItem(1, R.mipmap.model_01, "Spor Giyim Spor Giyim Spor Giyim Spor Giyim", "$79.99"),
+    HomeDesignItem(2, R.mipmap.model_02, "Punk Giyim", "$74.99"),
+    HomeDesignItem(3, R.mipmap.model_03, "Abiye Giyim", "$139.99"),
+    HomeDesignItem(4, R.mipmap.model_04, "Vintage Giyim", "$42.99"),
+    HomeDesignItem(5, R.mipmap.model_05, "Grunge Giyim", "$17.99"),
+)
+
 //imPosition null = genel, 1 sola dayali, 2 saga dayali
 data class HomeCampaignItem(
     val id: Int,
