@@ -160,7 +160,7 @@ data class DefaultListItem(
     val title: String,
     val subTitle: String?,
     val content: String?,
-    val defaultListAttachmentItem:DefaultListAttachmentItem?
+    val defaultListAttachmentItem: DefaultListAttachmentItem?
 )
 
 val listofNotifications = listOf<DefaultListItem>(
@@ -230,7 +230,7 @@ val listofMessages = listOf<DefaultListItem>(
         "ITP Ürün Temsilcisi",
         "Ürün cam kırılmazlık testlerini içeren dosya ekte mevcuttur. İncelediğinizde göreceksiniz ki bu testler ürünün sağlamlığını ne olarak ifade etmektedir.",
         null,
-        DefaultListAttachmentItem(R.mipmap.hamburger_01,"Indonesian burger table")
+        DefaultListAttachmentItem(R.mipmap.hamburger_01, "Indonesian burger table")
     ),
     DefaultListItem(
         "4 gün önce",
@@ -238,6 +238,55 @@ val listofMessages = listOf<DefaultListItem>(
         "ITP Ürün Temsilcisi",
         "Ödemeniz tarafımıza ulaşmıştır",
         null,
-        DefaultListAttachmentItem(R.mipmap.hamburger_01,"Indonesian burger table")
+        DefaultListAttachmentItem(R.mipmap.hamburger_01, "Indonesian burger table")
     ),
+)
+
+data class FeedDashboardItems(
+    val id: Int,
+    val type:Int, //1 large, 2 medium, 3 no foto
+    val date: String,
+    val image: Int?,
+    val spottext: String?,
+    val title: String,
+    val content: String?
+)
+
+val listofFeedDashboard = listOf<FeedDashboardItems>(
+    FeedDashboardItems(
+        1,
+        1,
+        "27.04.2023",
+        R.mipmap.fm01,
+        "Autumn Collection 2022",
+        "China International Supply Chain Expo",
+        "Ticaret Bakanlığından alınan bir yazıda, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından..."
+    ),
+    FeedDashboardItems(
+        2,
+        1,
+        "27.04.2023",
+        R.mipmap.fm01,
+        "Autumn Collection 2022",
+        "China International Supply Chain Expo",
+        "Ticaret Bakanlığından alınan bir yazıda, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından..."
+    ),
+    FeedDashboardItems(
+        3,
+        2,
+        "27.04.2023",
+        R.mipmap.fm01,
+        "Autumn Collection 2022",
+        "China International Supply Chain Expo",
+        "Ticaret Bakanlığından alınan bir yazıda, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından..."
+    ),
+    FeedDashboardItems(
+        4,
+        3,
+        "27.04.2023",
+        null,
+        null,
+        "China International Supply Chain Expo",
+        "Ticaret Bakanlığından alınan bir yazıda, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından..."
+    )
 )
