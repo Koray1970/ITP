@@ -9,7 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.isticpla.itp.signup.*
 import com.isticpla.itp.splash.*
 
-@RequiresApi(Build.VERSION_CODES.O)
+@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun AppNavigate() {
 

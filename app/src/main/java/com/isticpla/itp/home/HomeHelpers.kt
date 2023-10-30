@@ -57,6 +57,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.BusinessTypeItem
 import com.isticpla.itp.dummydata.HomeCampaignItem
@@ -167,7 +168,7 @@ internal fun CarouselItem(image: Int) = Column(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSectionSectors(homeViewMode: HomeViewMode) {
+fun HomeSectionSectors(navController: NavController, homeViewMode: HomeViewMode) {
     val bussinesList =
         homeViewMode.sectorList.collectAsState(initial = emptyList<BusinessTypeItem>())
     Column() {
@@ -208,7 +209,8 @@ fun HomeSectionSectors(homeViewMode: HomeViewMode) {
                         .height(128.dp)
                         .padding(all = 7.dp),
                     onClick = {
-                        isSectorSelected = !isSectorSelected
+                        //isSectorSelected = !isSectorSelected
+                        navController.navigate("feed")
                     }
                 ) {
                     Column(

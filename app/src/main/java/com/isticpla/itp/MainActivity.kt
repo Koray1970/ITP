@@ -78,6 +78,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun Home(
     navController: NavController,
@@ -99,7 +100,7 @@ fun Home(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             HomeSectionHeader(homeViewMode)
-            HomeSectionSectors(homeViewMode)
+            HomeSectionSectors(navController,homeViewMode)
             HomeSectionDesigns(homeViewMode)
             HomeSectionCampaigns(homeViewMode)
             HomeSectionInStockSales(homeViewMode)
