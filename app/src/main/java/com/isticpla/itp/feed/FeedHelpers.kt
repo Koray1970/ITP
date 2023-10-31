@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -188,8 +189,10 @@ fun FeedDashBoardItemButton()=Row() {
             .clickable {  }
             .background(AppColors.grey_127)
             .fillMaxWidth(.76f)
-            .clip(RoundedCornerShape(8.dp)),
+            .requiredHeight(33.dp)
+            .clip(RoundedCornerShape(10.dp)),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = "Teklif Talebi Oluştur",
@@ -201,25 +204,33 @@ fun FeedDashBoardItemButton()=Row() {
         )
     }
     Spacer(modifier = Modifier.width(10.dp))
-    IconButton(
-        onClick = {},
+    Row(
         modifier = Modifier
+            .clickable {  }
             .background(AppColors.grey_127)
-            .clip(RoundedCornerShape(5.dp, 0.dp, 0.dp, 5.dp))
+            .fillMaxWidth()
+            .requiredHeight(33.dp)
+            .clip(RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp)),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         Icon(
             painter = painterResource(id = R.drawable.outline_favorite_border_24),
             contentDescription = null
         )
     }
-    IconButton(
-        onClick = {},
+    Row(
         modifier = Modifier
+            .clickable {  }
             .background(AppColors.grey_127)
-            .clip(RoundedCornerShape(0.dp, 5.dp, 5.dp, 0.dp))
+            .fillMaxWidth()
+            .requiredHeight(33.dp)
+            .clip(RoundedCornerShape(0.dp, 10.dp, 10.dp, 0.dp)),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.outline_favorite_border_24),
+            painter = painterResource(id = R.drawable.outline_share_24),
             contentDescription = null
         )
     }
