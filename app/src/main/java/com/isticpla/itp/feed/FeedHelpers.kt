@@ -3,6 +3,7 @@ package com.isticpla.itp.feed
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -147,51 +148,7 @@ fun FeedDashboardItemLarge(fdi: FeedDashboardItems) = Column(
             }
         }
     }
-    Row() {
-        Button(
-            onClick = {},
-            colors = ButtonColors(
-                containerColor = AppColors.grey_127,
-                contentColor = Color.DarkGray,
-                disabledContainerColor = AppColors.grey_127,
-                disabledContentColor = Color.DarkGray
-            ),
-            shape= RoundedCornerShape(8.dp),
-            modifier = Modifier.fillMaxWidth(.76f)
-        ) {
-            Text(
-                text = "Teklif Talebi Oluştur",
-                style =btnCreateQuoteRequestButton,
-                modifier = Modifier
-                    .fillMaxSize(.50f)
-                    .wrapContentHeight(align = Alignment.CenterVertically)
-
-            )
-        }
-        Spacer(modifier = Modifier.width(10.dp))
-        IconButton(
-            onClick = {},
-            modifier = Modifier
-                .background(AppColors.grey_127)
-                .clip(RoundedCornerShape(5.dp, 0.dp, 0.dp, 5.dp))
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.outline_favorite_border_24),
-                contentDescription = null
-            )
-        }
-        IconButton(
-            onClick = {},
-            modifier = Modifier
-                .background(AppColors.grey_127)
-                .clip(RoundedCornerShape(0.dp, 5.dp, 5.dp, 0.dp))
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.outline_favorite_border_24),
-                contentDescription = null
-            )
-        }
-    }
+    FeedDashBoardItemButton()
     Text(text = fdi.title, style = feeddashboardLargeItemTitle)
     if (!fdi.content.isNullOrEmpty())
         Text(text = fdi.content, style = feeddashboardLargeItemContent)
@@ -212,51 +169,7 @@ fun FeedDashboardItemMedium(fdi: FeedDashboardItems) = Card() {
         if (!fdi.content.isNullOrEmpty())
             Text(text = fdi.content, style = feeddashboardLargeItemContent)
         Text(text = fdi.date, style = feeddashboardItemDate)
-        Row() {
-            Button(
-                onClick = {},
-                colors = ButtonColors(
-                    containerColor = AppColors.grey_127,
-                    contentColor = Color.DarkGray,
-                    disabledContainerColor = AppColors.grey_127,
-                    disabledContentColor = Color.DarkGray
-                ),
-                modifier = Modifier.fillMaxWidth(.76f)
-            ) {
-                Text(
-                    text = "Teklif Talebi Oluştur",
-                    style = TextStyle(
-                        fontFamily = poppinFamily,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = AppColors.primaryGrey
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
-            IconButton(
-                onClick = {},
-                modifier = Modifier
-                    .background(AppColors.grey_127)
-                    .clip(RoundedCornerShape(5.dp, 0.dp, 0.dp, 5.dp))
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_favorite_border_24),
-                    contentDescription = null
-                )
-            }
-            IconButton(
-                onClick = {},
-                modifier = Modifier
-                    .background(AppColors.grey_127)
-                    .clip(RoundedCornerShape(0.dp, 5.dp, 5.dp, 0.dp))
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_favorite_border_24),
-                    contentDescription = null
-                )
-            }
-        }
+        FeedDashBoardItemButton()
     }
 }
 
@@ -266,49 +179,48 @@ fun FeedDashboardItemNoImage(fdi: FeedDashboardItems) = Column() {
     if (!fdi.content.isNullOrEmpty())
         Text(text = fdi.content, style = feeddashboardLargeItemContent)
     Text(text = fdi.date, style = feeddashboardItemDate)
-    Row() {
-        Button(
-            onClick = {},
-            colors = ButtonColors(
-                containerColor = AppColors.grey_127,
-                contentColor = Color.DarkGray,
-                disabledContainerColor = AppColors.grey_127,
-                disabledContentColor = Color.DarkGray
-            ),
-            modifier = Modifier.fillMaxWidth(.76f)
-        ) {
-            Text(
-                text = "Teklif Talebi Oluştur",
-                style = TextStyle(
-                    fontFamily = poppinFamily,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AppColors.primaryGrey
-                )
-            )
-        }
-        Spacer(modifier = Modifier.width(10.dp))
-        IconButton(
-            onClick = {},
+    FeedDashBoardItemButton()
+}
+@Composable
+fun FeedDashBoardItemButton()=Row() {
+    Row(
+        modifier = Modifier
+            .clickable {  }
+            .background(AppColors.grey_127)
+            .fillMaxWidth(.76f)
+            .clip(RoundedCornerShape(8.dp)),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "Teklif Talebi Oluştur",
+            style =btnCreateQuoteRequestButton,
             modifier = Modifier
-                .background(AppColors.grey_127)
-                .clip(RoundedCornerShape(5.dp, 0.dp, 0.dp, 5.dp))
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.outline_favorite_border_24),
-                contentDescription = null
-            )
-        }
-        IconButton(
-            onClick = {},
-            modifier = Modifier
-                .background(AppColors.grey_127)
-                .clip(RoundedCornerShape(0.dp, 5.dp, 5.dp, 0.dp))
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.outline_favorite_border_24),
-                contentDescription = null
-            )
-        }
+                .fillMaxSize(.50f)
+                .wrapContentHeight(align = Alignment.CenterVertically)
+
+        )
+    }
+    Spacer(modifier = Modifier.width(10.dp))
+    IconButton(
+        onClick = {},
+        modifier = Modifier
+            .background(AppColors.grey_127)
+            .clip(RoundedCornerShape(5.dp, 0.dp, 0.dp, 5.dp))
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.outline_favorite_border_24),
+            contentDescription = null
+        )
+    }
+    IconButton(
+        onClick = {},
+        modifier = Modifier
+            .background(AppColors.grey_127)
+            .clip(RoundedCornerShape(0.dp, 5.dp, 5.dp, 0.dp))
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.outline_favorite_border_24),
+            contentDescription = null
+        )
     }
 }
