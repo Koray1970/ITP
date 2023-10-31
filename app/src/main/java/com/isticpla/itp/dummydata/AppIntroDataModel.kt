@@ -258,7 +258,7 @@ val listofFeedDashboard = listOf<FeedDashboardItems>(
         1,
         "27.04.2023",
         R.mipmap.fm01,
-        "Autumn Collection 2022",
+        "Autumn\nCollection\n2022",
         "China International Supply Chain Expo",
         "Ticaret Bakanlığından alınan bir yazıda, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından..."
     ),
@@ -267,7 +267,7 @@ val listofFeedDashboard = listOf<FeedDashboardItems>(
         1,
         "27.04.2023",
         R.mipmap.fm01,
-        "Autumn Collection 2022",
+        "Autumn\nCollection\n2022",
         "China International Supply Chain Expo",
         "Ticaret Bakanlığından alınan bir yazıda, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından..."
     ),
@@ -276,7 +276,7 @@ val listofFeedDashboard = listOf<FeedDashboardItems>(
         2,
         "27.04.2023",
         R.mipmap.fm01,
-        "Autumn Collection 2022",
+        null,
         "China International Supply Chain Expo",
         "Ticaret Bakanlığından alınan bir yazıda, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından..."
     ),

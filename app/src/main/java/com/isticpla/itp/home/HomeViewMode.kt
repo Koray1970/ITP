@@ -18,4 +18,6 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val campaignList = flowOf<List<HomeCampaignItem>>(listofHomeCampaigns)
     val stokSaleList = flowOf<List<HomeDesignItem>>(listofStokSale)
     val sectorNewsList = flowOf<List<SectorNewsItem>>(listofHomeSectorNews)
+
+    val feedDashboardItems= flowOf<List<FeedDashboardItems>>(listofFeedDashboard)
 }

@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.isticpla.itp.dummydata.BusinessTypeItem
+import com.isticpla.itp.dummydata.FeedDashboardItems
 import com.isticpla.itp.feed.*
 import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.home.homeSubSectionTitle
@@ -81,6 +83,7 @@ fun FeedDashboard(
 ) {
     val context = LocalContext.current.applicationContext
     var sectorList = homeViewMode.sectorList.collectAsState(initial = emptyList<BusinessTypeItem>())
+    val listofdashboarditem= homeViewMode.feedDashboardItems.collectAsState(initial = emptyList<FeedDashboardItems>())
     Scaffold(containerColor = Color.White, topBar = {
         MediumTopAppBar(
             colors = TopAppBarColors(
@@ -112,6 +115,7 @@ fun FeedDashboard(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
             Row(
                 modifier = Modifier
@@ -165,6 +169,22 @@ fun FeedDashboard(
             }
             Spacer(modifier = Modifier.height(20.dp))
             FeedSeachBar()
+            Spacer(modifier = Modifier.height(20.dp))
+            listofdashboarditem.value.forEach {b->
+                when (b.type) {
+                    1 -> {
+                        FeedDashboardItemLarge(fdi = b)
+                    }
+                    2->{
+                        FeedDashboardItemMedium(fdi = b)
+                    }
+                    else -> {
+                        FeedDashboardItemNoImage(fdi = b)
+                    }
+                }
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
         }
     }
 }
