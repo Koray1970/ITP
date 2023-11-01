@@ -30,6 +30,6 @@ fun AppNavigate() {
         composable("home/messages") { Messages(navController) }
 
         composable("feed") { FeedDashboard(navController) }
-        composable("feed/productdetail/{id}") { FeedProductDetail(navController) }
+        composable("feed/productdetail") { FeedProductDetail(navController) }
     }
 }

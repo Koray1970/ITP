@@ -16,9 +16,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.FeedDashboardItems
 import com.isticpla.itp.poppinFamily
@@ -122,116 +125,240 @@ fun FeedSeachBar() {
 }
 
 @Composable
-fun FeedDashboardItemLarge(fdi: FeedDashboardItems) = Column(
-    modifier=Modifier.fillMaxWidth()
+fun FeedDashboardItemLarge(fdi: FeedDashboardItems,navController: NavController) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+        .clickable { navController.navigate("feed/productdetail") }
 ) {
     Box(
-        modifier=Modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(Color.Transparent)
             .clip(RoundedCornerShape(10.dp))
             .paint(painter = painterResource(id = fdi.image!!), contentScale = ContentScale.Crop)
-    ){
-        if(!fdi.spottext.isNullOrEmpty()) {
+    ) {
+        if (!fdi.spottext.isNullOrEmpty()) {
             Box(
-                modifier=Modifier
+                modifier = Modifier
                     .fillMaxSize(),
                 contentAlignment = Alignment.CenterEnd
             ) {
                 Text(
                     text = fdi.spottext,
                     style = feeddashboardLargeItemSpotText,
-                    modifier=Modifier
+                    modifier = Modifier
                         .fillMaxSize(.5f)
                         .fillMaxHeight()
-                        .padding(top=30.dp)
+                        .padding(top = 30.dp)
                 )
             }
         }
     }
-    FeedDashBoardItemButton()
+    Spacer(modifier = Modifier.height(10.dp))
+    FeedDashBoardItemButton(null,navController)
+    Spacer(modifier = Modifier.height(8.dp))
     Text(text = fdi.title, style = feeddashboardLargeItemTitle)
     if (!fdi.content.isNullOrEmpty())
         Text(text = fdi.content, style = feeddashboardLargeItemContent)
+    Spacer(modifier = Modifier.height(6.dp))
     Text(text = fdi.date, style = feeddashboardItemDate)
 }
 
 @Composable
-fun FeedDashboardItemMedium(fdi: FeedDashboardItems) = Card() {
-    Row() {
+fun FeedDashboardItemMedium(fdi: FeedDashboardItems,navController: NavController) = Row(
+    modifier=Modifier
+        .clickable { navController.navigate("feed/productdetail") }
+) {
+    Column(
+        modifier = Modifier
+            .requiredSize(100.dp)
+    ) {
         Image(
             painter = painterResource(id = fdi.image!!),
             contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier.clip(RoundedCornerShape(8.dp))
         )
     }
-    Row() {
+    Column(
+        modifier = Modifier.padding(start = 16.dp)
+    ) {
         Text(text = fdi.title, style = feeddashboardLargeItemTitle)
         if (!fdi.content.isNullOrEmpty())
             Text(text = fdi.content, style = feeddashboardLargeItemContent)
         Text(text = fdi.date, style = feeddashboardItemDate)
-        FeedDashBoardItemButton()
+        Spacer(modifier = Modifier.height(10.dp))
+        FeedDashBoardItemButton(2,navController)
     }
 }
 
 @Composable
-fun FeedDashboardItemNoImage(fdi: FeedDashboardItems) = Column() {
+fun FeedDashboardItemNoImage(fdi: FeedDashboardItems,navController: NavController) = Column(
+    modifier=Modifier
+        .clickable { navController.navigate("feed/productdetail") }
+) {
     Text(text = fdi.title, style = feeddashboardLargeItemTitle)
     if (!fdi.content.isNullOrEmpty())
         Text(text = fdi.content, style = feeddashboardLargeItemContent)
     Text(text = fdi.date, style = feeddashboardItemDate)
-    FeedDashBoardItemButton()
+    Spacer(modifier = Modifier.height(10.dp))
+    FeedDashBoardItemButton(null,navController)
 }
-@Composable
-fun FeedDashBoardItemButton()=Row() {
-    Row(
-        modifier = Modifier
-            .clickable {  }
-            .background(AppColors.grey_127)
-            .fillMaxWidth(.76f)
-            .requiredHeight(33.dp)
-            .clip(RoundedCornerShape(10.dp)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Teklif Talebi Oluştur",
-            style =btnCreateQuoteRequestButton,
-            modifier = Modifier
-                .fillMaxSize(.50f)
-                .wrapContentHeight(align = Alignment.CenterVertically)
 
-        )
-    }
-    Spacer(modifier = Modifier.width(10.dp))
-    Row(
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FeedDashBoardItemButton(contentType: Int?,navController: NavController) = Row(
+    modifier = Modifier
+        .fillMaxSize()
+        .wrapContentHeight(Alignment.CenterVertically),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Start
+) {
+    Card(
+        onClick = {},
+        shape = RoundedCornerShape(6.dp),
+        colors = feedDashboardButtonColors,
         modifier = Modifier
-            .clickable {  }
-            .background(AppColors.grey_127)
-            .fillMaxWidth()
-            .requiredHeight(33.dp)
-            .clip(RoundedCornerShape(10.dp, 0.dp, 0.dp, 10.dp)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+            .weight(
+                when (contentType) {
+                    2 -> 1.9f
+                    else -> 3.2f
+                }
+            )
+            .requiredHeight(38.dp)
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.outline_favorite_border_24),
-            contentDescription = null
-        )
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Teklif Talebi Oluştur",
+                style = btnCreateQuoteRequestButton,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentHeight(align = Alignment.CenterVertically)
+
+            )
+        }
     }
     Row(
-        modifier = Modifier
-            .clickable {  }
-            .background(AppColors.grey_127)
-            .fillMaxWidth()
-            .requiredHeight(33.dp)
-            .clip(RoundedCornerShape(0.dp, 10.dp, 10.dp, 0.dp)),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+        modifier = Modifier.weight(1f),
+        horizontalArrangement = Arrangement.End
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.outline_share_24),
-            contentDescription = null
-        )
+        Card(
+            onClick = {},
+            shape = RoundedCornerShape(6.dp, 0.dp, 0.dp, 6.dp),
+            colors = feedDashboardButtonColors,
+            modifier = Modifier
+                .requiredSize(44.dp, 38.dp)
+                .fillMaxWidth(1f)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_favorite_border_24),
+                    contentDescription = null
+                )
+            }
+        }
+        Card(
+            onClick = {},
+            shape = RoundedCornerShape(0.dp, 6.dp, 6.dp, 0.dp),
+            colors = feedDashboardButtonColors,
+            modifier = Modifier
+                .requiredSize(44.dp, 38.dp)
+                .fillMaxWidth(1f)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_share_24),
+                    contentDescription = null
+                )
+            }
+        }
+    }
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FeedDetailButton(navController: NavController) = Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .wrapContentHeight(Alignment.CenterVertically),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.Start
+) {
+    Card(
+        onClick = {},
+        shape = RoundedCornerShape(6.dp),
+        colors = feedDetailButtonColors,
+        modifier = Modifier
+            .weight(3.2f)
+            .requiredHeight(38.dp)
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "Teklif Talebi Oluştur",
+                style = btnFeedDetailCreateQuoteRequest,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .wrapContentHeight(align = Alignment.CenterVertically)
+
+            )
+        }
+    }
+    Row(
+        modifier = Modifier.weight(1f),
+        horizontalArrangement = Arrangement.End
+    ) {
+        Card(
+            onClick = {},
+            shape = RoundedCornerShape(6.dp, 0.dp, 0.dp, 6.dp),
+            colors = feedDashboardButtonColors,
+            modifier = Modifier
+                .requiredSize(44.dp, 38.dp)
+                .fillMaxWidth(1f)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_favorite_border_24),
+                    contentDescription = null
+                )
+            }
+        }
+        Card(
+            onClick = {},
+            shape = RoundedCornerShape(0.dp, 6.dp, 6.dp, 0.dp),
+            colors = feedDashboardButtonColors,
+            modifier = Modifier
+                .requiredSize(44.dp, 38.dp)
+                .fillMaxWidth(1f)
+        ) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_share_24),
+                    contentDescription = null
+                )
+            }
+        }
     }
 }
