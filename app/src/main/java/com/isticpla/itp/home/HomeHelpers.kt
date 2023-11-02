@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -155,7 +156,8 @@ fun HomeSectionHeader(homeViewMode: HomeViewMode) {
 internal fun CarouselItem(image: Int) = Column(
     modifier = Modifier
         .fillMaxWidth()
-        .clip(RoundedCornerShape(6.dp)),
+        .requiredHeight(IntrinsicSize.Min)
+        .clip(RoundedCornerShape(8.dp)),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
 ) {
@@ -168,7 +170,10 @@ internal fun CarouselItem(image: Int) = Column(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSectionSectors(navController: NavController, homeViewMode: HomeViewMode) {
+fun HomeSectionSectors(
+    navController: NavController,
+    homeViewMode: HomeViewMode
+) {
     val bussinesList =
         homeViewMode.sectorList.collectAsState(initial = emptyList<BusinessTypeItem>())
     Column() {
@@ -231,7 +236,10 @@ fun HomeSectionSectors(navController: NavController, homeViewMode: HomeViewMode)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSectionDesigns(homeViewMode: HomeViewMode) {
+fun HomeSectionDesigns(
+    navController: NavController,
+    homeViewMode: HomeViewMode
+) {
     val listofDesigns =
         homeViewMode.designsList.collectAsState(initial = emptyList<HomeDesignItem>())
     Column() {
@@ -290,7 +298,10 @@ fun HomeSectionDesigns(homeViewMode: HomeViewMode) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSectionCampaigns(homeViewMode: HomeViewMode) {
+fun HomeSectionCampaigns(
+    navController: NavController,
+    homeViewMode: HomeViewMode
+) {
     val listofCampaigns =
         homeViewMode.campaignList.collectAsState(initial = emptyList<HomeCampaignItem>())
     Column() {
@@ -299,7 +310,7 @@ fun HomeSectionCampaigns(homeViewMode: HomeViewMode) {
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text("Tasarımlar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
+            Text("Kampanyalar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
                 onClick = { },
@@ -430,7 +441,10 @@ fun HomeSectionCampaigns(homeViewMode: HomeViewMode) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeSectionInStockSales(homeViewMode: HomeViewMode) {
+fun HomeSectionInStockSales(
+    navController: NavController,
+    homeViewMode: HomeViewMode
+) {
     val listofStockSales =
         homeViewMode.stokSaleList.collectAsState(initial = emptyList<HomeDesignItem>())
     Column() {
@@ -476,7 +490,9 @@ fun HomeSectionInStockSales(homeViewMode: HomeViewMode) {
                     ) {
                         Text(
                             text = b.price,
-                            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end=8.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, end = 8.dp),
                             style = homeSectorDesignCardPriceLabel
                         )
                     }
@@ -486,7 +502,8 @@ fun HomeSectionInStockSales(homeViewMode: HomeViewMode) {
                     ) {
                         Text(
                             text = b.title,
-                            modifier = Modifier.width(IntrinsicSize.Min)
+                            modifier = Modifier
+                                .width(IntrinsicSize.Min)
                                 .padding(start = 8.dp, end = 8.dp),
                             maxLines = 3,
                             style = homeSectorDesignCardLabel
@@ -499,7 +516,10 @@ fun HomeSectionInStockSales(homeViewMode: HomeViewMode) {
 }
 
 @Composable
-fun HomeSectionSectorNews(homeViewMode: HomeViewMode) {
+fun HomeSectionSectorNews(
+    navController: NavController,
+    homeViewMode: HomeViewMode
+) {
     val listofSectorNews =
         homeViewMode.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
     Column() {
@@ -515,7 +535,9 @@ fun HomeSectionSectorNews(homeViewMode: HomeViewMode) {
             )
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
-                onClick = { },
+                onClick = {
+                    navController.navigate("newlist")
+                },
             ) {
                 Text("Hepsini Göster", style = homeSectorShowAll)
             }

@@ -6,4 +6,5 @@
     <string name="doğrula">Doğrula</string>
     <string name="title_activity_sign_up">SignUpActivity</string>
     <string name="title_activity_feed">Feed</string>
+    <string name="title_activity_new_list">NewListActivity</string>
 </resources>

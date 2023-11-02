@@ -31,5 +31,8 @@ fun AppNavigate() {
 
         composable("feed") { FeedDashboard(navController) }
         composable("feed/productdetail") { FeedProductDetail(navController) }
+
+        composable("newlist") { NewsListDashboard(navController) }
+        composable("newslist/detail") { NewsListDetail(navController) }
     }
 }

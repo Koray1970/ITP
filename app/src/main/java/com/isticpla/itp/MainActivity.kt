@@ -101,10 +101,10 @@ fun Home(
         ) {
             HomeSectionHeader(homeViewMode)
             HomeSectionSectors(navController,homeViewMode)
-            HomeSectionDesigns(homeViewMode)
-            HomeSectionCampaigns(homeViewMode)
-            HomeSectionInStockSales(homeViewMode)
-            HomeSectionSectorNews(homeViewMode)
+            HomeSectionDesigns(navController,homeViewMode)
+            HomeSectionCampaigns(navController,homeViewMode)
+            HomeSectionInStockSales(navController,homeViewMode)
+            HomeSectionSectorNews(navController,homeViewMode)
         }
     }
 }

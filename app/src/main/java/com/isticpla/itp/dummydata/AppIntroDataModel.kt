@@ -63,15 +63,15 @@ val listofEmployeePosition =
         Pair("Position 4", "position4")
     )
 
-data class BusinessTypeItem(val id: Int, val icon: Int, val label: String)
+data class BusinessTypeItem(val id: Int, var isSelected: Boolean, val icon: Int, val label: String)
 
 val listofBusiness = listOf<BusinessTypeItem>(
-    BusinessTypeItem(1, R.drawable.ico_metal, "Metal"),
-    BusinessTypeItem(2, R.drawable.ico_wood, "Ağaç"),
-    BusinessTypeItem(3, R.drawable.ico_plastic, "Plastik"),
-    BusinessTypeItem(4, R.drawable.ico_glass, "Cam"),
-    BusinessTypeItem(5, R.drawable.ico_textile, "Tekstil"),
-    BusinessTypeItem(6, R.drawable.ico_others, "Diğer")
+    BusinessTypeItem(1, true, R.drawable.ico_metal, "Metal"),
+    BusinessTypeItem(2, false, R.drawable.ico_wood, "Ağaç"),
+    BusinessTypeItem(3, false, R.drawable.ico_plastic, "Plastik"),
+    BusinessTypeItem(4, false, R.drawable.ico_glass, "Cam"),
+    BusinessTypeItem(5, false, R.drawable.ico_textile, "Tekstil"),
+    BusinessTypeItem(6, false, R.drawable.ico_others, "Diğer")
 )
 
 
@@ -244,7 +244,7 @@ val listofMessages = listOf<DefaultListItem>(
 
 data class FeedDashboardItems(
     val id: Int,
-    val type:Int, //1 large, 2 medium, 3 no foto
+    val type: Int, //1 large, 2 medium, 3 no foto
     val date: String,
     val image: Int?,
     val spottext: String?,
