@@ -37,7 +37,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -55,10 +54,9 @@ import com.isticpla.itp.dummydata.listofTasks
 import com.isticpla.itp.home.*
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
-import dagger.hilt.android.lifecycle.HiltViewModel
 
 class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -89,7 +87,7 @@ fun Home(
     Log.v("MainActitivity", "${configuration.screenWidthDp}")
     Scaffold(modifier = Modifier.fillMaxSize(),
         containerColor = Color.White,
-        topBar = { HomeTopBar(context, navController) },
+        topBar = { HomeTopBar( navController) },
         bottomBar = { Bg() }) { innerpadding ->
         Column(
             modifier = Modifier
@@ -111,7 +109,7 @@ fun Home(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeTopBar(context: Context, navController: NavController) =
+fun HomeTopBar(navController: NavController) =
     TopAppBar(title = { Text("") }, navigationIcon = {
         Icon(
             painter = painterResource(id = R.drawable.home_logo),
@@ -141,9 +139,8 @@ fun HomeTopBar(context: Context, navController: NavController) =
     )
     )
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeBottomBar(context: Context) = BottomAppBar(containerColor = Color.White,
+fun HomeBottomBar(context: Context) =  BottomAppBar(containerColor = Color.White,
     modifier = Modifier
         .shadow(25.dp, RectangleShape, true)
         .padding(0.dp),
@@ -257,7 +254,7 @@ fun Notifications(navController: NavController) {
             }
             Spacer(modifier = Modifier.height(26.dp))
             Text("Daha Öncekiler", style = homeSubSectionSubTitle)
-            var lastone = listofNotifications.last()
+            val lastone = listofNotifications.last()
             ListItem(
                 headlineContent = { Text(lastone.title, style = notficationListHeader) },
                 supportingContent = {
@@ -338,7 +335,7 @@ fun Jobs(navController: NavController) {
             }
             Spacer(modifier = Modifier.height(26.dp))
             Text("Daha Öncekiler", style = homeSubSectionSubTitle)
-            var lastone = listofNotifications.last()
+            val lastone = listofNotifications.last()
             ListItem(
                 headlineContent = { Text(lastone.title, style = notficationListHeader) },
                 supportingContent = {
@@ -419,7 +416,7 @@ fun Messages(navController: NavController) {
             }
             Spacer(modifier = Modifier.height(26.dp))
             Text("Daha Öncekiler", style = homeSubSectionSubTitle)
-            var lastone = listofMessages.last()
+            val lastone = listofMessages.last()
             ListItem(
                 headlineContent = { Text(lastone.title, style = notficationListHeader) },
                 supportingContent = {

@@ -66,12 +66,12 @@ val listofEmployeePosition =
 data class BusinessTypeItem(val id: Int, var isSelected: Boolean, val icon: Int, val label: String)
 
 val listofBusiness = listOf<BusinessTypeItem>(
-    BusinessTypeItem(1, true, R.drawable.ico_metal, "Metal"),
-    BusinessTypeItem(2, false, R.drawable.ico_wood, "Ağaç"),
-    BusinessTypeItem(3, false, R.drawable.ico_plastic, "Plastik"),
-    BusinessTypeItem(4, false, R.drawable.ico_glass, "Cam"),
-    BusinessTypeItem(5, false, R.drawable.ico_textile, "Tekstil"),
-    BusinessTypeItem(6, false, R.drawable.ico_others, "Diğer")
+    BusinessTypeItem(1, false, R.drawable.ico_metal, "Metal"),
+    BusinessTypeItem(2, true, R.drawable.ico_wood, "Ağaç"),
+    BusinessTypeItem(3, true, R.drawable.ico_plastic, "Plastik"),
+    BusinessTypeItem(4, true, R.drawable.ico_glass, "Cam"),
+    BusinessTypeItem(5, true, R.drawable.ico_textile, "Tekstil"),
+    BusinessTypeItem(6, true, R.drawable.ico_others, "Diğer")
 )
 
 

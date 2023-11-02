@@ -3,11 +3,10 @@ package com.isticpla.itp
 import android.graphics.BlurMaskFilter
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.MainThread
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -29,8 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.CardElevation
-import androidx.compose.material3.ChipBorder
 import androidx.compose.material3.ChipColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -57,18 +54,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -77,7 +69,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.google.android.material.chip.Chip
+import com.google.gson.Gson
 import com.isticpla.itp.dummydata.BusinessTypeItem
 import com.isticpla.itp.dummydata.FeedDashboardItems
 import com.isticpla.itp.feed.*
@@ -85,9 +77,8 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.home.homeSubSectionTitle
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 import java.util.Locale
 
 class FeedActivity : ComponentActivity() {
@@ -108,6 +99,8 @@ class FeedActivity : ComponentActivity() {
     }
 }
 
+private val TAG = "FeedActivity"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedDashboard(
@@ -115,7 +108,18 @@ fun FeedDashboard(
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
     val context = LocalContext.current.applicationContext
-    var sectorList = homeViewMode.sectorList.collectAsState(initial = emptyList<BusinessTypeItem>())
+    val gson = Gson()
+    var sectorlist = remember { mutableListOf<BusinessTypeItem>() }
+    var sectorListState =
+        homeViewMode.sectorList.collectAsState(initial = mutableListOf<BusinessTypeItem>())
+    LaunchedEffect(Unit) {
+        homeViewMode.sectorList.collect { bt ->
+            sectorlist = bt
+            Log.v(TAG, "${gson.toJson(sectorListState.value)}")
+        }
+    }
+
+
     val listofdashboarditem =
         homeViewMode.feedDashboardItems.collectAsState(initial = emptyList<FeedDashboardItems>())
     Scaffold(
@@ -159,13 +163,18 @@ fun FeedDashboard(
                     .wrapContentHeight()
                     .horizontalScroll(rememberScrollState())
             ) {
-                sectorList.value.forEach { b ->
-                    var toggleButtonState by remember { mutableStateOf(true) }
+                sectorListState.value.forEach { b ->
+                    var toggleButtonState by remember { mutableStateOf(b.isSelected) }
                     Card(
                         onClick = {
-                            toggleButtonState = if (toggleButtonState) false else true
+                            homeViewMode.UpdateSectorListSelection(b.id)
+                            /*sectorlist.forEach { h ->
+                                h.isSelected = h.id != b.id
+                            }*/
+                            Log.v(TAG, "${gson.toJson(sectorListState.value)}")
+                            toggleButtonState = !toggleButtonState
                         },
-                        enabled = toggleButtonState,
+                        enabled = b.isSelected,
                         shape = RoundedCornerShape(5.dp),
                         colors = CardColors(
                             containerColor = AppColors.grey_133,
@@ -222,7 +231,6 @@ fun FeedDashboard(
                 }
                 Spacer(modifier = Modifier.height(42.dp))
             }
-
         }
     }
 }
@@ -369,16 +377,16 @@ fun FeedProductDetail(
             FeedDetailButton(navController)
             Spacer(modifier = Modifier.height(30.dp))
             ListItem(
-                colors=ListItemColors(
+                colors = ListItemColors(
                     containerColor = Color.Transparent,
                     headlineColor = AppColors.blue_100,
                     leadingIconColor = Color.Transparent,
                     overlineColor = Color.Transparent,
                     supportingTextColor = Color.Transparent,
                     trailingIconColor = AppColors.grey_dark,
-                    disabledHeadlineColor =  Color.Transparent,
-                    disabledLeadingIconColor =  Color.Transparent,
-                    disabledTrailingIconColor =  Color.Transparent
+                    disabledHeadlineColor = Color.Transparent,
+                    disabledLeadingIconColor = Color.Transparent,
+                    disabledTrailingIconColor = Color.Transparent
                 ),
                 modifier = Modifier
                     .clickable { },
@@ -402,8 +410,14 @@ fun FeedProductDetail(
                                 disabledTrailingIconContentColor = AppColors.yellow_103
                             ),
                             label = { Text("Premium") })
-                        Text(text = "Derin Ürün Analizi Yap", style=btnFeedDetailDeepAnalyzerTitle)
-                        Text(text = "Derin Ürün Analizini yaparak ürüne ait fiyat aralıklarını, eksilerini ve artılarını tespit edebilirsiniz..", style=btnFeedDetailDeepAnalyzerSpotText)
+                        Text(
+                            text = "Derin Ürün Analizi Yap",
+                            style = btnFeedDetailDeepAnalyzerTitle
+                        )
+                        Text(
+                            text = "Derin Ürün Analizini yaparak ürüne ait fiyat aralıklarını, eksilerini ve artılarını tespit edebilirsiniz..",
+                            style = btnFeedDetailDeepAnalyzerSpotText
+                        )
                     }
                 },
                 leadingContent = {

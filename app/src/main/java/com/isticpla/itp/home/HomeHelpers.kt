@@ -174,7 +174,7 @@ fun HomeSectionSectors(
     navController: NavController,
     homeViewMode: HomeViewMode
 ) {
-    val bussinesList =
+    val sectorList =
         homeViewMode.sectorList.collectAsState(initial = emptyList<BusinessTypeItem>())
     Column() {
         Spacer(modifier = Modifier.height(40.dp))
@@ -183,7 +183,7 @@ fun HomeSectionSectors(
         Row(
             modifier = Modifier.horizontalScroll(rememberScrollState())
         ) {
-            bussinesList.value.forEach { b ->
+            sectorList.value.forEach { b ->
                 var isSectorSelected by remember { mutableStateOf(true) }
                 Card(
                     shape = RoundedCornerShape(8.dp),
