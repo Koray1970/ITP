@@ -15,6 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewMode @Inject constructor() : ViewModel() {
+    val carouselList = flowOf<List<Int>>(listofCarousel)
     @RequiresApi(Build.VERSION_CODES.R)
     val shopList = flowOf<List<Pair<String, String>>>(listofShops)
     var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.toMutableList())
@@ -25,7 +26,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
     val feedDashboardItems = flowOf<List<FeedDashboardItems>>(listofFeedDashboard)
     fun updateSectorButtonIsEnabled(id: Int): Boolean {
-        return listofBusiness.first { i -> i.id == id }.isSelected
+        return listofBusiness.first { i -> i.id == id }.isSelected!!
     }
 
     fun UpdateSectorListSelection(id: Int) = viewModelScope.launch {

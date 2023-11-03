@@ -1033,13 +1033,13 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Icon(
-                                painter = painterResource(id = b.icon),
+                                painter = painterResource(id = b.icon!!),
                                 contentDescription = null,
                                 tint = AppColors.primaryGrey
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = b.label,
+                                text = b.label!!,
                                 style = TextStyle(
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,
@@ -1094,12 +1094,12 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Icon(
-                                painter = painterResource(id = b.icon),
+                                painter = painterResource(id = b.icon!!),
                                 contentDescription = null,
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = b.label,
+                                text = b.label!!,
                                 style = TextStyle(
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,

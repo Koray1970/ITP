@@ -24,8 +24,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.ChipColors
@@ -46,6 +49,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +66,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -110,15 +115,25 @@ fun FeedDashboard(
     val context = LocalContext.current.applicationContext
     val gson = Gson()
     var sectorlist = remember { mutableListOf<BusinessTypeItem>() }
+    var (selectedOption, onOptionSelected) = remember {
+        mutableStateOf(
+            BusinessTypeItem(
+                0,
+                false,
+                0,
+                ""
+            )
+        )
+    }
     var sectorListState =
         homeViewMode.sectorList.collectAsState(initial = mutableListOf<BusinessTypeItem>())
-    LaunchedEffect(Unit) {
-        homeViewMode.sectorList.collect { bt ->
-            sectorlist = bt
-            Log.v(TAG, "${gson.toJson(sectorListState.value)}")
-        }
-    }
 
+
+    LaunchedEffect(Unit) {
+        sectorlist = sectorListState.value
+        selectedOption = sectorlist.first()
+        onOptionSelected(sectorlist.first())
+    }
 
     val listofdashboarditem =
         homeViewMode.feedDashboardItems.collectAsState(initial = emptyList<FeedDashboardItems>())
@@ -157,34 +172,46 @@ fun FeedDashboard(
                 .padding(horizontal = 10.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
+                    .selectableGroup()
                     .horizontalScroll(rememberScrollState())
             ) {
                 sectorListState.value.forEach { b ->
                     var toggleButtonState by remember { mutableStateOf(b.isSelected) }
-                    Card(
-                        onClick = {
-                            homeViewMode.UpdateSectorListSelection(b.id)
-                            /*sectorlist.forEach { h ->
-                                h.isSelected = h.id != b.id
-                            }*/
-                            Log.v(TAG, "${gson.toJson(sectorListState.value)}")
-                            toggleButtonState = !toggleButtonState
-                        },
-                        enabled = b.isSelected,
-                        shape = RoundedCornerShape(5.dp),
-                        colors = CardColors(
+                    val cColor=if ((b != selectedOption))
+                        CardColors(
                             containerColor = AppColors.grey_133,
                             contentColor = Color.Black,
                             disabledContainerColor = AppColors.primaryGrey,
                             disabledContentColor = Color.White
-                        ),
+                        )
+                    else
+                        CardColors(
+                            containerColor = AppColors.primaryGrey,
+                            contentColor = Color.White,
+                            disabledContainerColor = AppColors.primaryGrey,
+                            disabledContentColor = Color.White
+                        )
+                    Card(
+                        shape = RoundedCornerShape(5.dp),
+                        colors = cColor,
+                        //enabled = b.isSelected,
                         modifier = Modifier
                             .size(100.dp, 44.dp)
-                            .padding(0.dp),
+                            .padding(0.dp)
+                            .selectable(
+                                selected = (b == selectedOption),
+                                onClick = {
+                                    homeViewMode.UpdateSectorListSelection(b.id)
+                                    Log.v("FeedActivity","${gson.toJson(sectorListState.value)}")
+                                    onOptionSelected(b)
+                                },
+                                role = Role.Button
+                            ),
                     ) {
                         Row(
                             modifier = Modifier.fillMaxSize(),
@@ -192,7 +219,7 @@ fun FeedDashboard(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                painter = painterResource(id = b.icon),
+                                painter = painterResource(id = b.icon!!),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(28.dp)
@@ -200,7 +227,7 @@ fun FeedDashboard(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = b.label.uppercase(Locale.ROOT),
+                                text = b.label!!.uppercase(Locale.ROOT),
                                 style = TextStyle(
                                     fontFamily = poppinFamily,
                                     fontSize = 11.sp,
@@ -241,8 +268,6 @@ fun FeedProductDetail(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel()
 ) {
-    val scope = rememberCoroutineScope()
-    val context = LocalContext.current.applicationContext
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var date by remember { mutableStateOf("") }

@@ -62,6 +62,7 @@ val listofEmployeePosition =
         Pair("Position 3", "position3"),
         Pair("Position 4", "position4")
     )
+val listofCarousel = listOf<Int>(R.mipmap.caroussel1, R.mipmap.caroussel2, R.mipmap.caroussel3)
 
 data class BusinessTypeItem(val id: Int, var isSelected: Boolean, val icon: Int, val label: String)
 

@@ -77,20 +77,18 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeSectionHeader(homeViewMode: HomeViewMode) {
+fun HomeSectionHeader(homeViewModel: HomeViewMode) {
     val configuration = LocalConfiguration.current
     val listofShops =
-        homeViewMode.shopList.collectAsState(initial = emptyList<Pair<String, String>>())
+        homeViewModel.shopList.collectAsState(initial = emptyList<Pair<String, String>>())
 
     val carouselImageWidth = configuration.screenWidthDp - 50
     Log.v("MainActivity", "Screen Width :${carouselImageWidth}")
     val shopselectedOptionText = rememberSaveable { mutableStateOf("") }
     val shopExpend = remember { mutableStateOf(false) }
-    val listofCarousel = ArrayList<Int>()
-    listofCarousel.add(R.mipmap.caroussel1)
-    listofCarousel.add(R.mipmap.caroussel2)
-    listofCarousel.add(R.mipmap.caroussel3)
-    val homeCarouselState = rememberPagerState(pageCount = { listofCarousel.size })
+
+    val carouselListState=homeViewModel.carouselList.collectAsState(initial = emptyList<Int>())
+    val homeCarouselState = rememberPagerState(pageCount = { carouselListState.value.size })
     var wsize = 16.dp
     var hsize = 16.dp
     var _shape = CircleShape
@@ -117,7 +115,7 @@ fun HomeSectionHeader(homeViewMode: HomeViewMode) {
             state = homeCarouselState,
             pageSpacing = 20.dp
         ) { page ->
-            val itm = listofCarousel[page]
+            val itm = carouselListState.value[page]
             CarouselItem(image = itm)
         }
         Spacer(modifier = Modifier.height(18.dp))
@@ -156,7 +154,7 @@ fun HomeSectionHeader(homeViewMode: HomeViewMode) {
 internal fun CarouselItem(image: Int) = Column(
     modifier = Modifier
         .fillMaxWidth()
-        .requiredHeight(IntrinsicSize.Min)
+        .requiredHeight(220.dp)
         .clip(RoundedCornerShape(8.dp)),
     verticalArrangement = Arrangement.Center,
     horizontalAlignment = Alignment.CenterHorizontally
@@ -223,9 +221,9 @@ fun HomeSectionSectors(
                         verticalArrangement = Arrangement.Bottom,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(painter = painterResource(id = b.icon), contentDescription = null)
+                        Icon(painter = painterResource(id = b.icon!!), contentDescription = null)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = b.label.uppercase(Locale.ROOT), style = homeSectorLabel)
+                        Text(text = b.label!!.uppercase(Locale.ROOT), style = homeSectorLabel)
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
@@ -548,7 +546,9 @@ fun HomeSectionSectorNews(
         ) {
             listofSectorNews.value.forEach { b ->
                 ListItem(
-                    modifier = Modifier.clickable { },
+                    modifier = Modifier.clickable {
+                        navController.navigate("newslist/detail")
+                    },
                     colors = ListItemColors(
                         containerColor = Color.Transparent,
                         headlineColor = AppColors.primaryGrey,
