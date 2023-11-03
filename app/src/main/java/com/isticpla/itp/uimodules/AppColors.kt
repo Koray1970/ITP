@@ -42,5 +42,11 @@ class AppColors {
 
         //red colors
         val red_100 = Color(0xffe23e3e)
+
+        //green colors
+        val green_100=Color(0xff31b057)
+
+        //white colors
+        val white_100=Color(0xffeef1f4)
     }
 }

@@ -36,6 +36,7 @@ val homeSectorDesignCardPriceLabel= TextStyle(
     fontFamily = poppinFamily,
     fontWeight = FontWeight.Bold,
     fontSize = 16.sp,
+    textAlign=TextAlign.End,
     color = AppColors.grey_141,
 )
 val homeSectorCampaignCardSpot= TextStyle(

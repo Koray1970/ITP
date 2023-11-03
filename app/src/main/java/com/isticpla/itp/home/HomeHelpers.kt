@@ -454,7 +454,7 @@ fun HomeSectionInStockSales(
             Text("Stoklu Satışlar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
-                onClick = { },
+                onClick = { navController.navigate("stocksales")},
             ) {
                 Text("Hepsini Göster", style = homeSectorShowAll)
             }

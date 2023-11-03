@@ -1,9 +1,8 @@
 package com.isticpla.itp
 
-import android.graphics.BlurMaskFilter
+     import android.graphics.BlurMaskFilter
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -16,13 +15,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -33,7 +30,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.ChipColors
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -44,8 +40,6 @@ import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SuggestionChip
-import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -71,22 +65,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.isticpla.itp.dummydata.BusinessTypeItem
-import com.isticpla.itp.dummydata.FeedDashboardItems
 import com.isticpla.itp.dummydata.SectorNewsItem
-import com.isticpla.itp.feed.FeedDashboardItemLarge
-import com.isticpla.itp.feed.FeedDashboardItemMedium
-import com.isticpla.itp.feed.FeedDashboardItemNoImage
-import com.isticpla.itp.feed.FeedDetailButton
-import com.isticpla.itp.feed.FeedSeachBar
-import com.isticpla.itp.feed.btnFeedDetailDeepAnalyzerSpotText
-import com.isticpla.itp.feed.btnFeedDetailDeepAnalyzerTitle
 import com.isticpla.itp.feed.feedDetailContent
 import com.isticpla.itp.feed.feedDetailDate
 import com.isticpla.itp.feed.feedDetailTitle
@@ -97,7 +82,7 @@ import com.isticpla.itp.home.homeSectorNewsTitle
 import com.isticpla.itp.home.homeSubSectionTitle
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
-import kotlinx.coroutines.delay
+import com.isticpla.itp.uimodules.SearchbarWithChips
 import java.util.Locale
 
 class NewListActivity : ComponentActivity() {
@@ -248,7 +233,7 @@ fun NewsListDashboard(
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            FeedSeachBar()
+            SearchbarWithChips()
             Spacer(modifier = Modifier.height(20.dp))
             listofSectorNews.value.forEach { b ->
                 ListItem(
@@ -367,6 +352,14 @@ fun NewsListDetail(
                     actionIconContentColor = AppColors.primaryGrey,
                 ),
                 title = { Text("", style = homeSubSectionTitle) },
+                actions = {
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_home_24),
+                            contentDescription = null
+                        )
+                    }
+                },
                 navigationIcon = {
                     IconButton(
                         colors = IconButtonColors(
@@ -377,7 +370,7 @@ fun NewsListDetail(
                         ),
                         modifier = Modifier
                             .background(Color.White.copy(.6f), RoundedCornerShape(8.dp)),
-                        onClick = { navController.navigate("feed") }) {
+                        onClick = { navController.navigate("newlist") }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null

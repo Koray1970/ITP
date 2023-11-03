@@ -82,6 +82,7 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.home.homeSubSectionTitle
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.SearchbarWithChips
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import java.util.Locale
@@ -207,7 +208,7 @@ fun FeedDashboard(
                                 selected = (b == selectedOption),
                                 onClick = {
                                     homeViewMode.UpdateSectorListSelection(b.id)
-                                    Log.v("FeedActivity","${gson.toJson(sectorListState.value)}")
+                                    Log.v("FeedActivity", "${gson.toJson(sectorListState.value)}")
                                     onOptionSelected(b)
                                 },
                                 role = Role.Button
@@ -240,7 +241,7 @@ fun FeedDashboard(
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            FeedSeachBar()
+            SearchbarWithChips()
             Spacer(modifier = Modifier.height(20.dp))
             listofdashboarditem.value.forEach { b ->
                 when (b.type) {
