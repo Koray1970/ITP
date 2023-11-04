@@ -291,3 +291,18 @@ val listofFeedDashboard = listOf<FeedDashboardItems>(
         "Ticaret Bakanlığından alınan bir yazıda, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından..."
     )
 )
+
+data class OfferDraftListItem(
+    val id: Int,
+    val image: Int?,
+    val date: String,
+    val title: String,
+    val status: Int
+)
+
+val listOfOfferDraft = listOf<OfferDraftListItem>(
+    OfferDraftListItem(1, R.mipmap.spagetti_01, "27/08/2023", "Lezzetli makarna", 1),
+    OfferDraftListItem(2, R.mipmap.pizza_01, "27/08/2023", "Karışık pizza", 1),
+    OfferDraftListItem(3, R.mipmap.cocktails, "27/08/2023", "Ev yapımı enfes\nkokteyl", 1),
+    OfferDraftListItem(4, R.mipmap.hamburger_01, "27/08/2023", "Karışık pizza", 1)
+)

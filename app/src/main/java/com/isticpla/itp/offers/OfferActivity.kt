@@ -5,22 +5,23 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
@@ -29,25 +30,42 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -55,6 +73,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
+import com.isticpla.itp.dummydata.*
 import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.home.homeSubSectionTitle
 import com.isticpla.itp.offers.ui.*
@@ -85,6 +104,9 @@ fun CreateOfferDashboard(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
+    val offerDraftListState =
+        homeViewMode.offerDrafts.collectAsState(initial = emptyList<OfferDraftListItem>())
+
     Scaffold(
         containerColor = AppColors.grey_133,
         topBar = {
@@ -128,7 +150,7 @@ fun CreateOfferDashboard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
-                    onClick = { },
+                    onClick = { navController.navigate("offer/create")},
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppColors.green_100,
                         contentColor = Color.White,
@@ -210,16 +232,17 @@ fun CreateOfferDashboard(
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(20.dp)
+                        .padding(vertical = 20.dp)
                 ) {
                     Row(
                         modifier = Modifier
+                            .padding(start = 20.dp)
                             .fillMaxWidth()
                     ) {
                         BadgedBox(
                             badge = {
                                 Badge {
-                                    val badgeNumber = "8"
+                                    val badgeNumber = "${offerDraftListState.value.size}"
                                     Text(
                                         badgeNumber,
                                         modifier = Modifier.semantics {
@@ -230,8 +253,96 @@ fun CreateOfferDashboard(
                             }) {
                             Text(text = "Taslaklarım", style = draftsListTitle)
                         }
-                        Spacer(modifier=Modifier.height(20.dp))
+                    }
+                    Spacer(modifier = Modifier.height(20.dp))
+                    offerDraftListState.value.forEach { o ->
+                        ListItem(
+                            headlineContent = {
+                                Column(
+                                    modifier = Modifier
+                                        .drawWithContent {
+                                            drawContent()
+                                            drawLine(
+                                                color = AppColors.grey_153,
+                                                start = Offset(size.width, 0f),
+                                                end = Offset(size.width, size.height),
+                                                strokeWidth = 2f
+                                            )
+                                        }
+                                ) {
+                                    Text(text = buildAnnotatedString {
+                                        withStyle(style = draftsListItemDate) { append("${o.date}\n") }
+                                        withStyle(style = draftsListItemTitle) { append(o.title) }
+                                    })
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(
+                                            4.dp,
+                                            Alignment.Start
+                                        )
+                                    ) {
+                                        repeat(4) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.round_check_circle_24),
+                                                contentDescription = null,
+                                                tint =
+                                                if (o.status > it)
+                                                    AppColors.green_100
+                                                else
+                                                    AppColors.green_100.copy(.2f)
+                                            )
+                                        }
+                                    }
 
+                                }
+                            },
+                            leadingContent = {
+                                Image(
+                                    painter = painterResource(id = o.image!!),
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier
+                                        .requiredSize(80.dp)
+                                        .clip(RoundedCornerShape(8.dp))
+                                )
+                            },
+                            trailingContent = {
+                                Column(
+                                    modifier = Modifier
+                                        .clickable { }
+                                        .requiredSize(58.dp),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_content_copy_24),
+                                        contentDescription = null,
+                                        tint = Color.Black.copy(.5f)
+                                    )
+                                    Text(
+                                        text = "Kopya\nOluştur",
+                                        style = draftsListItemTrailingItemText
+                                    )
+                                }
+                            },
+                            colors = ListItemDefaults.colors(
+                                containerColor = Color.Transparent,
+                                headlineColor = Color.Green
+                            ),
+                            modifier = Modifier
+                                .padding(0.dp)
+                                .drawWithContent {
+                                    drawContent()
+                                    drawLine(
+                                        color = AppColors.grey_153,
+                                        start = Offset(0f, size.height),
+                                        end = Offset(size.width, size.height),
+                                        strokeWidth = 2f
+                                    )
+                                }
+                        )
                     }
                 }
             }
@@ -241,7 +352,267 @@ fun CreateOfferDashboard(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateOfferDetail(
+fun CreateOfferPage1(
+    navController: NavController,
+    homeViewMode: HomeViewMode = hiltViewModel(),
+) {
+    var draftName = rememberSaveable { mutableStateOf("") }
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarColors(
+                    containerColor = Color.White, scrolledContainerColor = Color.White,
+                    navigationIconContentColor = AppColors.primaryGrey,
+                    titleContentColor = AppColors.primaryGrey,
+                    actionIconContentColor = AppColors.primaryGrey,
+                ),
+                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                actions = {
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_home_24),
+                            contentDescription = null
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("offer/dashboard") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }) { innerpadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            Card(
+                colors=CardDefaults.cardColors(
+                    containerColor = Color.Transparent
+                ),
+                shape=RoundedCornerShape(8.dp),
+                modifier=Modifier
+                    .border(1.dp,AppColors.grey_133, RoundedCornerShape(8.dp))
+            ){
+                TextField(
+                    value = draftName.value,
+                    onValueChange = { draftName.value = it },
+                    label={
+                        Text(text="Taslak adı")
+                    },
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    keyboardOptions=KeyboardOptions(autoCorrect = false, capitalization = KeyboardCapitalization.Words),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
+            }
+
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateOfferVisualDetails(
+    navController: NavController,
+    homeViewMode: HomeViewMode = hiltViewModel(),
+) {
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarColors(
+                    containerColor = Color.White, scrolledContainerColor = Color.White,
+                    navigationIconContentColor = AppColors.primaryGrey,
+                    titleContentColor = AppColors.primaryGrey,
+                    actionIconContentColor = AppColors.primaryGrey,
+                ),
+                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                actions = {
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_home_24),
+                            contentDescription = null
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }) { innerpadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+
+
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateOfferProductDetails(
+    navController: NavController,
+    homeViewMode: HomeViewMode = hiltViewModel(),
+) {
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarColors(
+                    containerColor = Color.White, scrolledContainerColor = Color.White,
+                    navigationIconContentColor = AppColors.primaryGrey,
+                    titleContentColor = AppColors.primaryGrey,
+                    actionIconContentColor = AppColors.primaryGrey,
+                ),
+                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                actions = {
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_home_24),
+                            contentDescription = null
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }) { innerpadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+
+
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateOfferRequestDetails(
+    navController: NavController,
+    homeViewMode: HomeViewMode = hiltViewModel(),
+) {
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarColors(
+                    containerColor = Color.White, scrolledContainerColor = Color.White,
+                    navigationIconContentColor = AppColors.primaryGrey,
+                    titleContentColor = AppColors.primaryGrey,
+                    actionIconContentColor = AppColors.primaryGrey,
+                ),
+                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                actions = {
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_home_24),
+                            contentDescription = null
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }) { innerpadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+
+
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateOfferPreview(
+    navController: NavController,
+    homeViewMode: HomeViewMode = hiltViewModel(),
+) {
+    Scaffold(
+        containerColor = Color.White,
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarColors(
+                    containerColor = Color.White, scrolledContainerColor = Color.White,
+                    navigationIconContentColor = AppColors.primaryGrey,
+                    titleContentColor = AppColors.primaryGrey,
+                    actionIconContentColor = AppColors.primaryGrey,
+                ),
+                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                actions = {
+                    IconButton(onClick = { navController.navigate("home") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_home_24),
+                            contentDescription = null
+                        )
+                    }
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = null
+                        )
+                    }
+                }
+            )
+        }) { innerpadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerpadding)
+                .padding(horizontal = 10.dp)
+                .verticalScroll(rememberScrollState()),
+        ) {
+
+
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CreateOfferPublish(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {

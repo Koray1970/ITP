@@ -39,6 +39,11 @@ fun AppNavigate() {
         composable("stocksales") { StockSalesDashboard(navController) }
 
         composable("offer/dashboard") { CreateOfferDashboard(navController) }
-        composable("offer/create") { CreateOfferDashboard(navController) }
+        composable("offer/create") { CreateOfferPage1(navController) }
+        composable("offer/create/visualdetails") { CreateOfferVisualDetails(navController) }
+        composable("offer/create/productdetails") { CreateOfferProductDetails(navController) }
+        composable("offer/create/requestdetails") { CreateOfferRequestDetails(navController) }
+        composable("offer/create/preview") { CreateOfferPreview(navController) }
+        composable("offer/create/publish") { CreateOfferPublish(navController) }
     }
 }

@@ -24,6 +24,7 @@ class AppColors {
         val grey_144 = Color(0xfff8f8fa)
         val grey_147 = Color(0xff353945)
         val grey_150 = Color(0xffececec)
+        val grey_153 = Color(0xffE5E5E5)
 
         //as dark grey
         val grey_dark = Color(0xFF444444)
