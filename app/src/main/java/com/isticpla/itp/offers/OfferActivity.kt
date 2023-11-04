@@ -5,11 +5,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +21,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -37,6 +42,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -60,15 +66,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.isticpla.itp.AppNavigate
@@ -78,6 +87,7 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.home.homeSubSectionTitle
 import com.isticpla.itp.offers.ui.*
 import com.isticpla.itp.offers.ui.theme.ITPTheme
+import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 
 class OfferActivity : ComponentActivity() {
@@ -150,7 +160,7 @@ fun CreateOfferDashboard(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
-                    onClick = { navController.navigate("offer/create")},
+                    onClick = { navController.navigate("offer/create") },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppColors.green_100,
                         contentColor = Color.White,
@@ -357,6 +367,8 @@ fun CreateOfferPage1(
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
     var draftName = rememberSaveable { mutableStateOf("") }
+    val listOfOrderStage =
+        homeViewMode.orderStages.collectAsState(initial = emptyList<OrderStages>())
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -367,7 +379,7 @@ fun CreateOfferPage1(
                     titleContentColor = AppColors.primaryGrey,
                     actionIconContentColor = AppColors.primaryGrey,
                 ),
-                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                title = { Text("Teklif Talebi Oluştur", style = offerTopBarTitle) },
                 actions = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
@@ -390,21 +402,22 @@ fun CreateOfferPage1(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(horizontal = 10.dp)
+                .padding(top = 30.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
             Card(
-                colors=CardDefaults.cardColors(
+                colors = CardDefaults.cardColors(
                     containerColor = Color.Transparent
                 ),
-                shape=RoundedCornerShape(8.dp),
-                modifier=Modifier
-                    .border(1.dp,AppColors.grey_133, RoundedCornerShape(8.dp))
-            ){
+                shape = RoundedCornerShape(8.dp),
+                modifier = Modifier
+                    .border(1.dp, AppColors.grey_133, RoundedCornerShape(8.dp))
+            ) {
                 TextField(
                     value = draftName.value,
                     onValueChange = { draftName.value = it },
-                    label={
-                        Text(text="Taslak adı")
+                    label = {
+                        Text(text = "Taslak adı")
                     },
                     colors = TextFieldDefaults.colors(
                         focusedContainerColor = Color.Transparent,
@@ -412,10 +425,165 @@ fun CreateOfferPage1(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent
                     ),
-                    keyboardOptions=KeyboardOptions(autoCorrect = false, capitalization = KeyboardCapitalization.Words),
+                    keyboardOptions = KeyboardOptions(
+                        autoCorrect = false,
+                        capitalization = KeyboardCapitalization.Words
+                    ),
                     modifier = Modifier
                         .fillMaxWidth()
                 )
+            }
+            Spacer(modifier = Modifier.height(30.dp))
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
+            ) {
+                listOfOrderStage.value.forEach { o ->
+                    var statusColor = remember { mutableStateOf<Color>(AppColors.grey_159) }
+                    if (o.status == OrderStagesStatus.TAMAMLANDI) {
+                        statusColor.value = AppColors.green_103
+                    }
+                    ListItem(
+                        headlineContent = {
+                            Text(text = buildAnnotatedString {
+                                withStyle(style = offerStageLabel) {
+                                    append("${o.label}\n")
+                                }
+                                withStyle(style = offerStageStatus) {
+                                    append(o.status.result)
+                                }
+                            }, style = offerStageLabelText.merge(color = statusColor.value))
+                        },
+                        leadingContent = {
+                            if (o.status == OrderStagesStatus.TAMAMLANDI) {
+                                BadgedBox(
+                                    badge = {
+                                        Badge(
+                                            containerColor = AppColors.green_103
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.round_check_24),
+                                                contentDescription = null,
+                                                modifier = Modifier.size(10.dp),
+                                                tint = Color.White
+                                            )
+                                        }
+                                    }) {
+                                    Card(
+                                        shape = RoundedCornerShape(8.dp),
+                                        modifier = Modifier
+                                            .size(50.dp)
+                                            .border(
+                                                1.dp,
+                                                statusColor.value,
+                                                RoundedCornerShape(8.dp)
+                                            ),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = Color.White
+                                        ),
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            Image(
+                                                painter = painterResource(id = o.icon),
+                                                contentDescription = null
+                                            )
+                                        }
+                                    }
+                                }
+
+                            } else {
+                                Card(
+                                    shape = RoundedCornerShape(8.dp),
+                                    modifier = Modifier
+                                        .size(50.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = Color.White
+                                    ),
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxSize(),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = o.icon),
+                                            contentDescription = null
+                                        )
+                                    }
+                                }
+                            }
+                        },
+                        trailingContent = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.baseline_keyboard_arrow_right_24),
+                                contentDescription = null,
+                                tint = statusColor.value
+                            )
+                        },
+                        colors = ListItemDefaults.colors(
+                            containerColor = statusColor.value.copy(.1f),
+                            headlineColor = statusColor.value,
+                        ),
+                        modifier = Modifier
+                            .clickable { navController.navigate(o.uri) }
+                            .clip(RoundedCornerShape(8.dp))
+                    )
+                }
+                Spacer(modifier = Modifier.height(40.dp))
+                Button(
+                    onClick = { navController.navigate("offer/create/publish") },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppColors.grey_130,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .requiredHeight(48.dp)
+                ) {
+                    Text(text = "Yayınla", style = offerStagePublishButton)
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+                Spacer(modifier = Modifier.height(4.dp))
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(.98f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Button(
+                        onClick = { navController.navigate("offer/create/publish") },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = AppColors.grey_133,
+                            contentColor = AppColors.primaryGrey
+                        ),
+                        modifier = Modifier
+                            .requiredHeight(48.dp)
+                    ) {
+                        Text(text = "Taslak Olarak Kaydet", style = offerStageDefaultButton)
+                    }
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Button(
+                        onClick = { },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = AppColors.grey_133,
+                            contentColor = AppColors.primaryGrey
+                        ),
+                        modifier = Modifier
+                            .requiredHeight(48.dp)
+                    ) {
+                        Text(text = "Kopyala", style = offerStageDefaultButton)
+                    }
+                }
             }
 
         }
@@ -438,7 +606,7 @@ fun CreateOfferVisualDetails(
                     titleContentColor = AppColors.primaryGrey,
                     actionIconContentColor = AppColors.primaryGrey,
                 ),
-                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                title = { Text("Teklif Talebi Oluştur", style = offerTopBarTitle) },
                 actions = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
@@ -448,7 +616,7 @@ fun CreateOfferVisualDetails(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                    IconButton(onClick = { navController.navigate("offer/create") }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null
@@ -461,10 +629,10 @@ fun CreateOfferVisualDetails(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(horizontal = 10.dp)
+                .padding(top = 30.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-
-
+            ProposalWizardStage(0, "Görsel Detaylar")
         }
     }
 }
@@ -485,7 +653,7 @@ fun CreateOfferProductDetails(
                     titleContentColor = AppColors.primaryGrey,
                     actionIconContentColor = AppColors.primaryGrey,
                 ),
-                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                title = { Text("Teklif Talebi Oluştur", style = offerTopBarTitle) },
                 actions = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
@@ -495,7 +663,7 @@ fun CreateOfferProductDetails(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                    IconButton(onClick = { navController.navigate("offer/create") }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null
@@ -508,10 +676,10 @@ fun CreateOfferProductDetails(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(horizontal = 10.dp)
+                .padding(top = 30.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-
-
+            ProposalWizardStage(1, "Ürün Detaylar")
         }
     }
 }
@@ -532,7 +700,7 @@ fun CreateOfferRequestDetails(
                     titleContentColor = AppColors.primaryGrey,
                     actionIconContentColor = AppColors.primaryGrey,
                 ),
-                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                title = { Text("Teklif Talebi Oluştur", style = offerTopBarTitle) },
                 actions = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
@@ -542,7 +710,7 @@ fun CreateOfferRequestDetails(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                    IconButton(onClick = { navController.navigate("offer/create") }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null
@@ -555,10 +723,10 @@ fun CreateOfferRequestDetails(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(horizontal = 10.dp)
+                .padding(top = 30.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-
-
+            ProposalWizardStage(2, "Sipariş Detaylar")
         }
     }
 }
@@ -579,7 +747,7 @@ fun CreateOfferPreview(
                     titleContentColor = AppColors.primaryGrey,
                     actionIconContentColor = AppColors.primaryGrey,
                 ),
-                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
+                title = { Text("Teklif Talebi Oluştur", style = offerTopBarTitle) },
                 actions = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
@@ -589,7 +757,7 @@ fun CreateOfferPreview(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                    IconButton(onClick = { navController.navigate("offer/create") }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null
@@ -602,10 +770,10 @@ fun CreateOfferPreview(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(horizontal = 10.dp)
+                .padding(top = 30.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
-
-
+            ProposalWizardStage(3, "Önizleme")
         }
     }
 }
@@ -616,43 +784,195 @@ fun CreateOfferPublish(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
-    Scaffold(
-        containerColor = Color.White,
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarColors(
-                    containerColor = Color.White, scrolledContainerColor = Color.White,
-                    navigationIconContentColor = AppColors.primaryGrey,
-                    titleContentColor = AppColors.primaryGrey,
-                    actionIconContentColor = AppColors.primaryGrey,
-                ),
-                title = { Text("Teklif Talebi Oluştur", style = homeSubSectionTitle) },
-                actions = {
-                    IconButton(onClick = { navController.navigate("home") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.outline_home_24),
-                            contentDescription = null
-                        )
-                    }
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_left),
-                            contentDescription = null
-                        )
-                    }
-                }
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 10.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Image(
+            painter = painterResource(id = R.mipmap.confeti),
+            contentDescription = null,
+            modifier = Modifier.size(271.dp)
+        )
+        Spacer(modifier = Modifier.height(22.dp))
+        Text(text = buildAnnotatedString {
+            withStyle(style = offerFinalTitle) {
+                append("Teklif Talebin Alındı\n\n")
+            }
+            withStyle(style = offerFinalSubTitle) {
+                append("Ürün bilgilerinizin incelenmesinin ardından teklif operasyonları başlatılacaktır\n\n")
+            }
+            withStyle(style = offerFinalCoupon1) {
+                append("TAKİP KODU: ")
+            }
+            withStyle(style = offerFinalCoupon2) {
+                append("XR47HYGFV")
+            }
+        }, style = offerFinalStyle)
+        Spacer(modifier = Modifier.height(20.dp))
+        OutlinedButton(
+            onClick = {navController.navigate("offer/create/preview")},
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
+            border = BorderStroke(width = 1.dp, color = AppColors.red_100),
+            modifier = Modifier.fillMaxWidth(.60f)
+        ) {
+            Text(
+                text = "Teklif Detaylarına Git",
+                style = TextStyle(
+                    fontFamily = poppinFamily,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = AppColors.red_100
+                )
             )
-        }) { innerpadding ->
-        Column(
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                contentDescription = null,
+                tint = AppColors.red_100
+            )
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        Box(
             modifier = Modifier
-                .padding(innerpadding)
-                .padding(horizontal = 10.dp)
-                .verticalScroll(rememberScrollState()),
+                .fillMaxWidth(.60f),
+            contentAlignment = Alignment.Center
         ) {
 
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                HorizontalDivider(thickness = 1.dp, color = AppColors.grey_113)
+            }
+            Box(
+                modifier = Modifier
+                    .background(Color.White)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .padding(5.dp)
+                ) {
+                    Text(
+                        text = "Ya da",
+                        style = TextStyle(
+                            fontFamily = poppinFamily,
+                            fontSize = 14.sp,
+                            color = AppColors.grey_168
+                        )
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        OutlinedButton(
+            onClick = {},
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
+            border = BorderStroke(width = 1.dp, color = AppColors.red_100),
+            modifier = Modifier.fillMaxWidth(.60f)
+        ) {
+            Text(
+                text = "Kopya Oluştur",
+                style = TextStyle(
+                    fontFamily = poppinFamily,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = AppColors.red_100
+                )
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                contentDescription = null,
+                tint = AppColors.red_100
+            )
+        }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth(.60f),
+            contentAlignment = Alignment.Center
+        ) {
 
+            Box(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                HorizontalDivider(thickness = 1.dp, color = AppColors.grey_113)
+            }
+            Box(
+                modifier = Modifier
+                    .background(Color.White)
+            ) {
+                Column(
+                    modifier = Modifier
+                        .background(Color.White)
+                        .padding(5.dp)
+                ) {
+                    Text(
+                        text = "Veya",
+                        style = TextStyle(
+                            fontFamily = poppinFamily,
+                            fontSize = 14.sp,
+                            color = AppColors.grey_168
+                        )
+                    )
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        Button(
+            onClick = {navController.navigate("home")},
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AppColors.red_100,
+                contentColor = Color.White),
+            modifier=Modifier
+                .fillMaxWidth(.6f)
+        ) {
+            Text(
+                text = "Ana Sayfa",
+                style = TextStyle(
+                    fontFamily = poppinFamily,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White
+                )
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                contentDescription = null,
+                tint = Color.White
+            )
+        }
+        Spacer(modifier = Modifier.height(6.dp))
+        Button(
+            onClick = {navController.navigate("feed")},
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AppColors.red_100,
+                contentColor = Color.White),
+            modifier=Modifier
+                .fillMaxWidth(.6f)
+        ) {
+            Text(
+                text = "Benim Sayfam",
+                style = TextStyle(
+                    fontFamily = poppinFamily,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White
+                )
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                contentDescription = null,
+                tint = Color.White
+            )
         }
     }
 }

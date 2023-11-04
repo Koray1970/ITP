@@ -306,3 +306,47 @@ val listOfOfferDraft = listOf<OfferDraftListItem>(
     OfferDraftListItem(3, R.mipmap.cocktails, "27/08/2023", "Ev yapımı enfes\nkokteyl", 1),
     OfferDraftListItem(4, R.mipmap.hamburger_01, "27/08/2023", "Karışık pizza", 1)
 )
+
+enum class OrderStagesStatus(val result: String) {
+    TAMAMLANDI(result = "Tamamlandı"),
+    BEKLIYOR(result = "Bekliyor...")
+}
+
+data class OrderStages(
+    val id: Int,
+    val label: String,
+    val icon: Int,
+    val status: OrderStagesStatus,
+    val uri: String
+)
+
+val listOfOrderStages = listOf<OrderStages>(
+    OrderStages(
+        1,
+        "Görsel Bilgiler",
+        R.drawable.ico_offer_image,
+        OrderStagesStatus.TAMAMLANDI,
+        "offer/create/visualdetails"
+    ),
+    OrderStages(
+        1,
+        "Ürün Detayları",
+        R.drawable.ico_offer_product,
+        OrderStagesStatus.BEKLIYOR,
+        "offer/create/productdetails"
+    ),
+    OrderStages(
+        1,
+        "Sipariş Detayları",
+        R.drawable.ico_offer_order,
+        OrderStagesStatus.BEKLIYOR,
+        "offer/create/requestdetails"
+    ),
+    OrderStages(
+        1,
+        "Önizleme",
+        R.drawable.ico_offer_preview,
+        OrderStagesStatus.BEKLIYOR,
+        "offer/create/preview"
+    )
+)
