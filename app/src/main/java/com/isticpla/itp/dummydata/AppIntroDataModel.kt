@@ -350,3 +350,20 @@ val listOfOrderStages = listOf<OrderStages>(
         "offer/create/preview"
     )
 )
+
+enum class FormItemTypes(val type: Int) {
+    TEXTFIELD(type = 1), MULTILINETEXTFIELD(type = 2), DROPDOWNMENU_WITH_ADD_BUTTON(type = 3)
+}
+
+data class ProductFeatureItem(val id: Int, val label: String, val formItemType:FormItemTypes)
+
+val listofProductFeature = listOf<ProductFeatureItem>(
+    ProductFeatureItem(1, "Örnek Ürün Linki",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(2, "Hammadde",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(3, "Renk",FormItemTypes.DROPDOWNMENU_WITH_ADD_BUTTON),
+    ProductFeatureItem(4, "Genişlik",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(5, "Uzunluk",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(6, "Yükseklik",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(7, "Derinlik",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(8, "Setifika",FormItemTypes.TEXTFIELD),
+)
