@@ -1,4 +1,4 @@
-package com.isticpla.itp.offers.ui
+package com.isticpla.itp.offers
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.ParagraphStyle
@@ -6,6 +6,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
@@ -117,4 +118,12 @@ val offerFinalCoupon2 = SpanStyle(
 val offerFinalStyle=TextStyle(
     fontFamily = poppinFamily,
     textAlign = TextAlign.Center
+)
+val offerProductDetailFormSectionTitle=TextStyle(
+    fontFamily = poppinFamily,
+    textAlign = TextAlign.Left,
+    fontSize = 14.sp,
+    lineHeight=10.em,
+    fontWeight = FontWeight.SemiBold,
+    color=AppColors.primaryGrey
 )

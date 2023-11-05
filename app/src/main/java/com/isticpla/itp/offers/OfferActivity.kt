@@ -21,7 +21,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -50,11 +49,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -64,9 +60,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -366,7 +360,7 @@ fun CreateOfferPage1(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
-    var draftName = rememberSaveable { mutableStateOf("") }
+    val draftName = rememberSaveable { mutableStateOf("") }
     val listOfOrderStage =
         homeViewMode.orderStages.collectAsState(initial = emptyList<OrderStages>())
     Scaffold(
@@ -429,6 +423,7 @@ fun CreateOfferPage1(
                         autoCorrect = false,
                         capitalization = KeyboardCapitalization.Words
                     ),
+
                     modifier = Modifier
                         .fillMaxWidth()
                 )
@@ -438,7 +433,7 @@ fun CreateOfferPage1(
                 verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
             ) {
                 listOfOrderStage.value.forEach { o ->
-                    var statusColor = remember { mutableStateOf<Color>(AppColors.grey_159) }
+                    val statusColor = remember { mutableStateOf<Color>(AppColors.grey_159) }
                     if (o.status == OrderStagesStatus.TAMAMLANDI) {
                         statusColor.value = AppColors.green_103
                     }
@@ -643,6 +638,8 @@ fun CreateOfferProductDetails(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
+    val txtName = rememberSaveable { mutableStateOf("") }
+    val txtComment = rememberSaveable { mutableStateOf("") }
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -679,7 +676,43 @@ fun CreateOfferProductDetails(
                 .padding(top = 30.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
+
             ProposalWizardStage(1, "Ürün Detaylar")
+            Text(text = "Ürün Bilgileri", style = offerProductDetailFormSectionTitle)
+            Spacer(modifier=Modifier.height(8.dp))
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    txtName,
+                    "Ürün adı",
+                    false,
+                    true,
+                    false,
+                    true,
+                    1,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            Spacer(modifier=Modifier.height(10.dp))
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    txtComment,
+                    "Açıklama",
+                    false,
+                    true,
+                    false,
+                    false,
+                    3,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapSentence
+                )
+            )
         }
     }
 }
@@ -813,7 +846,7 @@ fun CreateOfferPublish(
         }, style = offerFinalStyle)
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedButton(
-            onClick = {navController.navigate("offer/create/preview")},
+            onClick = { navController.navigate("offer/create/preview") },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
             border = BorderStroke(width = 1.dp, color = AppColors.red_100),
@@ -924,12 +957,13 @@ fun CreateOfferPublish(
         }
         Spacer(modifier = Modifier.height(6.dp))
         Button(
-            onClick = {navController.navigate("home")},
+            onClick = { navController.navigate("home") },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = AppColors.red_100,
-                contentColor = Color.White),
-            modifier=Modifier
+                contentColor = Color.White
+            ),
+            modifier = Modifier
                 .fillMaxWidth(.6f)
         ) {
             Text(
@@ -950,12 +984,13 @@ fun CreateOfferPublish(
         }
         Spacer(modifier = Modifier.height(6.dp))
         Button(
-            onClick = {navController.navigate("feed")},
+            onClick = { navController.navigate("feed") },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = AppColors.red_100,
-                contentColor = Color.White),
-            modifier=Modifier
+                contentColor = Color.White
+            ),
+            modifier = Modifier
                 .fillMaxWidth(.6f)
         ) {
             Text(
