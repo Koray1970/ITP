@@ -1,7 +1,9 @@
 package com.isticpla.itp.offers
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -17,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -102,74 +106,92 @@ data class DropdownMenuItems(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownMenuWithAddButton(itms: DropdownMenuItems) = Row(
+fun DropDownMenuWithAddButton(itms: DropdownMenuItems) = Column(
     modifier = Modifier.fillMaxWidth(),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.Center
+    verticalArrangement =Arrangement.Top,
+    horizontalAlignment = Alignment.CenterHorizontally
 ) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Transparent
-        ),
-        shape = RoundedCornerShape(8.dp),
-        modifier = itms.txfItems.cardModifier
-            .border(1.dp, AppColors.grey_133, RoundedCornerShape(8.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
-        ExposedDropdownMenuBox(
-            expanded = itms.expanded.value,
-            onExpandedChange = { itms.expanded.value = !itms.expanded.value }
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(8.dp),
+            modifier = itms.txfItems.cardModifier
+                .border(1.dp, AppColors.grey_133, RoundedCornerShape(8.dp))
         ) {
-            TextField(
-                value = itms.txfItems.fieldValue.value,
-                onValueChange = { itms.txfItems.fieldValue.value = it },
-                modifier = Modifier
-                    .menuAnchor()
-                    .then(itms.txfItems.textFieldModifier),
-                label = { Text(text = "Label") },
-                singleLine = itms.txfItems.isSingleLine,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = itms.expanded.value) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-            )
-            // filter options based on text field value
-            val filteringOptions = itms.menuitems.filter {
-                it.second.contains(
-                    itms.txfItems.fieldValue.value,
-                    ignoreCase = true
+            ExposedDropdownMenuBox(
+                expanded = itms.expanded.value,
+                onExpandedChange = { itms.expanded.value = !itms.expanded.value }
+            ) {
+                TextField(
+                    value = itms.txfItems.fieldValue.value,
+                    onValueChange = { itms.txfItems.fieldValue.value = it },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth(.71f)
+                        .then(itms.txfItems.textFieldModifier),
+                    label = { Text(text = itms.txfItems.label) },
+                    singleLine = itms.txfItems.isSingleLine,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = itms.expanded.value) },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
                 )
-            }
-            if (filteringOptions.isNotEmpty()) {
-                ExposedDropdownMenu(
-                    expanded = itms.expanded.value,
-                    onDismissRequest = { itms.expanded.value = false },
-                ) {
-                    filteringOptions.forEach { selectionOption ->
-                        DropdownMenuItem(
-                            text = { Text(text = selectionOption.second) },
-                            onClick = {
-                                itms.txfItems.fieldValue.value = selectionOption.second
-                                itms.expanded.value = false
-                            },
-                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                        )
+                // filter options based on text field value
+                val filteringOptions = itms.menuitems.filter {
+                    it.second.contains(
+                        itms.txfItems.fieldValue.value,
+                        ignoreCase = true
+                    )
+                }
+                if (filteringOptions.isNotEmpty()) {
+                    ExposedDropdownMenu(
+                        expanded = itms.expanded.value,
+                        onDismissRequest = { itms.expanded.value = false },
+                        modifier = Modifier.background(Color.White)
+                    ) {
+                        filteringOptions.forEach { selectionOption ->
+                            DropdownMenuItem(
+                                text = { Text(text = selectionOption.second) },
+                                onClick = {
+                                    itms.txfItems.fieldValue.value = selectionOption.second
+                                    itms.expanded.value = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                colors = MenuDefaults.itemColors()
+                            )
+                        }
                     }
                 }
             }
         }
+        Spacer(modifier = Modifier.width(6.dp))
+        Button(
+            onClick = {
+                itms.expanded.value = false
+            },
+            shape = RoundedCornerShape(8.dp),
+            modifier = itms.buttonModifier.then(Modifier.requiredHeight(56.dp)),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = AppColors.primaryGrey,
+                contentColor = Color.White
+            )
+        ) {
+            Icon(painter = painterResource(id = R.drawable.round_add_24), contentDescription = null)
+            Text(text = "EKLE")
+        }
     }
-    Spacer(modifier = Modifier.width(5.dp))
-    Button(
-        onClick = {
-            itms.expanded.value = false
-        },
-        shape = RoundedCornerShape(8.dp),
-        modifier = itms.buttonModifier.then(Modifier.requiredHeight(56.dp))
-    ) {
-        Icon(painter = painterResource(id = R.drawable.round_add_24), contentDescription = null)
-        Text(text = "Ekle")
+    Card(
+        modifier=Modifier.fillMaxWidth()
+    ){
+
     }
 }

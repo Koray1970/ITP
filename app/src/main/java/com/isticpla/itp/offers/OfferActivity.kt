@@ -733,8 +733,7 @@ fun CreateOfferProductDetails(
                 itms = DropdownMenuItems(
                     txfItems = appTextFieldItems(
                         Modifier,
-                        Modifier
-                            .fillMaxWidth(.74f),
+                        Modifier,
                         txtProductFieldValue,
                         R.drawable.round_unfold_more_24,
                         "Özellikler Seçiniz",
