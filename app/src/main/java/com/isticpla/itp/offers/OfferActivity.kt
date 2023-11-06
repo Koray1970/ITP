@@ -638,6 +638,7 @@ fun CreateOfferVisualDetails(
 fun CreateOfferProductDetails(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
+    expendedMenuViewModel: ExpendedMenuViewModel= hiltViewModel()
 ) {
     val txtName = rememberSaveable { mutableStateOf("") }
     val txtComment = rememberSaveable { mutableStateOf("") }
@@ -755,7 +756,9 @@ fun CreateOfferProductDetails(
                         fontSize = 14.sp,
                         color = Color.White
                     )
-                )
+                ),
+                productDRPMenuListdataState.value,
+                expendedMenuViewModel
             )
         }
     }

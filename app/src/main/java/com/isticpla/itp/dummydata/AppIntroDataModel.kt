@@ -358,12 +358,13 @@ enum class FormItemTypes(val type: Int) {
 data class ProductFeatureItem(val id: Int, val label: String, val formItemType:FormItemTypes)
 
 val listofProductFeature = listOf<ProductFeatureItem>(
-    ProductFeatureItem(1, "Örnek Ürün Linki",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(2, "Hammadde",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(3, "Renk",FormItemTypes.DROPDOWNMENU_WITH_ADD_BUTTON),
-    ProductFeatureItem(4, "Genişlik",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(5, "Uzunluk",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(6, "Yükseklik",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(7, "Derinlik",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(8, "Setifika",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(1, "Açıklama",FormItemTypes.MULTILINETEXTFIELD),
+    ProductFeatureItem(2, "Örnek Ürün Linki",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(3, "Hammadde",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(4, "Renk",FormItemTypes.DROPDOWNMENU_WITH_ADD_BUTTON),
+    ProductFeatureItem(5, "Genişlik",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(6, "Uzunluk",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(7, "Yükseklik",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(8, "Derinlik",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(9, "Setifika",FormItemTypes.TEXTFIELD),
 )
