@@ -1,11 +1,21 @@
 package com.isticpla.itp.dummydata
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,7 +24,7 @@ data class ExpendedMenuSelectedCollectionItem(
     var collectionData: MutableList<Pair<Object, Object>>
 )
 
-var listofExpendedMenuItem= mutableListOf<ExpendedMenuSelectedCollectionItem>()
+var listofExpendedMenuItem = mutableListOf<ExpendedMenuSelectedCollectionItem>()
 
 interface IExpendMenuReposity {
     fun GetSelectedItemCollection(): MutableList<ExpendedMenuSelectedCollectionItem>
@@ -44,7 +54,7 @@ class ExpendMenuReposity @Inject constructor() : IExpendMenuReposity {
                 emptyList<Pair<Object, Object>>().toMutableList()
             )
         )
-        Log.v("ExpendedMenuReposity","${listofExpendedMenuItem.size}")
+        Log.v("ExpendedMenuReposity", "${listofExpendedMenuItem.size}")
     }
 
     override fun AddDataItemToSelectItemCollection(
@@ -77,18 +87,30 @@ class ExpendedMenuViewModel @Inject constructor(private val repo: ExpendMenuRepo
     ViewModel() {
     val listOfProductFeatures =
         flowOf<MutableList<ProductFeatureItem>>(listofProductFeature.toMutableList())
-    var listOfSelectedCollections =
-        flowOf<MutableList<ExpendedMenuSelectedCollectionItem>>(repo.GetSelectedItemCollection())
+    //var listOfSelectedCollections= MutableStateFlow(mutableListOf<ExpendedMenuSelectedCollectionItem>())
+
+    var listOfSelectedCollections = flow {
+        while (true) {
+            delay(1000L)
+            println("GetSelectedItemCollection()")
+            emit(repo.GetSelectedItemCollection())
+        }
+    }
+        .flowOn(Dispatchers.IO)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000L),
+            0
+        )
+    //flowOf<MutableList<ExpendedMenuSelectedCollectionItem>>(repo.GetSelectedItemCollection())
 
     fun AddSelectedCollection(itm: ProductFeatureItem) = viewModelScope.launch {
         repo.AddItemToSelectItemCollection(itm)
-        listOfSelectedCollections =flowOf<MutableList<ExpendedMenuSelectedCollectionItem>>(repo.GetSelectedItemCollection())
     }
 
     fun AddDataIntoSelectedCollection(itm: ProductFeatureItem, data: Pair<Object, Object>) =
         viewModelScope.launch {
             repo.AddDataItemToSelectItemCollection(itm, data)
-            listOfSelectedCollections =flowOf<MutableList<ExpendedMenuSelectedCollectionItem>>(repo.GetSelectedItemCollection())
         }
 
     fun RemoveDataItemFromSelectedCollection(itm: ProductFeatureItem, data: Pair<Object, Object>) =

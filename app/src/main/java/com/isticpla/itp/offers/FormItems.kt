@@ -36,6 +36,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -47,6 +49,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.gson.Gson
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.ExpendedMenuSelectedCollectionItem
 import com.isticpla.itp.dummydata.ExpendedMenuViewModel
@@ -134,13 +138,12 @@ fun DropDownMenuWithAddButton(
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally
 ) {
+    val gson= Gson()
     val scope = rememberCoroutineScope()
-    val pItemState =
-        expendedMenuViewModel.listOfSelectedCollections.collectAsState(initial = emptyList<ExpendedMenuSelectedCollectionItem>())
-    var pitems = remember { mutableListOf<ExpendedMenuSelectedCollectionItem>() }
-    LaunchedEffect(Unit) {
-        pitems = pItemState.value.toMutableList()
-    }
+    val pItemState by
+        expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle()
+    println("Sonuç : ${gson.toJson(pItemState)}")
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -209,9 +212,7 @@ fun DropDownMenuWithAddButton(
                 var newitem =
                     productFeatureItems.first { a -> a.label.toString() == itms.txfItems.fieldValue.value }
                 expendedMenuViewModel.AddSelectedCollection(newitem)
-                scope.launch {
-                    pitems = pItemState.value.toMutableList()
-                }
+                println("Sonuç : ${gson.toJson(pItemState)}")
                 itms.expanded.value = false
             },
             shape = RoundedCornerShape(8.dp),
@@ -225,15 +226,66 @@ fun DropDownMenuWithAddButton(
             Text(text = "EKLE")
         }
     }
+    Column {
+        /*pItemState.forEach { item->
+            Text(item.productFeatureItem.label)
+            val rm = remember { mutableStateOf(item.collectionData.first().second.toString()) }
+            when (item.productFeatureItem.formItemType) {
+                FormItemTypes.MULTILINETEXTFIELD -> {
+                    appTextField(
+                        itms = appTextFieldItems(
+                            Modifier,
+                            Modifier
+                                .fillMaxWidth(),
+                            rm,
+                            null,
+                            item.productFeatureItem.label,
+                            false,
+                            true,
+                            false,
+                            false,
+                            Int.MAX_VALUE,
+                            2,
+                            txtFColors(),
+                            txtFKeyboardOptionsCapSentence
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+
+                else -> {
+                    appTextField(
+                        itms = appTextFieldItems(
+                            Modifier,
+                            Modifier
+                                .fillMaxWidth(),
+                            rm,
+                            null,
+                            item.productFeatureItem.label,
+                            false,
+                            true,
+                            false,
+                            true,
+                            1,
+                            minLines = 1,
+                            txtFColors(),
+                            txtFKeyboardOptionsCapWord
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                }
+            }
+        }*/
+    }
 
 
-    LazyColumn(
+    /*LazyColumn(
         state = rememberLazyListState(),
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .fillMaxSize(),
     ) {
-        itemsIndexed(pitems) { index, item ->
+        itemsIndexed(pItemState.value) { index, item ->
             val rm = remember { mutableStateOf(item.collectionData.first().second.toString()) }
             when (item.productFeatureItem.formItemType) {
                 FormItemTypes.MULTILINETEXTFIELD -> {
@@ -281,5 +333,5 @@ fun DropDownMenuWithAddButton(
                 }
             }
         }
-    }
+    }*/
 }
