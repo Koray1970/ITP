@@ -9,12 +9,16 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -87,13 +91,27 @@ class ExpendedMenuViewModel @Inject constructor(private val repo: ExpendMenuRepo
     ViewModel() {
     val listOfProductFeatures =
         flowOf<MutableList<ProductFeatureItem>>(listofProductFeature.toMutableList())
+
     //var listOfSelectedCollections= MutableStateFlow(mutableListOf<ExpendedMenuSelectedCollectionItem>())
+    private val _uiStateSelectedItem =
+        MutableStateFlow(mutableListOf<ExpendedMenuSelectedCollectionItem>())
+    val uiStateSelectedItem: StateFlow<MutableList<ExpendedMenuSelectedCollectionItem>> =
+        _uiStateSelectedItem
+
+    init {
+        viewModelScope.launch {
+            while (true) {
+                delay(1000L)
+                _uiStateSelectedItem.value = listofExpendedMenuItem
+            }
+        }
+    }
 
     var listOfSelectedCollections = flow {
         while (true) {
             delay(1000L)
-            println("GetSelectedItemCollection()")
-            emit(repo.GetSelectedItemCollection())
+            //println("GetSelectedItemCollection()")
+            emit(listofExpendedMenuItem)
         }
     }
         .flowOn(Dispatchers.IO)

@@ -1,9 +1,11 @@
 package com.isticpla.itp.offers
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -138,11 +140,27 @@ fun DropDownMenuWithAddButton(
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally
 ) {
-    val gson= Gson()
+    val gson = Gson()
     val scope = rememberCoroutineScope()
-    val pItemState by
-        expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle()
-    println("Sonuç : ${gson.toJson(pItemState)}")
+    val listofItems by expendedMenuViewModel.uiStateSelectedItem.collectAsState()
+
+   /* val pItemState by
+    expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle()
+    LaunchedEffect(Unit) {
+        when (pItemState) {
+            is MutableList<*> -> {
+                listofItems = pItemState as MutableList<ExpendedMenuSelectedCollectionItem>
+                Log.v("FormItems","1")
+                Log.v("FormItems","listofItems : ${gson.toJson(listofItems)}")
+            }
+
+            else -> {
+                Log.v("FormItems","2")
+                //println(pItemState)
+            }
+        }
+    }
+    println("Sonuç : ${gson.toJson(pItemState)}")*/
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -212,7 +230,7 @@ fun DropDownMenuWithAddButton(
                 var newitem =
                     productFeatureItems.first { a -> a.label.toString() == itms.txfItems.fieldValue.value }
                 expendedMenuViewModel.AddSelectedCollection(newitem)
-                println("Sonuç : ${gson.toJson(pItemState)}")
+
                 itms.expanded.value = false
             },
             shape = RoundedCornerShape(8.dp),
@@ -226,7 +244,13 @@ fun DropDownMenuWithAddButton(
             Text(text = "EKLE")
         }
     }
-    Column {
+    Column(
+        modifier=Modifier
+            .requiredHeight(IntrinsicSize.Max)
+    ) {
+        listofItems.forEach { item ->
+            Text(item.productFeatureItem.label)
+        }
         /*pItemState.forEach { item->
             Text(item.productFeatureItem.label)
             val rm = remember { mutableStateOf(item.collectionData.first().second.toString()) }
