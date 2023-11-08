@@ -135,36 +135,14 @@ data class DropdownMenuItems(
 fun DropDownMenuWithAddButton(
     itms: DropdownMenuItems,
     productFeatureItems: List<ProductFeatureItem>,
-    expendedMenuViewModel: ExpendedMenuViewModel = hiltViewModel()
+    expendedMenuViewModel: ExpendedMenuViewModel
 ) = Column(
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier
+        .fillMaxWidth(),
     verticalArrangement = Arrangement.Top,
     horizontalAlignment = Alignment.CenterHorizontally
 ) {
-    val gson = Gson()
     val scope = rememberCoroutineScope()
-    val listofItems = remember{ mutableStateListOf<ExpendedMenuSelectedCollectionItem>() }
-    val listofSelectedDataItems by expendedMenuViewModel.listOfSelectedCollections.collectAsState()
-    //listofItems=
-
-    /* val pItemState by
-     expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle()
-     LaunchedEffect(Unit) {
-         when (pItemState) {
-             is MutableList<*> -> {
-                 listofItems = pItemState as MutableList<ExpendedMenuSelectedCollectionItem>
-                 Log.v("FormItems","1")
-                 Log.v("FormItems","listofItems : ${gson.toJson(listofItems)}")
-             }
-
-             else -> {
-                 Log.v("FormItems","2")
-                 //println(pItemState)
-             }
-         }
-     }
-     println("Sonuç : ${gson.toJson(pItemState)}")*/
-
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -233,7 +211,6 @@ fun DropDownMenuWithAddButton(
                 var newitem =
                     productFeatureItems.first { a -> a.label.toString() == itms.txfItems.fieldValue.value }
                 expendedMenuViewModel.AddSelectedCollection(newitem)
-                println("Sonuç1 : ${gson.toJson(listofItems)}")
                 itms.expanded.value = false
             },
             shape = RoundedCornerShape(8.dp),
@@ -247,79 +224,6 @@ fun DropDownMenuWithAddButton(
             Text(text = "EKLE")
         }
     }
-    Card(){
-
-        when(listofItems){
-            is List<*> ->{
-                (listofItems as List<ExpendedMenuSelectedCollectionItem>).forEach {item->
-                    Text(item.productFeatureItem.label)
-                }
-            }
-            else->{
-                println("Sonuç2 : ${gson.toJson(listofItems)}")
-                Text("Lütfen bekleyiniz")
-            }
-        }
-
-    }
-
-    /*Column(
-        modifier=Modifier
-            .requiredHeight(IntrinsicSize.Max)
-    ) {
-        listofItems.forEach { item ->
-            Text(item.productFeatureItem.label)
-        }
-        *//*pItemState.forEach { item->
-            Text(item.productFeatureItem.label)
-            val rm = remember { mutableStateOf(item.collectionData.first().second.toString()) }
-            when (item.productFeatureItem.formItemType) {
-                FormItemTypes.MULTILINETEXTFIELD -> {
-                    appTextField(
-                        itms = appTextFieldItems(
-                            Modifier,
-                            Modifier
-                                .fillMaxWidth(),
-                            rm,
-                            null,
-                            item.productFeatureItem.label,
-                            false,
-                            true,
-                            false,
-                            false,
-                            Int.MAX_VALUE,
-                            2,
-                            txtFColors(),
-                            txtFKeyboardOptionsCapSentence
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-
-                else -> {
-                    appTextField(
-                        itms = appTextFieldItems(
-                            Modifier,
-                            Modifier
-                                .fillMaxWidth(),
-                            rm,
-                            null,
-                            item.productFeatureItem.label,
-                            false,
-                            true,
-                            false,
-                            true,
-                            1,
-                            minLines = 1,
-                            txtFColors(),
-                            txtFKeyboardOptionsCapWord
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-            }
-        }*//*
-    }*/
 
 
     /*LazyColumn(

@@ -107,7 +107,7 @@ class ExpendedMenuViewModel @Inject constructor(private val repo: ExpendMenuRepo
         }
     }
 
-    var listOfSelectedCollections = flow<MutableList<ExpendedMenuSelectedCollectionItem>> {
+    var listOfSelectedCollections:Flow<MutableList<ExpendedMenuSelectedCollectionItem>> = flow {
         while (true) {
             delay(1000L)
             //println("GetSelectedItemCollection()")
@@ -115,11 +115,11 @@ class ExpendedMenuViewModel @Inject constructor(private val repo: ExpendMenuRepo
         }
     }
         .flowOn(Dispatchers.IO)
-        .stateIn(
+        /*.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
             0
-        )
+        )*/
     //flowOf<MutableList<ExpendedMenuSelectedCollectionItem>>(repo.GetSelectedItemCollection())
 
     fun AddSelectedCollection(itm: ProductFeatureItem) = viewModelScope.launch {

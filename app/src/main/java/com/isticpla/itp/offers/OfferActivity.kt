@@ -13,6 +13,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowColumn
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,6 +27,9 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -52,6 +58,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -73,8 +80,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.google.gson.Gson
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.*
@@ -633,24 +644,30 @@ fun CreateOfferVisualDetails(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun CreateOfferProductDetails(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
-    expendedMenuViewModel: ExpendedMenuViewModel= hiltViewModel()
 ) {
+    val expendedMenuViewModel= hiltViewModel<ExpendedMenuViewModel>()
+    val gson = Gson()
     val txtName = rememberSaveable { mutableStateOf("") }
     val txtComment = rememberSaveable { mutableStateOf("") }
     var productDRPMenuExpanded = remember { mutableStateOf(false) }
     val productDRPMenuListdataState =
         homeViewMode.productDRPItems.collectAsState(initial = emptyList<ProductFeatureItem>())
     var prdDRPItems = remember { mutableListOf<Pair<String, String>>() }
-    prdDRPItems=mutableListOf<Pair<String, String>>()
+    prdDRPItems = mutableListOf<Pair<String, String>>()
     productDRPMenuListdataState.value.forEach { i ->
         prdDRPItems.add(Pair(i.id.toString(), i.label))
     }
-    val txtProductFieldValue= rememberSaveable { mutableStateOf("") }
+    val txtProductFieldValue = rememberSaveable { mutableStateOf("") }
+
+    val listofSelectedDataItems by expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle(
+        mutableListOf<ExpendedMenuSelectedCollectionItem>()
+    )
+
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -680,86 +697,92 @@ fun CreateOfferProductDetails(
                 }
             )
         }) { innerpadding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(horizontal = 10.dp)
                 .padding(top = 30.dp)
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize(),
         ) {
-
-            ProposalWizardStage(1, "Ürün Detaylar")
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(text = "Ürün Bilgileri", style = offerProductDetailFormSectionTitle)
-            Spacer(modifier = Modifier.height(8.dp))
-            appTextField(
-                itms = appTextFieldItems(
-                    Modifier,
-                    Modifier
-                        .fillMaxWidth(),
-                    txtName,
-                    null,
-                    "Ürün adı",
-                    false,
-                    true,
-                    false,
-                    true,
-                    1,
-                    minLines = 1,
-                    txtFColors(),
-                    txtFKeyboardOptionsCapWord
-                )
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            appTextField(
-                itms = appTextFieldItems(
-                    Modifier,
-                    Modifier
-                        .fillMaxWidth(),
-                    txtComment,
-                    null,
-                    "Açıklama",
-                    false,
-                    true,
-                    false,
-                    false,
-                    Int.MAX_VALUE,
-                    2,
-                    txtFColors(),
-                    txtFKeyboardOptionsCapSentence
-                )
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            DropDownMenuWithAddButton(
-                itms = DropdownMenuItems(
-                    txfItems = appTextFieldItems(
-                        Modifier,
-                        Modifier,
-                        txtProductFieldValue,
-                        R.drawable.round_unfold_more_24,
-                        "Özellikler Seçiniz",
-                        false,
-                        true,
-                        true,
-                        true,
-                        1,
-                        1,
-                        txtFColors(),
-                        txtFKeyboardOptionsCapSentence
-                    ),
-                    expanded = productDRPMenuExpanded,
-                    menuitems = prdDRPItems.toList(),
-                    buttonModifier = Modifier,
-                    buttonLabelText = "Ekle",
-                    buttonLabelTextStyle = TextStyle(
-                        fontFamily = poppinFamily,
-                        fontSize = 14.sp,
-                        color = Color.White
+            item {
+                Column {
+                    ProposalWizardStage(1, "Ürün Detaylar")
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(text = "Ürün Bilgileri", style = offerProductDetailFormSectionTitle)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    appTextField(
+                        itms = appTextFieldItems(
+                            Modifier,
+                            Modifier
+                                .fillMaxWidth(),
+                            txtName,
+                            null,
+                            "Ürün adı",
+                            false,
+                            true,
+                            false,
+                            true,
+                            1,
+                            minLines = 1,
+                            txtFColors(),
+                            txtFKeyboardOptionsCapWord
+                        )
                     )
-                ),
-                productDRPMenuListdataState.value,
-                expendedMenuViewModel
-            )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    appTextField(
+                        itms = appTextFieldItems(
+                            Modifier,
+                            Modifier
+                                .fillMaxWidth(),
+                            txtComment,
+                            null,
+                            "Açıklama",
+                            false,
+                            true,
+                            false,
+                            false,
+                            Int.MAX_VALUE,
+                            2,
+                            txtFColors(),
+                            txtFKeyboardOptionsCapSentence
+                        )
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    DropDownMenuWithAddButton(
+                        itms = DropdownMenuItems(
+                            txfItems = appTextFieldItems(
+                                Modifier,
+                                Modifier,
+                                txtProductFieldValue,
+                                R.drawable.round_unfold_more_24,
+                                "Özellikler Seçiniz",
+                                false,
+                                true,
+                                true,
+                                true,
+                                1,
+                                1,
+                                txtFColors(),
+                                txtFKeyboardOptionsCapSentence
+                            ),
+                            expanded = productDRPMenuExpanded,
+                            menuitems = prdDRPItems.toList(),
+                            buttonModifier = Modifier,
+                            buttonLabelText = "Ekle",
+                            buttonLabelTextStyle = TextStyle(
+                                fontFamily = poppinFamily,
+                                fontSize = 14.sp,
+                                color = Color.White
+                            )
+                        ),
+                        productDRPMenuListdataState.value,
+                        expendedMenuViewModel
+                    )
+                }
+            }
+            items(listofSelectedDataItems.size){i->
+                Text(listofSelectedDataItems[i].productFeatureItem.label)
+            }
         }
     }
 }
