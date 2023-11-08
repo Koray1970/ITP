@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
@@ -142,25 +143,27 @@ fun DropDownMenuWithAddButton(
 ) {
     val gson = Gson()
     val scope = rememberCoroutineScope()
-    val listofItems by expendedMenuViewModel.uiStateSelectedItem.collectAsState()
+    val listofItems = remember{ mutableStateListOf<ExpendedMenuSelectedCollectionItem>() }
+    val listofSelectedDataItems by expendedMenuViewModel.listOfSelectedCollections.collectAsState()
+    //listofItems=
 
-   /* val pItemState by
-    expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        when (pItemState) {
-            is MutableList<*> -> {
-                listofItems = pItemState as MutableList<ExpendedMenuSelectedCollectionItem>
-                Log.v("FormItems","1")
-                Log.v("FormItems","listofItems : ${gson.toJson(listofItems)}")
-            }
+    /* val pItemState by
+     expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle()
+     LaunchedEffect(Unit) {
+         when (pItemState) {
+             is MutableList<*> -> {
+                 listofItems = pItemState as MutableList<ExpendedMenuSelectedCollectionItem>
+                 Log.v("FormItems","1")
+                 Log.v("FormItems","listofItems : ${gson.toJson(listofItems)}")
+             }
 
-            else -> {
-                Log.v("FormItems","2")
-                //println(pItemState)
-            }
-        }
-    }
-    println("Sonuç : ${gson.toJson(pItemState)}")*/
+             else -> {
+                 Log.v("FormItems","2")
+                 //println(pItemState)
+             }
+         }
+     }
+     println("Sonuç : ${gson.toJson(pItemState)}")*/
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -230,7 +233,7 @@ fun DropDownMenuWithAddButton(
                 var newitem =
                     productFeatureItems.first { a -> a.label.toString() == itms.txfItems.fieldValue.value }
                 expendedMenuViewModel.AddSelectedCollection(newitem)
-
+                println("Sonuç1 : ${gson.toJson(listofItems)}")
                 itms.expanded.value = false
             },
             shape = RoundedCornerShape(8.dp),
@@ -244,14 +247,30 @@ fun DropDownMenuWithAddButton(
             Text(text = "EKLE")
         }
     }
-    Column(
+    Card(){
+
+        when(listofItems){
+            is List<*> ->{
+                (listofItems as List<ExpendedMenuSelectedCollectionItem>).forEach {item->
+                    Text(item.productFeatureItem.label)
+                }
+            }
+            else->{
+                println("Sonuç2 : ${gson.toJson(listofItems)}")
+                Text("Lütfen bekleyiniz")
+            }
+        }
+
+    }
+
+    /*Column(
         modifier=Modifier
             .requiredHeight(IntrinsicSize.Max)
     ) {
         listofItems.forEach { item ->
             Text(item.productFeatureItem.label)
         }
-        /*pItemState.forEach { item->
+        *//*pItemState.forEach { item->
             Text(item.productFeatureItem.label)
             val rm = remember { mutableStateOf(item.collectionData.first().second.toString()) }
             when (item.productFeatureItem.formItemType) {
@@ -299,8 +318,8 @@ fun DropDownMenuWithAddButton(
                     Spacer(modifier = Modifier.height(10.dp))
                 }
             }
-        }*/
-    }
+        }*//*
+    }*/
 
 
     /*LazyColumn(

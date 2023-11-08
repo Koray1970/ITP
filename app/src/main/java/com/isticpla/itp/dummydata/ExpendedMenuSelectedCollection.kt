@@ -107,7 +107,7 @@ class ExpendedMenuViewModel @Inject constructor(private val repo: ExpendMenuRepo
         }
     }
 
-    var listOfSelectedCollections = flow {
+    var listOfSelectedCollections = flow<MutableList<ExpendedMenuSelectedCollectionItem>> {
         while (true) {
             delay(1000L)
             //println("GetSelectedItemCollection()")
