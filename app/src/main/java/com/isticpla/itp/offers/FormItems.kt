@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,6 +32,8 @@ import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
@@ -62,6 +65,7 @@ import com.isticpla.itp.dummydata.ProductFeatureItem
 import com.isticpla.itp.uimodules.AppColors
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Objects
 
 @Composable
 fun txtFColors() = TextFieldDefaults.colors(
@@ -121,19 +125,96 @@ fun appTextField(itms: appTextFieldItems) = Card(
     )
 }
 
-data class DropdownMenuItems(
+data class DropdownMenuItems<K, V>(
     var txfItems: appTextFieldItems,
     var expanded: MutableState<Boolean>,
-    val menuitems: List<Pair<String, String>>,
-    val buttonModifier: Modifier,
-    val buttonLabelText: String,
-    val buttonLabelTextStyle: TextStyle,
+    val menuitems: List<Pair<K, V>>,
+    val buttonModifier: Modifier? = null,
+    val buttonLabelText: String? = null,
+    val buttonLabelTextStyle: TextStyle? = null,
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownMenuWithAddButton(
-    itms: DropdownMenuItems,
+fun <K, V> DropDownMenu(
+    itms: DropdownMenuItems<K, V>
+) = Column(
+    modifier = Modifier
+        .fillMaxWidth(),
+    verticalArrangement = Arrangement.Top,
+    horizontalAlignment = Alignment.CenterHorizontally
+) {
+    val scope = rememberCoroutineScope()
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = Color.Transparent
+            ),
+            shape = RoundedCornerShape(8.dp),
+            modifier = itms.txfItems.cardModifier
+                .border(1.dp, AppColors.grey_133, RoundedCornerShape(8.dp))
+        ) {
+            ExposedDropdownMenuBox(
+                expanded = itms.expanded.value,
+                onExpandedChange = { itms.expanded.value = !itms.expanded.value }
+            ) {
+                TextField(
+                    value = itms.txfItems.fieldValue.value,
+                    onValueChange = { itms.txfItems.fieldValue.value = it },
+                    modifier = Modifier
+                        .menuAnchor()
+                        .fillMaxWidth()
+                        .then(itms.txfItems.textFieldModifier),
+                    label = { Text(text = itms.txfItems.label) },
+                    singleLine = itms.txfItems.isSingleLine,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = itms.expanded.value) },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                )
+                // filter options based on text field value
+                val filteringOptions = itms.menuitems.filter {
+                    it.second.toString().contains(
+                        itms.txfItems.fieldValue.value,
+                        ignoreCase = true
+                    )
+                }
+                if (filteringOptions.isNotEmpty()) {
+                    ExposedDropdownMenu(
+                        expanded = itms.expanded.value,
+                        onDismissRequest = { itms.expanded.value = false },
+                        modifier = Modifier.background(Color.White)
+                    ) {
+                        filteringOptions.forEach { selectionOption ->
+                            val soS = selectionOption.second.toString()
+                            DropdownMenuItem(
+                                text = { Text(text = soS) },
+                                onClick = {
+                                    itms.txfItems.fieldValue.value = soS
+                                    itms.expanded.value = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                colors = MenuDefaults.itemColors()
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <K, V> DropDownMenuWithAddButton(
+    itms: DropdownMenuItems<K, V>,
     productFeatureItems: List<ProductFeatureItem>,
     expendedMenuViewModel: ExpendedMenuViewModel
 ) = Column(
@@ -179,7 +260,7 @@ fun DropDownMenuWithAddButton(
                 )
                 // filter options based on text field value
                 val filteringOptions = itms.menuitems.filter {
-                    it.second.contains(
+                    it.second.toString().contains(
                         itms.txfItems.fieldValue.value,
                         ignoreCase = true
                     )
@@ -191,10 +272,11 @@ fun DropDownMenuWithAddButton(
                         modifier = Modifier.background(Color.White)
                     ) {
                         filteringOptions.forEach { selectionOption ->
+                            val soS = selectionOption.second.toString()
                             DropdownMenuItem(
-                                text = { Text(text = selectionOption.second) },
+                                text = { Text(text = soS) },
                                 onClick = {
-                                    itms.txfItems.fieldValue.value = selectionOption.second
+                                    itms.txfItems.fieldValue.value = soS
                                     itms.expanded.value = false
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -214,7 +296,7 @@ fun DropDownMenuWithAddButton(
                 itms.expanded.value = false
             },
             shape = RoundedCornerShape(8.dp),
-            modifier = itms.buttonModifier.then(Modifier.requiredHeight(56.dp)),
+            modifier = itms.buttonModifier!!.then(Modifier.requiredHeight(56.dp)),
             colors = ButtonDefaults.buttonColors(
                 containerColor = AppColors.primaryGrey,
                 contentColor = Color.White
@@ -224,61 +306,34 @@ fun DropDownMenuWithAddButton(
             Text(text = "EKLE")
         }
     }
-
-
-    /*LazyColumn(
-        state = rememberLazyListState(),
-        modifier = Modifier
-            .verticalScroll(rememberScrollState())
-            .fillMaxSize(),
-    ) {
-        itemsIndexed(pItemState.value) { index, item ->
-            val rm = remember { mutableStateOf(item.collectionData.first().second.toString()) }
-            when (item.productFeatureItem.formItemType) {
-                FormItemTypes.MULTILINETEXTFIELD -> {
-                    appTextField(
-                        itms = appTextFieldItems(
-                            Modifier,
-                            Modifier
-                                .fillMaxWidth(),
-                            rm,
-                            null,
-                            item.productFeatureItem.label,
-                            false,
-                            true,
-                            false,
-                            false,
-                            Int.MAX_VALUE,
-                            2,
-                            txtFColors(),
-                            txtFKeyboardOptionsCapSentence
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                }
-
-                else -> {
-                    appTextField(
-                        itms = appTextFieldItems(
-                            Modifier,
-                            Modifier
-                                .fillMaxWidth(),
-                            rm,
-                            null,
-                            item.productFeatureItem.label,
-                            false,
-                            true,
-                            false,
-                            true,
-                            1,
-                            minLines = 1,
-                            txtFColors(),
-                            txtFKeyboardOptionsCapWord
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-            }
-        }
-    }*/
 }
+
+@Composable
+fun AppSwitch(
+    cChecked: MutableState<Boolean>
+) = Switch(
+    checked = cChecked.value,
+    onCheckedChange = { cChecked.value = it },
+    colors = SwitchDefaults.colors(
+        checkedBorderColor = Color.Transparent,
+        uncheckedBorderColor = Color.Transparent,
+        checkedTrackColor = AppColors.grey_133,
+        uncheckedTrackColor = AppColors.grey_133,
+        checkedThumbColor = Color.White,
+        uncheckedThumbColor = AppColors.grey_135,
+        uncheckedIconColor = Color.White,
+        checkedIconColor = Color.Black
+    ),
+    thumbContent = if (cChecked.value) {
+        {
+            Icon(
+                painter = painterResource(id = R.drawable.round_check_24),
+                contentDescription = null,
+                modifier = Modifier.size(SwitchDefaults.IconSize),
+            )
+        }
+    } else {
+        null
+    }
+
+)

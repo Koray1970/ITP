@@ -76,10 +76,10 @@ val listofBusiness = listOf<BusinessTypeItem>(
 )
 
 
-val listofShops = listOf<Pair<String, String>>(
-    Pair<String, String>("Tilman's Hamburger \nNeuenfelderstraße 84, Hamburg", "1"),
-    Pair<String, String>("Lu Bu Soul Food\nChristophstraße 7A, 80538 München", "2"),
-    Pair<String, String>("Caffe Vinica\nSchönfeldstraße 24, 80539 München", "3")
+val listofShops = listOf<Pair<Int, String>>(
+    Pair<Int, String>(1,"Tilman's Hamburger \nNeuenfelderstraße 84, Hamburg"),
+    Pair<Int, String>(2,"Lu Bu Soul Food\nChristophstraße 7A, 80538 München"),
+    Pair<Int, String>(3,"Caffe Vinica\nSchönfeldstraße 24, 80539 München")
 )
 
 data class HomeDesignItem(val id: Int, val image: Int, val title: String, val price: String)
@@ -367,4 +367,24 @@ val listofProductFeature = listOf<ProductFeatureItem>(
     ProductFeatureItem(7, "Yükseklik",FormItemTypes.TEXTFIELD),
     ProductFeatureItem(8, "Derinlik",FormItemTypes.TEXTFIELD),
     ProductFeatureItem(9, "Setifika",FormItemTypes.TEXTFIELD),
+)
+val listOfQuantity = listOf<Pair<Int,Int>>(
+    Pair(1,1),
+    Pair(2,10),
+    Pair(3,50),
+    Pair(4,100),
+    Pair(5,200),
+    Pair(6,300),
+    Pair(7,500),
+    Pair(8,10000),
+)
+val listOfPaymentType= listOf<Pair<Int,String>>(
+    Pair(1,"Havale, Standart Ödeme"),
+    Pair(2,"Kredi Kartı"),
+    Pair(3,"Kapıda Ödeme"),
+)
+val listOfDeliveryType= listOf<Pair<Int,String>>(
+    Pair(1,"Kapıda Teslim"),
+    Pair(2,"Kargo Firma Şubesi"),
+    Pair(3,"Gel Al"),
 )

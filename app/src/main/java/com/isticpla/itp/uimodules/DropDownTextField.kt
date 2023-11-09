@@ -17,12 +17,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 
 
-data class DropDowndTextFieldRequest(
+data class DropDowndTextFieldRequest<K,V>(
     var exposedDropdownMenuBoxModifier: Modifier?,
     var label: String,
     var selectedOptionText: MutableState<String>,
     var expended: MutableState<Boolean>,
-    var listOfOptions: List<Pair<String, String>>,
+    var listOfOptions: List<Pair<K,V>>,
     var textFieldModifier: Modifier,
     var textFieldReadOnly: Boolean,
     var textfieldColors: TextFieldColors,
@@ -33,10 +33,10 @@ data class DropDowndTextFieldRequest(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropDownTextField(request: DropDowndTextFieldRequest) = ExposedDropdownMenuBox(
-    modifier = if (request!!.exposedDropdownMenuBoxModifier != null) request.exposedDropdownMenuBoxModifier!! else Modifier,
-    expanded = request!!.expended.value,
-    onExpandedChange = { request!!.expended.value = !request!!.expended.value },
+fun <K,V> DropDownTextField(request: DropDowndTextFieldRequest<K,V>) = ExposedDropdownMenuBox(
+    modifier = if (request.exposedDropdownMenuBoxModifier != null) request.exposedDropdownMenuBoxModifier!! else Modifier,
+    expanded = request.expended.value,
+    onExpandedChange = { request!!.expended.value = !request.expended.value },
 ) {
     TextField(
         // The `menuAnchor` modifier must be passed to the text field for correctness.
@@ -55,7 +55,7 @@ fun DropDownTextField(request: DropDowndTextFieldRequest) = ExposedDropdownMenuB
     // filter options based on text field value
     val filteringOptions =
         request!!.listOfOptions!!.filter {
-            it.first.contains(request!!.selectedOptionText.value, ignoreCase = true)
+            it.first.toString().contains(request!!.selectedOptionText.value, ignoreCase = true)
         }
     if (filteringOptions.isNotEmpty()) {
         ExposedDropdownMenu(
@@ -63,11 +63,12 @@ fun DropDownTextField(request: DropDowndTextFieldRequest) = ExposedDropdownMenuB
             onDismissRequest = { request!!.expended.value = false },
         ) {
             request!!.listOfOptions!!.forEach { selectionOption ->
+                val lstFirstItem=selectionOption.first.toString()
                 DropdownMenuItem(
                     modifier = if (request!!.menuItemModifier != null) request!!.menuItemModifier!! else Modifier,
-                    text = { Text(selectionOption.first) },
+                    text = { Text(lstFirstItem) },
                     onClick = {
-                        request!!.selectedOptionText.value = selectionOption.first
+                        request!!.selectedOptionText.value = lstFirstItem
                         request!!.expended.value = false
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,

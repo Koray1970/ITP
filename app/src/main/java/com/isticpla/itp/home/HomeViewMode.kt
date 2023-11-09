@@ -18,7 +18,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val carouselList = flowOf<List<Int>>(listofCarousel)
 
     @RequiresApi(Build.VERSION_CODES.R)
-    val shopList = flowOf<List<Pair<String, String>>>(listofShops)
+    val shopList = flowOf<List<Pair<Int, String>>>(listofShops)
     var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.toMutableList())
     val designsList = flowOf<List<HomeDesignItem>>(listofDesigns)
     val campaignList = flowOf<List<HomeCampaignItem>>(listofHomeCampaigns)
@@ -26,9 +26,14 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val sectorNewsList = flowOf<List<SectorNewsItem>>(listofHomeSectorNews)
     val offerDrafts = flowOf<List<OfferDraftListItem>>(listOfOfferDraft)
     val orderStages = flowOf<List<OrderStages>>(listOfOrderStages)
-    val productDRPItems= flowOf<List<ProductFeatureItem>>(listofProductFeature)
+    val productDRPItems = flowOf<List<ProductFeatureItem>>(listofProductFeature)
+
+    val requestQuantity = flowOf<List<Pair<Int, Int>>>(listOfQuantity)
+    val requestPaymentType = flowOf<List<Pair<Int, String>>>(listOfPaymentType)
+    val requestDeliveryTypes = flowOf<List<Pair<Int, String>>>(listOfDeliveryType)
 
     val feedDashboardItems = flowOf<List<FeedDashboardItems>>(listofFeedDashboard)
+
     fun updateSectorButtonIsEnabled(id: Int): Boolean {
         return listofBusiness.first { i -> i.id == id }.isSelected!!
     }

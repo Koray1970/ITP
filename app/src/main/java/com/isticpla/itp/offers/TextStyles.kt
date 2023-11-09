@@ -127,3 +127,41 @@ val offerProductDetailFormSectionTitle=TextStyle(
     fontWeight = FontWeight.SemiBold,
     color=AppColors.primaryGrey
 )
+val previewAccordionHeader=TextStyle(
+    fontFamily = poppinFamily,
+    textAlign = TextAlign.Left,
+    fontSize = 20.sp,
+    fontWeight = FontWeight.SemiBold,
+    color=AppColors.primaryGrey
+)
+val previewItemTitle=SpanStyle(
+    fontFamily = poppinFamily,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
+    color=AppColors.grey_156.copy(.4f)
+)
+val previewItemContent=SpanStyle(
+    fontFamily = poppinFamily,
+    fontSize = 14.sp,
+    fontWeight = FontWeight.Normal,
+    color=AppColors.grey_dark
+)
+
+val previewCardItemSubTitle=SpanStyle(
+    fontFamily = poppinFamily,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
+    color=AppColors.grey_124
+)
+val previewCardItemTitle=SpanStyle(
+    fontFamily = poppinFamily,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
+    color=AppColors.grey_124
+)
+val previewCardItemContent=SpanStyle(
+    fontFamily = poppinFamily,
+    fontSize = 10.sp,
+    fontWeight = FontWeight.Normal,
+    color=AppColors.grey_171
+)

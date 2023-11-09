@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,8 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowColumn
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,12 +23,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -62,9 +58,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -80,8 +78,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -118,8 +114,8 @@ class OfferActivity : ComponentActivity() {
 @Composable
 fun CreateOfferDashboard(
     navController: NavController,
-    homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
+    val homeViewMode = hiltViewModel<HomeViewMode>()
     val offerDraftListState =
         homeViewMode.offerDrafts.collectAsState(initial = emptyList<OfferDraftListItem>())
 
@@ -370,8 +366,8 @@ fun CreateOfferDashboard(
 @Composable
 fun CreateOfferPage1(
     navController: NavController,
-    homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
+    val homeViewMode = hiltViewModel<HomeViewMode>()
     val draftName = rememberSaveable { mutableStateOf("") }
     val listOfOrderStage =
         homeViewMode.orderStages.collectAsState(initial = emptyList<OrderStages>())
@@ -650,7 +646,7 @@ fun CreateOfferProductDetails(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
-    val expendedMenuViewModel= hiltViewModel<ExpendedMenuViewModel>()
+    val expendedMenuViewModel = hiltViewModel<ExpendedMenuViewModel>()
     val gson = Gson()
     val txtName = rememberSaveable { mutableStateOf("") }
     val txtComment = rememberSaveable { mutableStateOf("") }
@@ -707,7 +703,7 @@ fun CreateOfferProductDetails(
             item {
                 Column {
                     ProposalWizardStage(1, "Ürün Detaylar")
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(40.dp))
                     Text(text = "Ürün Bilgileri", style = offerProductDetailFormSectionTitle)
                     Spacer(modifier = Modifier.height(8.dp))
                     appTextField(
@@ -778,21 +774,70 @@ fun CreateOfferProductDetails(
                         productDRPMenuListdataState.value,
                         expendedMenuViewModel
                     )
+                    Spacer(modifier = Modifier.height(40.dp))
+                    Button(
+                        onClick = { navController.navigate("offer/create/requestdetails") },
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = AppColors.grey_130,
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .requiredHeight(48.dp)
+                    ) {
+                        Text(text = "Devam", style = offerStagePublishButton)
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
                 }
             }
-            items(listofSelectedDataItems.size){i->
+            /*items(listofSelectedDataItems.size){i->
                 Text(listofSelectedDataItems[i].productFeatureItem.label)
-            }
+            }*/
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateOfferRequestDetails(
     navController: NavController,
-    homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
+    val homeViewModel = hiltViewModel<HomeViewMode>()
+    var quantityExpendedState = remember { mutableStateOf(false) }
+    val quantityList by homeViewModel.requestQuantity.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, Int>>())
+    var quantityTxtValue = rememberSaveable { mutableStateOf("") }
+
+    var buyerExpendedState = remember { mutableStateOf(false) }
+    val buyers by homeViewModel.shopList.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    var buyerTxtValue = rememberSaveable { mutableStateOf("") }
+
+    var deliveryExpendedState = remember { mutableStateOf(false) }
+    val deliveryTypes by homeViewModel.requestDeliveryTypes.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    var deliveryTxtValue = rememberSaveable { mutableStateOf("") }
+
+    var placeOfDeliveryExpendedState = remember { mutableStateOf(false) }
+    val placeOfDelivery by homeViewModel.shopList.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    var placeOfDeliveryTxtValue = rememberSaveable { mutableStateOf("") }
+
+    var paymentTypeExpendedState = remember { mutableStateOf(false) }
+    val paymentTypes by homeViewModel.requestPaymentType.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    var paymentTypeTxtValue = rememberSaveable { mutableStateOf("") }
+
+    var wantSampleChecked = remember { mutableStateOf(false) }
+
+    var contractedSupplierChecked = remember { mutableStateOf(false) }
+    var contractedSupplierCodeTxtValue = rememberSaveable { mutableStateOf("") }
+
+    var recieveOfferFromITPChecked = remember { mutableStateOf(false) }
+
+    var additianalrequestTxtValue = rememberSaveable { mutableStateOf("") }
+
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -830,6 +875,195 @@ fun CreateOfferRequestDetails(
                 .verticalScroll(rememberScrollState()),
         ) {
             ProposalWizardStage(2, "Sipariş Detaylar")
+            Spacer(modifier = Modifier.height(40.dp))
+            Text(text = "Sipariş Bilgileri", style = offerProductDetailFormSectionTitle)
+            Spacer(modifier = Modifier.height(8.dp))
+            DropDownMenu<Int, Int>(
+                itms = DropdownMenuItems(
+                    txfItems = appTextFieldItems(
+                        Modifier,
+                        Modifier,
+                        quantityTxtValue,
+                        R.drawable.round_unfold_more_24,
+                        "Adet",
+                        false,
+                        true,
+                        true,
+                        true,
+                        1,
+                        1,
+                        txtFColors(),
+                        txtFKeyboardOptionsCapSentence
+                    ),
+                    expanded = quantityExpendedState,
+                    menuitems = quantityList,
+                )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            DropDownMenu<Int, String>(
+                itms = DropdownMenuItems(
+                    txfItems = appTextFieldItems(
+                        Modifier,
+                        Modifier,
+                        buyerTxtValue,
+                        R.drawable.round_unfold_more_24,
+                        "Alıcı Firma",
+                        false,
+                        true,
+                        true,
+                        true,
+                        1,
+                        1,
+                        txtFColors(),
+                        txtFKeyboardOptionsCapSentence
+                    ),
+                    expanded = buyerExpendedState,
+                    menuitems = buyers,
+                )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            DropDownMenu<Int, String>(
+                itms = DropdownMenuItems(
+                    txfItems = appTextFieldItems(
+                        Modifier,
+                        Modifier,
+                        deliveryTxtValue,
+                        R.drawable.round_unfold_more_24,
+                        "Teslimat Şekli",
+                        false,
+                        true,
+                        true,
+                        true,
+                        1,
+                        1,
+                        txtFColors(),
+                        txtFKeyboardOptionsCapSentence
+                    ),
+                    expanded = deliveryExpendedState,
+                    menuitems = deliveryTypes,
+                )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            DropDownMenu<Int, String>(
+                itms = DropdownMenuItems(
+                    txfItems = appTextFieldItems(
+                        Modifier,
+                        Modifier,
+                        placeOfDeliveryTxtValue,
+                        R.drawable.round_unfold_more_24,
+                        "Teslimat Yeri",
+                        false,
+                        true,
+                        true,
+                        true,
+                        1,
+                        1,
+                        txtFColors(),
+                        txtFKeyboardOptionsCapSentence
+                    ),
+                    expanded = placeOfDeliveryExpendedState,
+                    menuitems = placeOfDelivery,
+                )
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            DropDownMenu<Int, String>(
+                itms = DropdownMenuItems(
+                    txfItems = appTextFieldItems(
+                        Modifier,
+                        Modifier,
+                        paymentTypeTxtValue,
+                        R.drawable.round_unfold_more_24,
+                        "Ödeme Şekli",
+                        false,
+                        true,
+                        true,
+                        true,
+                        1,
+                        1,
+                        txtFColors(),
+                        txtFKeyboardOptionsCapSentence
+                    ),
+                    expanded = paymentTypeExpendedState,
+                    menuitems = paymentTypes,
+                )
+            )
+            Spacer(modifier = Modifier.height(60.dp))
+            Text(text = "Numune Talebi Var Mı?", style = offerProductDetailFormSectionTitle)
+            AppSwitch(wantSampleChecked)
+
+            Spacer(modifier = Modifier.height(60.dp))
+            Text(
+                text = "Anlaşmalı Tedarikçi ile Çalışmak İstiyor musunuz?",
+                style = offerProductDetailFormSectionTitle
+            )
+            AppSwitch(contractedSupplierChecked)
+
+            Spacer(modifier = Modifier.height(8.dp))
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    contractedSupplierCodeTxtValue,
+                    null,
+                    "Tedarikçi Kodu Gir",
+                    false,
+                    true,
+                    false,
+                    true,
+                    1,
+                    minLines = 1,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            Spacer(modifier = Modifier.height(60.dp))
+            Text(
+                "ITP'den de Teklif Almak İster misiniz?",
+                style = offerProductDetailFormSectionTitle
+            )
+            AppSwitch(recieveOfferFromITPChecked)
+
+
+            Spacer(modifier = Modifier.height(30.dp))
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    additianalrequestTxtValue,
+                    null,
+                    "Ek Açıklamalar",
+                    false,
+                    true,
+                    false,
+                    false,
+                    Int.MAX_VALUE,
+                    minLines = 5,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            Spacer(modifier = Modifier.height(40.dp))
+            Button(
+                onClick = { navController.navigate("offer/create/preview") },
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppColors.grey_130,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+            ) {
+                Text(text = "Devam", style = offerStagePublishButton)
+                Icon(
+                    painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }
@@ -840,6 +1074,12 @@ fun CreateOfferPreview(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
+    var procuctDetailExpendedState by remember { mutableStateOf(true) }
+    var procuctDetailExpendedIcon by remember { mutableStateOf(R.drawable.baseline_expand_more_24) }
+
+    var orderDetailExpendedState by remember { mutableStateOf(true) }
+    var orderDetailExpendedIcon by remember { mutableStateOf(R.drawable.baseline_expand_more_24) }
+
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -877,6 +1117,360 @@ fun CreateOfferPreview(
                 .verticalScroll(rememberScrollState()),
         ) {
             ProposalWizardStage(3, "Önizleme")
+            Spacer(modifier = Modifier.height(40.dp))
+            //start:Product details accordion
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .drawBehind {
+                        val borderSize = 2.dp.toPx()
+                        drawLine(
+                            color = AppColors.grey_133,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = borderSize
+                        )
+                    }
+                    .padding(bottom = 10.dp)
+            ) {
+                Text(text = "Ürün Detayları", style = previewAccordionHeader)
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = {
+                    procuctDetailExpendedState = !procuctDetailExpendedState
+                    procuctDetailExpendedIcon = if (procuctDetailExpendedState)
+                        R.drawable.baseline_expand_more_24
+                    else
+                        R.drawable.round_expand_less_24
+
+                }) {
+                    Icon(
+                        painter = painterResource(id = procuctDetailExpendedIcon),
+                        contentDescription = null,
+                    )
+                }
+            }
+            AnimatedVisibility(visible = procuctDetailExpendedState) {
+                Column() {
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Başlık\n") }
+                        withStyle(style = previewItemContent) { append("Tillman`s Hamburger vom Rind, 4 Stück, 250g") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Açıklama\n") }
+                        withStyle(style = previewItemContent) {
+                            append(
+                                "İlave renklendirici yok, ilave tat yok, koruyucu yok. \n" +
+                                        "4 Stück Hamburger für Grill und Pfanne\n" +
+                                        "Aus leckerem Rinfleisch, 100% Geschmack, 100% Qualität\n" +
+                                        "Schnell, lecker, trendy\n" +
+                                        "Höchste Qualität\n" +
+                                        "100% Geschmack\n" +
+                                        "Absolute Frische"
+                            )
+                        }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Örnek Ürün Linkleri") }
+                    })
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(
+                            8.dp,
+                            Alignment.CenterVertically
+                        ),
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        repeat(3) {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                shape = RoundedCornerShape(6.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = AppColors.grey_127,
+                                )
+                            ) {
+                                Column(
+                                    modifier = Modifier.padding(18.dp)
+                                ) {
+                                    Text(text = buildAnnotatedString {
+                                        withStyle(style = previewCardItemTitle) { append("Indonesian chicken burger\n") }
+                                        withStyle(style = previewCardItemContent) { append("www.amazone.de") }
+                                    }, style = TextStyle(lineHeight = 11.sp))
+                                }
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Ham Madde\n") }
+                        withStyle(style = previewItemContent) { append("Metal, Cam, Ahşap") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Renk\n") }
+                        withStyle(style = previewItemContent) { append("Kahverengi, Siyah") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Sertifika Talepleriniz\n") }
+                        withStyle(style = previewItemContent) { append("ISO 9001, 10001") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(60.dp))
+                }
+            }
+            //end:Product details accordion
+
+
+            //start:Order details accordion
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .drawBehind {
+                        val borderSize = 2.dp.toPx()
+                        drawLine(
+                            color = AppColors.grey_133,
+                            start = Offset(0f, size.height),
+                            end = Offset(size.width, size.height),
+                            strokeWidth = borderSize
+                        )
+                    }
+                    .padding(bottom = 10.dp)
+            ) {
+                Text(text = "Sipariş Bilgileri", style = previewAccordionHeader)
+                Spacer(modifier = Modifier.weight(1f))
+                IconButton(onClick = {
+                    orderDetailExpendedState = !orderDetailExpendedState
+                    orderDetailExpendedIcon = if (orderDetailExpendedState)
+                        R.drawable.baseline_expand_more_24
+                    else
+                        R.drawable.round_expand_less_24
+
+                }) {
+                    Icon(
+                        painter = painterResource(id = orderDetailExpendedIcon),
+                        contentDescription = null,
+                    )
+                }
+            }
+            AnimatedVisibility(visible = orderDetailExpendedState) {
+                Column() {
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Adet\n") }
+                        withStyle(style = previewItemContent) { append("1000 adet") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Tarih\n") }
+                        withStyle(style = previewItemContent) { append("24/10/2023 son tarih") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(text = buildAnnotatedString {
+                            withStyle(style = previewItemTitle) {
+                                append(
+                                    "Alıcı Firma"
+                                )
+                            }
+                        })
+                        Spacer(modifier = Modifier.requiredHeight(2.dp))
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(6.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = AppColors.grey_127,
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(18.dp)
+                            ) {
+                                Text(text = buildAnnotatedString {
+                                    withStyle(style = previewCardItemTitle) { append("Tilman’s Market\n") }
+                                    withStyle(style = previewCardItemContent) { append("Neue Strasse 52, Bremen, Deutschland") }
+                                }, style = TextStyle(lineHeight = 11.sp))
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(text = buildAnnotatedString {
+                            withStyle(style = previewItemTitle) {
+                                append(
+                                    "Teslim Şekli"
+                                )
+                            }
+                        })
+                        Spacer(modifier = Modifier.requiredHeight(2.dp))
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(6.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = AppColors.grey_127,
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(18.dp)
+                            ) {
+                                Text(text = buildAnnotatedString {
+                                    withStyle(style = previewCardItemTitle) { append("Kapıdan Kapıya\n") }
+                                    withStyle(style = previewCardItemContent) { append("Kargo Dahil") }
+                                }, style = TextStyle(lineHeight = 11.sp))
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(text = buildAnnotatedString {
+                            withStyle(style = previewItemTitle) {
+                                append(
+                                    "Teslim Yeri"
+                                )
+                            }
+                        }, style = TextStyle(lineHeight = 11.sp))
+                        Spacer(modifier = Modifier.requiredHeight(2.dp))
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(6.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = AppColors.grey_127,
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(18.dp)
+                            ) {
+                                Text(text = buildAnnotatedString {
+                                    withStyle(style = previewCardItemSubTitle) { append("Kapıda Teslim\n") }
+                                    withStyle(style = previewCardItemTitle) { append("Tilman’s Market\n") }
+                                    withStyle(style = previewCardItemContent) { append("Neue Strasse 52, Bremen, Deutschland") }
+                                }, style = TextStyle(lineHeight = 11.sp))
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.Start
+                    ) {
+                        Text(text = buildAnnotatedString {
+                            withStyle(style = previewItemTitle) {
+                                append(
+                                    "Ödeme Şekli"
+                                )
+                            }
+                        })
+                        Spacer(modifier = Modifier.requiredHeight(2.dp))
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            shape = RoundedCornerShape(6.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = AppColors.grey_127,
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(18.dp)
+                            ) {
+                                Text(text = buildAnnotatedString {
+                                    withStyle(style = previewCardItemTitle) { append("Havale, Standart Ödeme\n") }
+                                    withStyle(style = previewCardItemContent) { append("Sipariş sonrası peşin ödeme") }
+                                }, style = TextStyle(lineHeight = 11.sp))
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Numune Talebi\n") }
+                        withStyle(style = previewItemContent) { append("Evet Numune İstiyorum") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Ek Açıklamalar\n") }
+                        withStyle(style = previewItemContent) { append("Gelip yerinde görmek istiyorum. Ürün kalitesini görmek ve kendim test edip bilmek istiyorum.") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemTitle) { append("Teklif Alacağınız Yerler\n") }
+                        withStyle(style = previewItemContent) {
+                            append(
+                                "Anlaşmalı Tedarikçiler\n" +
+                                        "A Firması\n" +
+                                        "B. Firması\n" +
+                                        "C Firması"
+                            )
+                        }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(30.dp))
+
+                    Text(text = buildAnnotatedString {
+                        withStyle(style = previewItemContent) { append("ITP Teklif Verecek") }
+                    })
+                    Spacer(modifier = Modifier.requiredHeight(60.dp))
+                }
+            }
+            //end:Order details accordion
+            Spacer(modifier = Modifier.height(40.dp))
+            Button(
+                onClick = { navController.navigate("offer/create/publish") },
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppColors.green_100,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+            ) {
+                Text(text = "İnceledim ve Onaylıyorum", style = offerStagePublishButton)
+                Icon(
+                    painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier=Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Button(
+                    onClick = { navController.navigate("offer/dashboard") },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppColors.grey_133,
+                        contentColor = AppColors.primaryGrey
+                    ),
+                    modifier = Modifier
+                        .requiredHeight(48.dp)
+                ) {
+                    Text(text = "Taslağa Dön", style = offerStageDefaultButton)
+                }
+            }
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }

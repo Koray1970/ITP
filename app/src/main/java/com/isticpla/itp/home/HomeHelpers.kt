@@ -80,7 +80,7 @@ import java.util.Locale
 fun HomeSectionHeader(homeViewModel: HomeViewMode) {
     val configuration = LocalConfiguration.current
     val listofShops =
-        homeViewModel.shopList.collectAsState(initial = emptyList<Pair<String, String>>())
+        homeViewModel.shopList.collectAsState(initial = emptyList<Pair<Int, String>>())
 
     val carouselImageWidth = configuration.screenWidthDp - 50
     Log.v("MainActivity", "Screen Width :${carouselImageWidth}")
