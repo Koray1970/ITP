@@ -7,6 +7,8 @@ class AppColors {
         //grey colors
         val primaryGrey = Color(0xFF545F71)
         val primaryGreyDisabled = Color(0xFFD9D9D9)
+        val secondaryGrey = Color(0xFF9BA5B7)
+        val greyLight = Color(0xffeef1f4)
         val grey_109 = Color(0xFFD9D9D9)
         val grey_111 = Color(0xFFF7F8F9)
         val grey_113 = Color(0xFFE8ECF4)

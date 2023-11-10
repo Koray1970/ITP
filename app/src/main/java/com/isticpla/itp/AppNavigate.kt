@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.isticpla.itp.offerdetails.OfferDetailDashboard
 import com.isticpla.itp.offers.*
 import com.isticpla.itp.signup.*
 import com.isticpla.itp.splash.*
@@ -15,7 +16,7 @@ import com.isticpla.itp.splash.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "offer/create/productdetails") {
+    NavHost(navController = navController, startDestination = "offer/detail/dashboard") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }
@@ -45,5 +46,8 @@ fun AppNavigate() {
         composable("offer/create/requestdetails") { CreateOfferRequestDetails(navController) }
         composable("offer/create/preview") { CreateOfferPreview(navController) }
         composable("offer/create/publish") { CreateOfferPublish(navController) }
+
+
+        composable("offer/detail/dashboard") { OfferDetailDashboard(navController) }
     }
 }

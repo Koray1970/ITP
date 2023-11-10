@@ -68,6 +68,10 @@ import com.isticpla.itp.dummydata.listofDesigns
 import com.isticpla.itp.dummydata.listofHomeCampaigns
 import com.isticpla.itp.dummydata.listofHomeSectorNews
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.Carousel
+import com.isticpla.itp.uimodules.CarouselItem
+import com.isticpla.itp.uimodules.CarouselPagerRequest
+import com.isticpla.itp.uimodules.CarouselRequest
 import com.isticpla.itp.uimodules.DropDownTextField
 import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
 import com.isticpla.itp.uimodules.dropdownMenuItemColors
@@ -87,12 +91,18 @@ fun HomeSectionHeader(homeViewModel: HomeViewMode) {
     val shopselectedOptionText = rememberSaveable { mutableStateOf("") }
     val shopExpend = remember { mutableStateOf(false) }
 
-    val carouselListState=homeViewModel.carouselList.collectAsState(initial = emptyList<Int>())
-    val homeCarouselState = rememberPagerState(pageCount = { carouselListState.value.size })
-    var wsize = 16.dp
-    var hsize = 16.dp
-    var _shape = CircleShape
-    var color = AppColors.blue_104
+    val carouselListState = homeViewModel.carouselList.collectAsState(initial = emptyList<Int>())
+    val carouselRequest = CarouselRequest(
+        visuals = carouselListState.value,
+        carouselmodifier = Modifier,
+        pagespacing = 20.dp,
+        visualitemmodifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .fillMaxWidth()
+            .requiredHeight(220.dp),
+        pager = CarouselPagerRequest(true, 18.dp, AppColors.blue_104, AppColors.blue_105)
+    )
+
     Column {
         DropDownTextField(
             request = DropDowndTextFieldRequest(
@@ -111,60 +121,11 @@ fun HomeSectionHeader(homeViewModel: HomeViewMode) {
             )
         )
         Spacer(modifier = Modifier.height(20.dp))
-        HorizontalPager(
-            state = homeCarouselState,
-            pageSpacing = 20.dp
-        ) { page ->
-            val itm = carouselListState.value[page]
-            CarouselItem(image = itm)
-        }
-        Spacer(modifier = Modifier.height(18.dp))
-        Row(
-            Modifier
-                .wrapContentHeight()
-                .fillMaxWidth()
-                .padding(bottom = 8.dp),
-            verticalAlignment = Alignment.Bottom,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            repeat(homeCarouselState.pageCount) { iteration ->
+        Carousel(requests = carouselRequest)
 
-                if (homeCarouselState.currentPage == iteration) {
-                    color = AppColors.blue_104
-                    _shape = RoundedCornerShape(24.dp)
-                    wsize = 34.dp
-                } else {
-                    color = AppColors.blue_105
-                    _shape = CircleShape
-                    wsize = 16.dp
-                }
-                Box(
-                    modifier = Modifier
-                        .padding(2.dp)
-                        .clip(_shape)
-                        .background(color)
-                        .size(wsize, hsize)
-                )
-            }
-        }
     }
 }
 
-@Composable
-internal fun CarouselItem(image: Int) = Column(
-    modifier = Modifier
-        .fillMaxWidth()
-        .requiredHeight(220.dp)
-        .clip(RoundedCornerShape(8.dp)),
-    verticalArrangement = Arrangement.Center,
-    horizontalAlignment = Alignment.CenterHorizontally
-) {
-    Image(
-        painter = painterResource(id = image),
-        contentDescription = null,
-        contentScale = ContentScale.Crop
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -454,7 +415,7 @@ fun HomeSectionInStockSales(
             Text("Stoklu Satışlar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
-                onClick = { navController.navigate("stocksales")},
+                onClick = { navController.navigate("stocksales") },
             ) {
                 Text("Hepsini Göster", style = homeSectorShowAll)
             }

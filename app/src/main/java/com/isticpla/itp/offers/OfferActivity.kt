@@ -1510,7 +1510,7 @@ fun CreateOfferPublish(
         }, style = offerFinalStyle)
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedButton(
-            onClick = { navController.navigate("offer/create/preview") },
+            onClick = { navController.navigate("offer/detail/dashboard") },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = Color.White),
             border = BorderStroke(width = 1.dp, color = AppColors.red_100),
