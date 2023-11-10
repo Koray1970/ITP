@@ -77,9 +77,9 @@ val listofBusiness = listOf<BusinessTypeItem>(
 
 
 val listofShops = listOf<Pair<Int, String>>(
-    Pair<Int, String>(1,"Tilman's Hamburger \nNeuenfelderstraße 84, Hamburg"),
-    Pair<Int, String>(2,"Lu Bu Soul Food\nChristophstraße 7A, 80538 München"),
-    Pair<Int, String>(3,"Caffe Vinica\nSchönfeldstraße 24, 80539 München")
+    Pair<Int, String>(1, "Tilman's Hamburger \nNeuenfelderstraße 84, Hamburg"),
+    Pair<Int, String>(2, "Lu Bu Soul Food\nChristophstraße 7A, 80538 München"),
+    Pair<Int, String>(3, "Caffe Vinica\nSchönfeldstraße 24, 80539 München")
 )
 
 data class HomeDesignItem(val id: Int, val image: Int, val title: String, val price: String)
@@ -355,36 +355,92 @@ enum class FormItemTypes(val type: Int) {
     TEXTFIELD(type = 1), MULTILINETEXTFIELD(type = 2), DROPDOWNMENU_WITH_ADD_BUTTON(type = 3)
 }
 
-data class ProductFeatureItem(val id: Int, val label: String, val formItemType:FormItemTypes)
+data class ProductFeatureItem(val id: Int, val label: String, val formItemType: FormItemTypes)
 
 val listofProductFeature = listOf<ProductFeatureItem>(
-    ProductFeatureItem(1, "Açıklama",FormItemTypes.MULTILINETEXTFIELD),
-    ProductFeatureItem(2, "Örnek Ürün Linki",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(3, "Hammadde",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(4, "Renk",FormItemTypes.DROPDOWNMENU_WITH_ADD_BUTTON),
-    ProductFeatureItem(5, "Genişlik",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(6, "Uzunluk",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(7, "Yükseklik",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(8, "Derinlik",FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(9, "Setifika",FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(1, "Açıklama", FormItemTypes.MULTILINETEXTFIELD),
+    ProductFeatureItem(2, "Örnek Ürün Linki", FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(3, "Hammadde", FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(4, "Renk", FormItemTypes.DROPDOWNMENU_WITH_ADD_BUTTON),
+    ProductFeatureItem(5, "Genişlik", FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(6, "Uzunluk", FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(7, "Yükseklik", FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(8, "Derinlik", FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(9, "Setifika", FormItemTypes.TEXTFIELD),
 )
-val listOfQuantity = listOf<Pair<Int,Int>>(
-    Pair(1,1),
-    Pair(2,10),
-    Pair(3,50),
-    Pair(4,100),
-    Pair(5,200),
-    Pair(6,300),
-    Pair(7,500),
-    Pair(8,10000),
+val listOfQuantity = listOf<Pair<Int, Int>>(
+    Pair(1, 1),
+    Pair(2, 10),
+    Pair(3, 50),
+    Pair(4, 100),
+    Pair(5, 200),
+    Pair(6, 300),
+    Pair(7, 500),
+    Pair(8, 10000),
 )
-val listOfPaymentType= listOf<Pair<Int,String>>(
-    Pair(1,"Havale, Standart Ödeme"),
-    Pair(2,"Kredi Kartı"),
-    Pair(3,"Kapıda Ödeme"),
+val listOfPaymentType = listOf<Pair<Int, String>>(
+    Pair(1, "Havale, Standart Ödeme"),
+    Pair(2, "Kredi Kartı"),
+    Pair(3, "Kapıda Ödeme"),
 )
-val listOfDeliveryType= listOf<Pair<Int,String>>(
-    Pair(1,"Kapıda Teslim"),
-    Pair(2,"Kargo Firma Şubesi"),
-    Pair(3,"Gel Al"),
+val listOfDeliveryType = listOf<Pair<Int, String>>(
+    Pair(1, "Kapıda Teslim"),
+    Pair(2, "Kargo Firma Şubesi"),
+    Pair(3, "Gel Al"),
+)
+
+data class OfferDetailTabItem(
+    val label: String, val viewuri: String, val badgeval: Int? = null
+)
+
+val listofOfferDetailTabs = listOf<OfferDetailTabItem>(
+    OfferDetailTabItem("Genel", "", null),
+    OfferDetailTabItem("Detaylar", "", null),
+    OfferDetailTabItem("Teklifler", "", 1),
+    OfferDetailTabItem("Analiz", "", 1),
+    OfferDetailTabItem("Mesajlar", "", 3),
+)
+
+data class OfferDetailTrackingItem(
+    val isCompleted: Boolean = false,
+    val title: String,
+    val date: String,
+)
+
+val listofOfferDetailTrackings = listOf<OfferDetailTrackingItem>(
+    OfferDetailTrackingItem(true, "Parcel is successfully delivered", "15 May 10:20"),
+    OfferDetailTrackingItem(true, "Parcel is out for delivery", "14 May 08:00"),
+    OfferDetailTrackingItem(true, "Parcel is received at delivery Branch", "13 May 07:25"),
+    OfferDetailTrackingItem(true, "Parcel is in transit", "13 May 07:20"),
+    OfferDetailTrackingItem(true, "Sender has shipped your parcel", "12 May 14:25"),
+    OfferDetailTrackingItem(true, "Sender is preparing to ship your order", "12 May 10:01"),
+)
+
+enum class TypeOfPerson(value: Int) {
+    ADMIN(1), CLIENT(2)
+}
+
+data class OfferChatItem(
+    val typeofperson: TypeOfPerson,
+    val personalname: String?,
+    val icon: Int?,
+    val date: String,
+    val message: String = ""
+)
+
+val listofChatMessages = listOf<OfferChatItem>(
+    OfferChatItem(
+        TypeOfPerson.ADMIN,
+        "ITP Team",
+        null,
+        "Cumartesi, 12:30",
+        "Min Adet: 1,000 Üretim süresi: 21 gün"
+    ),
+    OfferChatItem(TypeOfPerson.CLIENT, null, R.mipmap.profilephoto, "Pazar, 12:32", "Okay wonder"),
+    OfferChatItem(
+        TypeOfPerson.ADMIN, "ITP Team", null, "Pazartesi, 09:27", "Kalite: A sınıfı\n" +
+                "Kargo: Alıcı ödemeli\n" +
+                "Numune: Alıcı ödemeli / 4 gün"
+    ),
+    OfferChatItem(TypeOfPerson.CLIENT, null, R.mipmap.profilephoto, "Pazar, 12:32", "Okay wonder"),
 )

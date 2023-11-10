@@ -34,6 +34,10 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
     val feedDashboardItems = flowOf<List<FeedDashboardItems>>(listofFeedDashboard)
 
+    val offerDetailsTabs= flowOf<List<OfferDetailTabItem>>(listofOfferDetailTabs)
+    val offerDetailsTracklist= flowOf<List<OfferDetailTrackingItem>>(listofOfferDetailTrackings)
+    val offerDetailsChat= flowOf<List<OfferChatItem>>(listofChatMessages)
+
     fun updateSectorButtonIsEnabled(id: Int): Boolean {
         return listofBusiness.first { i -> i.id == id }.isSelected!!
     }
