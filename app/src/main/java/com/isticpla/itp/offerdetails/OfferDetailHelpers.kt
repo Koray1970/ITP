@@ -293,8 +293,6 @@ internal fun OFAnalyz() = Column(
 internal fun OFMessages() {
     val homeviewModel = hiltViewModel<HomeViewMode>()
     val chatState by homeviewModel.offerDetailsChat.collectAsStateWithLifecycle(initialValue = emptyList<OfferChatItem>())
-
-
     //chat messages
     Column(
         modifier = Modifier

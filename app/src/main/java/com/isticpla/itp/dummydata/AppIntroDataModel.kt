@@ -444,3 +444,12 @@ val listofChatMessages = listOf<OfferChatItem>(
     ),
     OfferChatItem(TypeOfPerson.CLIENT, null, R.mipmap.profilephoto, "Pazar, 12:32", "Okay wonder"),
 )
+data class ProfileMenuItem(val icon:Int,val label: String,val navuri:String)
+val listofProfileMenu= listOf<ProfileMenuItem>(
+    ProfileMenuItem(R.drawable.ico_edit,"Profil Düzenle","profile/edit"),
+    ProfileMenuItem(R.drawable.ico_settings,"Ayarlar","profile/settings"),
+    ProfileMenuItem(R.drawable.ico_mystores,"Mağazalarım","profile/mystores"),
+    ProfileMenuItem(R.drawable.ico_contractedsuppliers,"Anlaşmalı Tedarikçiler","profile/contractedSuppliers"),
+    ProfileMenuItem(R.drawable.ico_collectionandtags,"Kolleksiyonlarım & Etiketlerim","profile/collectionsandtags"),
+    ProfileMenuItem(R.drawable.ico_helpandsupport,"Yardım ve Destek","profile/helpandsupport"),
+)

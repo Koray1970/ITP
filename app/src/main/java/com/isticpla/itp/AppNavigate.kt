@@ -1,5 +1,6 @@
 package com.isticpla.itp
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -8,15 +9,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.isticpla.itp.offerdetails.OfferDetailDashboard
 import com.isticpla.itp.offers.*
+import com.isticpla.itp.profile.Edit
+import com.isticpla.itp.profile.ProfileDashboard
 import com.isticpla.itp.signup.*
 import com.isticpla.itp.splash.*
 
+@SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "offer/detail/dashboard") {
+    NavHost(navController = navController, startDestination = "profile/dashboard") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }
@@ -49,5 +53,14 @@ fun AppNavigate() {
 
 
         composable("offer/detail/dashboard") { OfferDetailDashboard(navController) }
+
+        composable("profile/dashboard") { ProfileDashboard(navController) }
+        composable("profile/edit") { com.isticpla.itp.profile.Edit(navController) }
+        composable("profile/settings") { com.isticpla.itp.profile.ProfileSettings(navController) }
+        composable("profile/mystores") { com.isticpla.itp.profile.MyStores(navController) }
+        composable("profile/mystores/edit") { com.isticpla.itp.profile.MyStoreAddEdit(navController) }
+        composable("profile/contractedSuppliers") { com.isticpla.itp.profile.ContractedSuppliers(navController) }
+        composable("profile/collectionsandtags") { com.isticpla.itp.profile.CollectionsAndTags(navController) }
+        composable("profile/helpandsupport") { com.isticpla.itp.profile.HelpAndSupport(navController) }
     }
 }
