@@ -105,3 +105,17 @@ val offerdetailChatMessage= SpanStyle(
     fontSize=10.sp,
     color=AppColors.grey_171
 )
+val offerdetailChatFormLabel= TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 12.sp,
+    lineHeight=12.sp,
+    textAlign = TextAlign.Left,
+    color=AppColors.blue_103.copy(.5f)
+)
+val offerdetailChatFormPlaceholder= TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 12.sp,
+    lineHeight=12.sp,
+    textAlign = TextAlign.Left,
+    color=AppColors.blue_103.copy(.75f)
+)

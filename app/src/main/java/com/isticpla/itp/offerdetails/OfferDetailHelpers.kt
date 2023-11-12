@@ -1,6 +1,7 @@
 package com.isticpla.itp.offerdetails
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,8 +10,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -22,14 +25,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -284,156 +293,244 @@ internal fun OFAnalyz() = Column(
 internal fun OFMessages() {
     val homeviewModel = hiltViewModel<HomeViewMode>()
     val chatState by homeviewModel.offerDetailsChat.collectAsStateWithLifecycle(initialValue = emptyList<OfferChatItem>())
+
+
+    //chat messages
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp,Alignment.Top),
+            .heightIn(60.dp,2000.dp)
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(18.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         chatState.forEachIndexed { index, itm ->
             when (itm.typeofperson) {
                 TypeOfPerson.ADMIN -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(.9f),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.Start
-                    ) {
+                    Column() {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.Start
+                            horizontalArrangement = Arrangement.spacedBy(
+                                3.dp,
+                                Alignment.CenterHorizontally
+                            )
                         ) {
-                            Card(
+                            Column(
                                 modifier = Modifier
-                                    .size(40.dp),
-                                shape = RoundedCornerShape(
-                                    topStart = 3.dp,
-                                    topEnd = 3.dp,
-                                    bottomStart = 3.dp,
-                                    bottomEnd = 0.dp
-                                ),
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.mipmap.profilephoto),
-                                    contentScale = ContentScale.Fit, contentDescription = null
-                                )
-                            }
-                            Column {
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth(.9f)
-                                        .requiredHeight(70.dp),
-                                    shape = RoundedCornerShape(
-                                        topStart = 10.dp,
-                                        topEnd = 10.dp,
-                                        bottomEnd = 10.dp
-                                    ),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = AppColors.yellow_103.copy(
-                                            .1f
+                                    .background(Color.Transparent)
+                                    .requiredSize(40.dp, 40.dp)
+                                    .clip(
+                                        RoundedCornerShape(
+                                            topStart = 3.dp,
+                                            topEnd = 3.dp,
+                                            bottomStart = 3.dp,
+                                            bottomEnd = 0.dp
                                         )
                                     )
+                                    .paint(
+                                        painterResource(id = R.mipmap.profilephoto),
+                                        contentScale = ContentScale.Crop
+                                    )
+                            ) {
+
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(.8f)
+                                    .clip(
+                                        RoundedCornerShape(
+                                            topStart = 10.dp,
+                                            topEnd = 10.dp,
+                                            bottomEnd = 10.dp
+                                        )
+                                    ),
+                                verticalArrangement = Arrangement.Bottom
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(AppColors.yellow_103.copy(.1f))
+                                        .heightIn(30.dp, 400.dp)
+                                        .padding(horizontal = 10.dp, vertical = 8.dp),
+                                    verticalArrangement = Arrangement.Bottom
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .requiredHeight(IntrinsicSize.Max)
-                                            .padding(horizontal = 10.dp, vertical = 8.dp),
-                                        verticalArrangement = Arrangement.Bottom
-                                    ) {
-                                        Text(text = buildAnnotatedString {
-                                            withStyle(style = offerdetailChatPersonName) { append("${itm.personalname}\n") }
-                                            withStyle(style = offerdetailChatMessage) { append(itm.message) }
-                                        }, style = offerdetailChatTextStyle)
-                                    }
+                                    Text(text = buildAnnotatedString {
+                                        withStyle(style = offerdetailChatPersonName) {
+                                            append(
+                                                "${itm.personalname}\n"
+                                            )
+                                        }
+                                        withStyle(style = offerdetailChatMessage) {
+                                            append(
+                                                itm.message
+                                            )
+                                        }
+                                    }, style = offerdetailChatTextStyle)
                                 }
                             }
+                            Column(
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .requiredSize(40.dp, 40.dp)
+                            ) {
+
+                            }
                         }
-                        Text(
-                            text = buildAnnotatedString {
-                                withStyle(style = offerdetailChatMessage) { append(itm.date) }
-                            },
-                            style = offerdetailChatTextStyle,
-                            modifier = Modifier.padding(start = 50.dp)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.spacedBy(
+                                3.dp,
+                                Alignment.CenterHorizontally
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .requiredWidth(40.dp)
+                            ) {
+
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .fillMaxWidth(.8f)
+                            ) {
+                                Text(
+                                    text = buildAnnotatedString {
+                                        withStyle(style = offerdetailChatMessage) { append(itm.date) }
+                                    },
+                                    style = offerdetailChatTextStyle
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .requiredWidth(40.dp)
+                            ) {
+
+                            }
+                        }
                     }
                 }
 
                 TypeOfPerson.CLIENT -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth(.9f),
-                        verticalArrangement = Arrangement.Top,
-                        horizontalAlignment = Alignment.End
-                    ) {
+                    Column() {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(),
                             verticalAlignment = Alignment.Bottom,
-                            horizontalArrangement = Arrangement.Start
+                            horizontalArrangement = Arrangement.spacedBy(
+                                3.dp,
+                                Alignment.CenterHorizontally
+                            )
                         ) {
-                            Column {
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth(.9f)
-                                        .requiredHeight(70.dp),
-                                    shape = RoundedCornerShape(
-                                        topStart = 10.dp,
-                                        topEnd = 10.dp,
-                                        bottomStart = 10.dp
-                                    ),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = AppColors.blue_103.copy(
-                                            .1f
+                            Column(
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .requiredSize(40.dp, 40.dp)
+                            ) {
+
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth(.8f)
+                                    .clip(
+                                        RoundedCornerShape(
+                                            topStart = 10.dp,
+                                            topEnd = 10.dp,
+                                            bottomStart = 10.dp
                                         )
-                                    )
+                                    ),
+                                verticalArrangement = Arrangement.Bottom
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(AppColors.blue_103.copy(.1f))
+                                        .heightIn(30.dp, 400.dp)
+                                        .padding(horizontal = 10.dp, vertical = 8.dp),
+                                    verticalArrangement = Arrangement.Bottom
                                 ) {
-                                    Column(
-                                        modifier = Modifier
-                                            .requiredHeight(IntrinsicSize.Max)
-                                            .padding(horizontal = 10.dp, vertical = 8.dp),
-                                        verticalArrangement = Arrangement.Bottom
-                                    ) {
-                                        Text(text = buildAnnotatedString {
-                                            if (!itm.personalname.isNullOrEmpty())
-                                                withStyle(style = offerdetailChatPersonName) {
-                                                    append(
-                                                        "${itm.personalname}\n"
-                                                    )
-                                                }
-                                            withStyle(style = offerdetailChatMessage) { append(itm.message) }
-                                        }, style = offerdetailChatTextStyle)
-                                    }
+                                    Text(text = buildAnnotatedString {
+                                        if (!itm.personalname.isNullOrEmpty())
+                                            withStyle(style = offerdetailChatPersonName) {
+                                                append(
+                                                    "${itm.personalname}\n"
+                                                )
+                                            }
+                                        withStyle(style = offerdetailChatMessage) {
+                                            append(
+                                                itm.message
+                                            )
+                                        }
+                                    }, style = offerdetailChatTextStyle)
                                 }
                             }
-                            Card(
+                            Column(
                                 modifier = Modifier
-                                    .size(40.dp),
-                                shape = RoundedCornerShape(
-                                    topStart = 3.dp,
-                                    topEnd = 3.dp,
-                                    bottomStart = 0.dp,
-                                    bottomEnd = 3.dp
-                                ),
+                                    .background(Color.Transparent)
+                                    .requiredSize(40.dp, 40.dp)
+                                    .clip(
+                                        RoundedCornerShape(
+                                            topStart = 3.dp,
+                                            topEnd = 3.dp,
+                                            bottomStart = 0.dp,
+                                            bottomEnd = 3.dp
+                                        )
+                                    )
+                                    .paint(
+                                        painterResource(id = R.mipmap.profilephoto),
+                                        contentScale = ContentScale.Crop
+                                    )
+
                             ) {
-                                Image(
-                                    painter = painterResource(id = R.mipmap.profilephoto),
-                                    contentScale = ContentScale.Fit, contentDescription = null
-                                )
+
                             }
                         }
-                        Text(
-                            text = buildAnnotatedString {
-                                withStyle(style = offerdetailChatMessage) { append(itm.date) }
-                            },
-                            style = offerdetailChatTextStyle,
-                            modifier = Modifier.padding(end = 50.dp)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.spacedBy(
+                                3.dp,
+                                Alignment.CenterHorizontally
+                            )
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .requiredWidth(40.dp)
+                            ) {
+
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .fillMaxWidth(.8f)
+                            ) {
+                                Text(
+                                    text = buildAnnotatedString {
+                                        withStyle(style = offerdetailChatMessage) { append(itm.date) }
+                                    },
+                                    style = offerdetailChatTextStyle
+                                )
+                            }
+                            Column(
+                                modifier = Modifier
+                                    .background(Color.Transparent)
+                                    .requiredWidth(40.dp)
+                            ) {
+
+                            }
+                        }
                     }
                 }
             }
         }
+
     }
+
 }

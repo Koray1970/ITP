@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.width
@@ -40,6 +41,7 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
@@ -48,6 +50,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -121,9 +124,27 @@ fun OfferDetailDashboard(
     val offerDetailTabDbState by homeviewModel.offerDetailsTabs.collectAsStateWithLifecycle(
         initialValue = emptyList<OfferDetailTabItem>()
     )
-
+    var chatTxt by rememberSaveable { mutableStateOf("") }
     Scaffold(
         containerColor = Color.White,
+        bottomBar = {
+            if (offerDetailTabState.value == 4) {
+                TextField(
+                    value = chatTxt,
+                    onValueChange = { chatTxt = it },
+                    label = {Text("Mesaj kutusu", style=offerdetailChatFormLabel)},
+                    placeholder = {Text("Mesajını buraya yaz..", style=offerdetailChatFormPlaceholder)},
+                    leadingIcon = {
+                        Icon(painter= painterResource(id =R.drawable.round_check_circle_24 ),contentDescription = null, tint=AppColors.blue_103.copy(.5f))
+                    },
+                    trailingIcon = {
+                        IconButton(onClick = {  }) {
+                            Icon(painter= painterResource(id =R.drawable.round_arrow_upward_24 ),contentDescription = null, tint=AppColors.blue_103.copy(.5f))
+                        }
+                    }
+                )
+            }
+        },
         topBar = {
             TopAppBar(
                 colors = TopAppBarColors(
@@ -205,7 +226,10 @@ fun OfferDetailDashboard(
                 1 -> OFDetail()
                 2 -> OFOffers()
                 3 -> OFAnalyz()
-                4 -> OFMessages()
+                4 -> {
+
+                        OFMessages()
+                    }
             }
             Spacer(modifier = Modifier.requiredHeight(40.dp))
         }
