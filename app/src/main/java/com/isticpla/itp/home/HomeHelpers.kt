@@ -106,7 +106,6 @@ fun HomeSectionHeader(homeViewModel: HomeViewMode) {
     Column {
         DropDownTextField(
             request = DropDowndTextFieldRequest(
-                exposedDropdownMenuBoxModifier = null,
                 label = "Mağazalarım",
                 selectedOptionText = shopselectedOptionText,
                 expended = shopExpend,

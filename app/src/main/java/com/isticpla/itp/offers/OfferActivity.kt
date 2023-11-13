@@ -81,7 +81,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.google.gson.Gson
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.*
@@ -596,8 +595,7 @@ fun CreateOfferPage1(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateOfferVisualDetails(
-    navController: NavController,
-    homeViewMode: HomeViewMode = hiltViewModel(),
+    navController: NavController
 ) {
     Scaffold(
         containerColor = Color.White,
@@ -647,22 +645,22 @@ fun CreateOfferProductDetails(
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
     val expendedMenuViewModel = hiltViewModel<ExpendedMenuViewModel>()
-    val gson = Gson()
+
     val txtName = rememberSaveable { mutableStateOf("") }
     val txtComment = rememberSaveable { mutableStateOf("") }
-    var productDRPMenuExpanded = remember { mutableStateOf(false) }
+    val productDRPMenuExpanded = remember { mutableStateOf(false) }
     val productDRPMenuListdataState =
         homeViewMode.productDRPItems.collectAsState(initial = emptyList<ProductFeatureItem>())
-    var prdDRPItems = remember { mutableListOf<Pair<String, String>>() }
-    prdDRPItems = mutableListOf<Pair<String, String>>()
+    val prdDRPItems = remember { mutableListOf<Pair<String, String>>() }
+    //prdDRPItems = mutableListOf<Pair<String, String>>()
     productDRPMenuListdataState.value.forEach { i ->
         prdDRPItems.add(Pair(i.id.toString(), i.label))
     }
     val txtProductFieldValue = rememberSaveable { mutableStateOf("") }
 
-    val listofSelectedDataItems by expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle(
+    /*val listofSelectedDataItems by expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle(
         mutableListOf<ExpendedMenuSelectedCollectionItem>()
-    )
+    )*/
 
     Scaffold(
         containerColor = Color.White,
@@ -713,6 +711,7 @@ fun CreateOfferProductDetails(
                                 .fillMaxWidth(),
                             txtName,
                             null,
+                            null,
                             "Ürün adı",
                             false,
                             true,
@@ -732,6 +731,7 @@ fun CreateOfferProductDetails(
                                 .fillMaxWidth(),
                             txtComment,
                             null,
+                            null,
                             "Açıklama",
                             false,
                             true,
@@ -750,7 +750,13 @@ fun CreateOfferProductDetails(
                                 Modifier,
                                 Modifier,
                                 txtProductFieldValue,
-                                R.drawable.round_unfold_more_24,
+                                {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_unfold_more_24),
+                                        contentDescription = null
+                                    )
+                                },
+                                null,
                                 "Özellikler Seçiniz",
                                 false,
                                 true,
@@ -809,34 +815,34 @@ fun CreateOfferRequestDetails(
     navController: NavController,
 ) {
     val homeViewModel = hiltViewModel<HomeViewMode>()
-    var quantityExpendedState = remember { mutableStateOf(false) }
+    val quantityExpendedState = remember { mutableStateOf(false) }
     val quantityList by homeViewModel.requestQuantity.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, Int>>())
-    var quantityTxtValue = rememberSaveable { mutableStateOf("") }
+    val quantityTxtValue = rememberSaveable { mutableStateOf("") }
 
-    var buyerExpendedState = remember { mutableStateOf(false) }
+    val buyerExpendedState = remember { mutableStateOf(false) }
     val buyers by homeViewModel.shopList.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
-    var buyerTxtValue = rememberSaveable { mutableStateOf("") }
+    val buyerTxtValue = rememberSaveable { mutableStateOf("") }
 
-    var deliveryExpendedState = remember { mutableStateOf(false) }
+    val deliveryExpendedState = remember { mutableStateOf(false) }
     val deliveryTypes by homeViewModel.requestDeliveryTypes.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
-    var deliveryTxtValue = rememberSaveable { mutableStateOf("") }
+    val deliveryTxtValue = rememberSaveable { mutableStateOf("") }
 
-    var placeOfDeliveryExpendedState = remember { mutableStateOf(false) }
+    val placeOfDeliveryExpendedState = remember { mutableStateOf(false) }
     val placeOfDelivery by homeViewModel.shopList.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
-    var placeOfDeliveryTxtValue = rememberSaveable { mutableStateOf("") }
+    val placeOfDeliveryTxtValue = rememberSaveable { mutableStateOf("") }
 
-    var paymentTypeExpendedState = remember { mutableStateOf(false) }
+    val paymentTypeExpendedState = remember { mutableStateOf(false) }
     val paymentTypes by homeViewModel.requestPaymentType.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
-    var paymentTypeTxtValue = rememberSaveable { mutableStateOf("") }
+    val paymentTypeTxtValue = rememberSaveable { mutableStateOf("") }
 
-    var wantSampleChecked = remember { mutableStateOf(false) }
+    val wantSampleChecked = remember { mutableStateOf(false) }
 
-    var contractedSupplierChecked = remember { mutableStateOf(false) }
-    var contractedSupplierCodeTxtValue = rememberSaveable { mutableStateOf("") }
+    val contractedSupplierChecked = remember { mutableStateOf(false) }
+    val contractedSupplierCodeTxtValue = rememberSaveable { mutableStateOf("") }
 
-    var recieveOfferFromITPChecked = remember { mutableStateOf(false) }
+    val recieveOfferFromITPChecked = remember { mutableStateOf(false) }
 
-    var additianalrequestTxtValue = rememberSaveable { mutableStateOf("") }
+    val additianalrequestTxtValue = rememberSaveable { mutableStateOf("") }
 
     Scaffold(
         containerColor = Color.White,
@@ -884,7 +890,13 @@ fun CreateOfferRequestDetails(
                         Modifier,
                         Modifier,
                         quantityTxtValue,
-                        R.drawable.round_unfold_more_24,
+                        {
+                            Icon(
+                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                contentDescription = null
+                            )
+                        },
+                        null,
                         "Adet",
                         false,
                         true,
@@ -906,7 +918,13 @@ fun CreateOfferRequestDetails(
                         Modifier,
                         Modifier,
                         buyerTxtValue,
-                        R.drawable.round_unfold_more_24,
+                        {
+                            Icon(
+                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                contentDescription = null
+                            )
+                        },
+                        null,
                         "Alıcı Firma",
                         false,
                         true,
@@ -928,7 +946,13 @@ fun CreateOfferRequestDetails(
                         Modifier,
                         Modifier,
                         deliveryTxtValue,
-                        R.drawable.round_unfold_more_24,
+                        {
+                            Icon(
+                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                contentDescription = null
+                            )
+                        },
+                        null,
                         "Teslimat Şekli",
                         false,
                         true,
@@ -950,7 +974,13 @@ fun CreateOfferRequestDetails(
                         Modifier,
                         Modifier,
                         placeOfDeliveryTxtValue,
-                        R.drawable.round_unfold_more_24,
+                        {
+                            Icon(
+                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                contentDescription = null
+                            )
+                        },
+                        null,
                         "Teslimat Yeri",
                         false,
                         true,
@@ -972,7 +1002,13 @@ fun CreateOfferRequestDetails(
                         Modifier,
                         Modifier,
                         paymentTypeTxtValue,
-                        R.drawable.round_unfold_more_24,
+                        {
+                            Icon(
+                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                contentDescription = null
+                            )
+                        },
+                        null,
                         "Ödeme Şekli",
                         false,
                         true,
@@ -1006,6 +1042,7 @@ fun CreateOfferRequestDetails(
                         .fillMaxWidth(),
                     contractedSupplierCodeTxtValue,
                     null,
+                    null,
                     "Tedarikçi Kodu Gir",
                     false,
                     true,
@@ -1032,6 +1069,7 @@ fun CreateOfferRequestDetails(
                     Modifier
                         .fillMaxWidth(),
                     additianalrequestTxtValue,
+                    null,
                     null,
                     "Ek Açıklamalar",
                     false,
@@ -1072,7 +1110,6 @@ fun CreateOfferRequestDetails(
 @Composable
 fun CreateOfferPreview(
     navController: NavController,
-    homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
     var procuctDetailExpendedState by remember { mutableStateOf(true) }
     var procuctDetailExpendedIcon by remember { mutableStateOf(R.drawable.baseline_expand_more_24) }
@@ -1453,7 +1490,7 @@ fun CreateOfferPreview(
             }
             Spacer(modifier = Modifier.height(16.dp))
             Row(
-                modifier=Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -1479,7 +1516,6 @@ fun CreateOfferPreview(
 @Composable
 fun CreateOfferPublish(
     navController: NavController,
-    homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
     Column(
         modifier = Modifier

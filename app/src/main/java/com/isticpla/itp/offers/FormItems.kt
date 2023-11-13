@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -26,6 +28,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -38,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -53,6 +57,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -88,7 +93,8 @@ data class appTextFieldItems(
     val cardModifier: Modifier,
     val textFieldModifier: Modifier,
     var fieldValue: MutableState<String>,
-    var trialingIcon: Int?,
+    var trialingIcon: @Composable (() -> Unit)? = null,
+    var leadingIcon: @Composable (() -> Unit)? = null,
     val label: String,
     val isError: Boolean,
     var enabled: Boolean,
@@ -122,7 +128,8 @@ fun appTextField(itms: appTextFieldItems) = Card(
         colors = itms.appTextFieldColor,
         keyboardOptions = itms.appkeyboardOptions,
         modifier = itms.textFieldModifier,
-        trailingIcon=
+        trailingIcon = itms.trialingIcon,
+        leadingIcon = itms.leadingIcon
     )
 }
 
@@ -336,5 +343,112 @@ fun AppSwitch(
     } else {
         null
     }
-
 )
+
+data class PANTFPhoneTextFieldItem (
+    var fieldValue: MutableState<String> = mutableStateOf(""),
+    val label: @Composable (() -> Unit)? = null,
+    var isError:MutableState<Boolean> = mutableStateOf(false),
+    val modifier: Modifier = Modifier
+)
+
+data class PANTFItem<K, V> (
+    var rootCardModifier: Modifier? = null,
+    var dropdownExpended:MutableState<Boolean> = mutableStateOf(false),
+    var expMenuTFValue: MutableState<String> = mutableStateOf(""),
+    var expMenuTFModifier: Modifier = Modifier,
+    val menuItems: List<Pair<K, V>> = emptyList<Pair<K, V>>(),
+    val phoneTextFieldItem: PANTFPhoneTextFieldItem = PANTFPhoneTextFieldItem()
+)
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <K, V> appPhoneAreaAndNumberTextFieldGroup(itms: PANTFItem<K, V>) = Card(
+    colors = CardDefaults.cardColors(
+        containerColor = Color.Transparent
+    ),
+    shape = RoundedCornerShape(8.dp),
+    modifier = Modifier
+        .border(1.dp, AppColors.grey_133, RoundedCornerShape(8.dp))
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        ExposedDropdownMenuBox(
+            expanded = itms.dropdownExpended.value,
+            onExpandedChange = { itms.dropdownExpended.value = !itms.dropdownExpended.value }
+        ) {
+            TextField(
+                value = itms.expMenuTFValue.value,
+                onValueChange = { itms.expMenuTFValue.value = it },
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(.34f)
+                    .then(itms.expMenuTFModifier),
+                label = { Text(text = "") },
+                singleLine = true,
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = itms.dropdownExpended.value) },
+                colors = ExposedDropdownMenuDefaults.textFieldColors(
+                    focusedContainerColor = Color.Transparent,
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+            )
+            // filter options based on text field value
+            val filteringOptions = itms.menuItems.filter { mi ->
+                mi.second.toString().contains(
+                    itms.expMenuTFValue.value,
+                    ignoreCase = true
+                )
+            }
+            if (filteringOptions.isNotEmpty()) {
+                ExposedDropdownMenu(
+                    expanded = itms.dropdownExpended.value,
+                    onDismissRequest = {
+
+                        itms.dropdownExpended.value = false
+                    },
+                    modifier = Modifier.background(Color.White)
+                ) {
+                    filteringOptions.forEach { selectionOption ->
+                        val soS = "${selectionOption.first.toString()} ${selectionOption.second.toString()}"
+                        DropdownMenuItem(
+                            text = { Text(text = soS) },
+                            onClick = {
+                                itms.expMenuTFValue.value = soS
+                                itms.dropdownExpended.value = false
+                            },
+                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                            colors = MenuDefaults.itemColors()
+                        )
+                    }
+                }
+            }
+        }
+
+        VerticalDivider(thickness = 1.dp, color = AppColors.secondaryGrey , modifier = Modifier.requiredWidth(1.dp).requiredHeight(IntrinsicSize.Max))
+        TextField(
+            value = itms.phoneTextFieldItem.fieldValue.value,
+            onValueChange = { itms.phoneTextFieldItem.fieldValue.value = it },
+            isError = itms.phoneTextFieldItem.isError.value,
+            label = itms.phoneTextFieldItem.label,
+            singleLine = true,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                focusedLabelColor = AppColors.primaryGrey,
+                unfocusedLabelColor = AppColors.grey_118,
+                ),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Phone,
+                autoCorrect = false,
+                capitalization = KeyboardCapitalization.None
+            ),
+            modifier = itms.phoneTextFieldItem.modifier
+        )
+    }
+}

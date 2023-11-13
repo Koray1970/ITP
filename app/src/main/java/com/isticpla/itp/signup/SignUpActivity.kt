@@ -85,7 +85,7 @@ import com.isticpla.itp.uimodules.dropdownTextFieldColors
 import java.time.LocalDate
 
 class SignUpActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -630,7 +630,6 @@ fun CreateUserAccount(navController: NavController) {
                         textFieldReadOnly = true,
                         textfieldColors = defaultTextFieldColor(null, true),
                         menuItemColors = dropdownMenuItemColors(null, true),
-                        menuItemModifier = null
                     )
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -647,7 +646,6 @@ fun CreateUserAccount(navController: NavController) {
                         textFieldReadOnly = true,
                         textfieldColors = defaultTextFieldColor(null, true),
                         menuItemColors = dropdownMenuItemColors(null, true),
-                        menuItemModifier = null
                     )
                 )
                 Spacer(modifier = Modifier.width(10.dp))
@@ -664,7 +662,6 @@ fun CreateUserAccount(navController: NavController) {
                         textFieldReadOnly = true,
                         textfieldColors = defaultTextFieldColor(null, true),
                         menuItemColors = dropdownMenuItemColors(null, true),
-                        menuItemModifier = null
                     )
                 )
             }
@@ -683,7 +680,6 @@ fun CreateUserAccount(navController: NavController) {
                     textFieldReadOnly = true,
                     textfieldColors = defaultTextFieldColor(null, true),
                     menuItemColors = dropdownMenuItemColors(null, true),
-                    menuItemModifier = null
                 )
             )
 
@@ -904,7 +900,6 @@ fun AddYourBusiness(navController: NavController) {
                     textFieldReadOnly = true,
                     textfieldColors = dropdownTextFieldColors(null, true),
                     menuItemColors = dropdownMenuItemColors(null, true),
-                    menuItemModifier = null
                 )
             )
             Spacer(modifier = Modifier.height(40.dp))

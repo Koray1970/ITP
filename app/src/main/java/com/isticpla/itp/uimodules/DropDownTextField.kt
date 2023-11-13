@@ -1,81 +1,82 @@
 package com.isticpla.itp.uimodules
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 
 
-data class DropDowndTextFieldRequest<K,V>(
-    var exposedDropdownMenuBoxModifier: Modifier?,
+data class DropDowndTextFieldRequest<K, V>(
+    var exposedDropdownMenuBoxModifier: Modifier = Modifier,
     var label: String,
     var selectedOptionText: MutableState<String>,
-    var expended: MutableState<Boolean>,
-    var listOfOptions: List<Pair<K,V>>,
-    var textFieldModifier: Modifier,
+    var expended: MutableState<Boolean> = mutableStateOf(false),
+    var listOfOptions: List<Pair<K, V>> = emptyList<Pair<K, V>>(),
+    var textFieldModifier: Modifier = Modifier,
     var textFieldReadOnly: Boolean,
     var textfieldColors: TextFieldColors,
-    var menuItemColors: MenuItemColors?,
-    var menuItemModifier: Modifier?,
+    var menuItemColors: MenuItemColors,
+    var menuItemModifier: Modifier = Modifier,
 )
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <K,V> DropDownTextField(request: DropDowndTextFieldRequest<K,V>) = ExposedDropdownMenuBox(
-    modifier = if (request.exposedDropdownMenuBoxModifier != null) request.exposedDropdownMenuBoxModifier!! else Modifier,
+fun <K, V> DropDownTextField(request: DropDowndTextFieldRequest<K, V>) = ExposedDropdownMenuBox(
+    modifier = request.exposedDropdownMenuBoxModifier,
     expanded = request.expended.value,
-    onExpandedChange = { request!!.expended.value = !request.expended.value },
+    onExpandedChange = { request.expended.value = !request.expended.value },
 ) {
     TextField(
         // The `menuAnchor` modifier must be passed to the text field for correctness.
-        modifier = if (request!!.textFieldModifier != null) request!!.textFieldModifier!!.then(
-            Modifier.menuAnchor()
-        ) else Modifier.menuAnchor(),
+        modifier = Modifier
+            .menuAnchor()
+            .then(request.textFieldModifier),
         readOnly = request.textFieldReadOnly,
-        value = request!!.selectedOptionText.value,
-        onValueChange = { request!!.selectedOptionText.value = it },
-        label = { Text(text = request!!.label) },
-        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = request!!.expended.value) },
+        value = request.selectedOptionText.value,
+        onValueChange = { request.selectedOptionText.value = it },
+        label = { Text(text = request.label) },
+        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = request.expended.value) },
         //colors = ExposedDropdownMenuDefaults.textFieldColors(),
         keyboardOptions = KeyboardOptions(autoCorrect = false, keyboardType = KeyboardType.Ascii),
-        colors = request!!.textfieldColors
+        colors = request.textfieldColors
     )
     // filter options based on text field value
     val filteringOptions =
-        request!!.listOfOptions!!.filter {
-            it.first.toString().contains(request!!.selectedOptionText.value, ignoreCase = true)
+        request.listOfOptions.filter {
+            it.first.toString().contains(request.selectedOptionText.value, ignoreCase = true)
         }
     if (filteringOptions.isNotEmpty()) {
         ExposedDropdownMenu(
-            expanded = request!!.expended.value,
-            onDismissRequest = { request!!.expended.value = false },
+            modifier=Modifier.background(Color.White),
+            expanded = request.expended.value,
+            onDismissRequest = { request.expended.value = false },
         ) {
-            request!!.listOfOptions!!.forEach { selectionOption ->
-                val lstFirstItem=selectionOption.first.toString()
+            request.listOfOptions.forEach { selectionOption ->
+                val lstFirstItem = selectionOption.first.toString()
                 DropdownMenuItem(
-                    modifier = if (request!!.menuItemModifier != null) request!!.menuItemModifier!! else Modifier,
+                    modifier = request.menuItemModifier,
                     text = { Text(lstFirstItem) },
                     onClick = {
-                        request!!.selectedOptionText.value = lstFirstItem
-                        request!!.expended.value = false
+                        request.selectedOptionText.value = lstFirstItem
+                        request.expended.value = false
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                    colors = if (request!!.menuItemColors != null) request!!.menuItemColors!! else dropdownMenuItemColors(
-                        null,
-                        true
-                    )
+                    colors =  request.menuItemColors
                 )
             }
         }

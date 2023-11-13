@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.isticpla.itp.data.countryListDB
 import com.isticpla.itp.dummydata.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.first
@@ -17,7 +18,10 @@ import javax.inject.Inject
 class HomeViewMode @Inject constructor() : ViewModel() {
     val carouselList = flowOf<List<Int>>(listofCarousel)
 
-    @RequiresApi(Build.VERSION_CODES.R)
+
+    val areacodeList = flowOf<List<Pair<String, String>>>(listofAraeCodes)
+    val countryList = flowOf<List<Pair<String, String>>>(countryListDB)
+    //@RequiresApi(Build.VERSION_CODES.R)
     val shopList = flowOf<List<Pair<Int, String>>>(listofShops)
     var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.toMutableList())
     val designsList = flowOf<List<HomeDesignItem>>(listofDesigns)
