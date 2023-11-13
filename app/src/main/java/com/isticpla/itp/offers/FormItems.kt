@@ -121,7 +121,8 @@ fun appTextField(itms: appTextFieldItems) = Card(
         minLines = itms.minLines,
         colors = itms.appTextFieldColor,
         keyboardOptions = itms.appkeyboardOptions,
-        modifier = itms.textFieldModifier
+        modifier = itms.textFieldModifier,
+        trailingIcon=
     )
 }
 
