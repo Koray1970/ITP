@@ -30,41 +30,8 @@ fun MyStoreAddEdit(
 ) {
     Scaffold(
         containerColor = Color.White,
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarColors(
-                    containerColor = Color.White, scrolledContainerColor = Color.White,
-                    navigationIconContentColor = AppColors.primaryGrey,
-                    titleContentColor = AppColors.primaryGrey,
-                    actionIconContentColor = AppColors.primaryGrey,
-                ),
-                title = { Text("Profilim", style = offerTopBarTitle) },
-                /*actions = {
-                    TextButton(onClick = { navController.navigate("home") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_mode_edit_24),
-                            contentDescription = null
-                        )
-                        Text("Düzenle", style = TextStyle())
-                    }
-                    TextButton(onClick = { navController.navigate("home") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_content_copy_24),
-                            contentDescription = null
-                        )
-                        Text("Kopyala", style = TextStyle())
-                    }
-                },*/
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("profile/mystores") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_left),
-                            contentDescription = null
-                        )
-                    }
-                }
-            )
-        }) { innerpadding ->
+        topBar ={ ProfileTopBar(navController,"Mağaza Ekle","profile/mystores","profile/dashboard") }
+    ) { innerpadding ->
         Column(
             modifier = Modifier
                 .padding(innerpadding)

@@ -8,6 +8,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -22,50 +23,17 @@ import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.offers.offerTopBarTitle
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uistyles.topmenuTitle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyStores(
-    navController: NavController
+    navController: NavController,
 ) {
     Scaffold(
         containerColor = Color.White,
-
-        topBar = {
-            TopAppBar(
-                colors = TopAppBarColors(
-                    containerColor = Color.White, scrolledContainerColor = Color.White,
-                    navigationIconContentColor = AppColors.primaryGrey,
-                    titleContentColor = AppColors.primaryGrey,
-                    actionIconContentColor = AppColors.primaryGrey,
-                ),
-                title = { Text("Profilim", style = offerTopBarTitle) },
-                /*actions = {
-                    TextButton(onClick = { navController.navigate("home") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_mode_edit_24),
-                            contentDescription = null
-                        )
-                        Text("Düzenle", style = TextStyle())
-                    }
-                    TextButton(onClick = { navController.navigate("home") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_content_copy_24),
-                            contentDescription = null
-                        )
-                        Text("Kopyala", style = TextStyle())
-                    }
-                },*/
-                navigationIcon = {
-                    IconButton(onClick = { navController.navigate("profile/dashboard") }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.arrow_left),
-                            contentDescription = null
-                        )
-                    }
-                }
-            )
-        }) { innerpadding ->
+        topBar = { ProfileTopBar(navController, "Mağazalarım", "profile/dashboard", "home") }
+    ) { innerpadding ->
         Column(
             modifier = Modifier
                 .padding(innerpadding)
