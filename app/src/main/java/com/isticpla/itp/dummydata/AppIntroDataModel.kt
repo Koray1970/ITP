@@ -444,12 +444,74 @@ val listofChatMessages = listOf<OfferChatItem>(
     ),
     OfferChatItem(TypeOfPerson.CLIENT, null, R.mipmap.profilephoto, "Pazar, 12:32", "Okay wonder"),
 )
-data class ProfileMenuItem(val icon:Int,val label: String,val navuri:String)
-val listofProfileMenu= listOf<ProfileMenuItem>(
-    ProfileMenuItem(R.drawable.ico_edit,"Profil Düzenle","profile/edit"),
-    ProfileMenuItem(R.drawable.ico_settings,"Ayarlar","profile/settings"),
-    ProfileMenuItem(R.drawable.ico_mystores,"Mağazalarım","profile/mystores"),
-    ProfileMenuItem(R.drawable.ico_contractedsuppliers,"Anlaşmalı Tedarikçiler","profile/contractedSuppliers"),
-    ProfileMenuItem(R.drawable.ico_collectionandtags,"Kolleksiyonlarım & Etiketlerim","profile/collectionsandtags"),
-    ProfileMenuItem(R.drawable.ico_helpandsupport,"Yardım ve Destek","profile/helpandsupport"),
+
+data class ProfileMenuItem(val icon: Int, val label: String, val navuri: String)
+
+val listofProfileMenu = listOf<ProfileMenuItem>(
+    ProfileMenuItem(R.drawable.ico_edit, "Profil Düzenle", "profile/edit"),
+    ProfileMenuItem(R.drawable.ico_settings, "Ayarlar", "profile/settings"),
+    ProfileMenuItem(R.drawable.ico_mystores, "Mağazalarım", "profile/mystores"),
+    ProfileMenuItem(
+        R.drawable.ico_contractedsuppliers,
+        "Anlaşmalı Tedarikçiler",
+        "profile/contractedSuppliers"
+    ),
+    ProfileMenuItem(
+        R.drawable.ico_collectionandtags,
+        "Kolleksiyonlarım & Etiketlerim",
+        "profile/collectionsandtags"
+    ),
+    ProfileMenuItem(R.drawable.ico_helpandsupport, "Yardım ve Destek", "profile/helpandsupport"),
+)
+
+data class MyStoreItem(
+    val image: Int,
+    val title: String,
+    val content: String,
+    val address: String,
+    val webaddress: String,
+    val email: String,
+    val taglist: List<String> = emptyList<String>(),
+    val isactive: Boolean = true,
+    val ishide: Boolean = false
+)
+
+val listofMyStore = listOf<MyStoreItem>(
+    MyStoreItem(
+        image = R.mipmap.profilephoto,
+        title = "Indonesian chicken burger company",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
+    ),
+    MyStoreItem(
+        image = R.mipmap.profilephoto,
+        title = "Indonesian chicken burger company",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
+    ),
+    MyStoreItem(
+        image = R.mipmap.profilephoto,
+        title = "Indonesian chicken burger company",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
+    ),
+    MyStoreItem(
+        image = R.mipmap.profilephoto,
+        title = "Indonesian chicken burger company",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
+        isactive = false
+    ),
 )

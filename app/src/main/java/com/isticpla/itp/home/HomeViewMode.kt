@@ -44,6 +44,8 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
     val profileMenu=flowOf<List<ProfileMenuItem>>(listofProfileMenu)
 
+    val mystores= flowOf<List<MyStoreItem>>(listofMyStore)
+
     fun updateSectorButtonIsEnabled(id: Int): Boolean {
         return listofBusiness.first { i -> i.id == id }.isSelected!!
     }

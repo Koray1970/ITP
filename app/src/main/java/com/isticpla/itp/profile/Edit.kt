@@ -4,11 +4,16 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -87,7 +92,7 @@ fun Edit(
         Column(
             modifier = Modifier
                 .padding(innerpadding)
-                .padding(top = 2.dp)
+                .padding(top = 30.dp)
                 .padding(horizontal = 10.dp)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(6.dp, Alignment.Top),
@@ -222,6 +227,26 @@ fun Edit(
                     menuItemModifier =Modifier
                 )
             )
+            Spacer(modifier=Modifier.height(26.dp))
+            Button(
+                onClick = { navController.navigate("offer/create/publish") },
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppColors.blue_102,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+            ) {
+                Text(text = "Güncelle", style = offerStagePublishButton)
+                Icon(
+                    painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+            Spacer(modifier=Modifier.height(30.dp))
         }
     }
     if (showDatePicker) {
