@@ -20,7 +20,7 @@ import com.isticpla.itp.splash.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "profile/edit") {
+    NavHost(navController = navController, startDestination = "profile/mystores") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }

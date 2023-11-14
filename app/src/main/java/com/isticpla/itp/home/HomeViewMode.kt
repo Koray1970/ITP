@@ -7,8 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.isticpla.itp.data.countryListDB
 import com.isticpla.itp.dummydata.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import java.util.concurrent.Flow
@@ -44,7 +47,10 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
     val profileMenu=flowOf<List<ProfileMenuItem>>(listofProfileMenu)
 
-    val mystores= flowOf<List<MyStoreItem>>(listofMyStore)
+
+    val mystores= flow<List<MyStoreItem>> {
+        this.emit(listofMyStore)
+    }.flowOn(Dispatchers.IO) //flowOf<List<MyStoreItem>>(listofMyStore)
 
     fun updateSectorButtonIsEnabled(id: Int): Boolean {
         return listofBusiness.first { i -> i.id == id }.isSelected!!
