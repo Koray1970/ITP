@@ -82,8 +82,12 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.home.homeSubSectionTitle
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.Bg
+import com.isticpla.itp.uimodules.BottomBarMenuItem
+import com.isticpla.itp.uimodules.BottomBarMenuItemType
 import com.isticpla.itp.uimodules.DeepAnalyzerButton
 import com.isticpla.itp.uimodules.SearchbarWithChips
+import com.isticpla.itp.uimodules.defaultmenuItemState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import java.util.Locale
@@ -139,8 +143,11 @@ fun FeedDashboard(
 
     val listofdashboarditem =
         homeViewMode.feedDashboardItems.collectAsState(initial = emptyList<FeedDashboardItems>())
+
+
     Scaffold(
         containerColor = Color.White,
+        bottomBar = { Bg(navController, defaultmenuItemState) },
         topBar = {
             MediumTopAppBar(
                 colors = TopAppBarColors(
@@ -159,7 +166,7 @@ fun FeedDashboard(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("home") }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null
@@ -307,6 +314,7 @@ fun FeedProductDetail(
 
     Scaffold(
         containerColor = Color.Transparent,
+        bottomBar = { Bg(navController, defaultmenuItemState) },
         topBar = {
             TopAppBar(
                 colors = TopAppBarColors(
@@ -326,7 +334,7 @@ fun FeedProductDetail(
                         ),
                         modifier = Modifier
                             .background(Color.White.copy(.6f), RoundedCornerShape(8.dp)),
-                        onClick = { navController.navigate("feed") }) {
+                        onClick = { navController.popBackStack() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null

@@ -82,8 +82,10 @@ import com.isticpla.itp.home.homeSectorNewsTitle
 import com.isticpla.itp.home.homeSubSectionTitle
 import com.isticpla.itp.ui.theme.ITPTheme
 import com.isticpla.itp.uimodules.AppColors
-import com.isticpla.itp.uimodules.SearchbarWithChips
-import java.util.Locale
+     import com.isticpla.itp.uimodules.Bg
+     import com.isticpla.itp.uimodules.SearchbarWithChips
+     import com.isticpla.itp.uimodules.defaultmenuItemState
+     import java.util.Locale
 
 class NewListActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
@@ -134,6 +136,7 @@ fun NewsListDashboard(
         homeViewMode.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
     Scaffold(
         containerColor = Color.White,
+        bottomBar = { Bg(navController, defaultmenuItemState) },
         topBar = {
             MediumTopAppBar(
                 colors = TopAppBarColors(
@@ -343,6 +346,7 @@ fun NewsListDetail(
 
     Scaffold(
         containerColor = Color.Transparent,
+        bottomBar = { Bg(navController, defaultmenuItemState) },
         topBar = {
             TopAppBar(
                 colors = TopAppBarColors(

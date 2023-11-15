@@ -138,7 +138,9 @@ fun CreateOfferDashboard(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("feed/productdetail") }) {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null
@@ -892,7 +894,7 @@ fun CreateOfferRequestDetails(
                         quantityTxtValue,
                         {
                             Icon(
-                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                painter = painterResource(id = R.drawable.round_unfold_more_24),
                                 contentDescription = null
                             )
                         },
@@ -920,7 +922,7 @@ fun CreateOfferRequestDetails(
                         buyerTxtValue,
                         {
                             Icon(
-                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                painter = painterResource(id = R.drawable.round_unfold_more_24),
                                 contentDescription = null
                             )
                         },
@@ -948,7 +950,7 @@ fun CreateOfferRequestDetails(
                         deliveryTxtValue,
                         {
                             Icon(
-                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                painter = painterResource(id = R.drawable.round_unfold_more_24),
                                 contentDescription = null
                             )
                         },
@@ -976,7 +978,7 @@ fun CreateOfferRequestDetails(
                         placeOfDeliveryTxtValue,
                         {
                             Icon(
-                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                painter = painterResource(id = R.drawable.round_unfold_more_24),
                                 contentDescription = null
                             )
                         },
@@ -1004,7 +1006,7 @@ fun CreateOfferRequestDetails(
                         paymentTypeTxtValue,
                         {
                             Icon(
-                                painter = painterResource(id =R.drawable.round_unfold_more_24),
+                                painter = painterResource(id = R.drawable.round_unfold_more_24),
                                 contentDescription = null
                             )
                         },

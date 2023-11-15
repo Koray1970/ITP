@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.isticpla.itp.home.HomeSectionCampaigns
 import com.isticpla.itp.offerdetails.OfferDetailDashboard
 import com.isticpla.itp.offers.*
 import com.isticpla.itp.profile.Edit
@@ -20,7 +21,7 @@ import com.isticpla.itp.splash.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "profile/mystores") {
+    NavHost(navController = navController, startDestination = "home") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }
@@ -34,6 +35,8 @@ fun AppNavigate() {
         composable("home/notifications") { Notifications(navController) }
         composable("home/jobs") { Jobs(navController) }
         composable("home/messages") { Messages(navController) }
+
+        composable("home/section/campaigns") { HomeSectionCampaigns(navController) }
 
         composable("feed") { FeedDashboard(navController) }
         composable("feed/productdetail") { FeedProductDetail(navController) }

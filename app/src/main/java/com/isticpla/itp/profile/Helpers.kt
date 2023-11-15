@@ -41,7 +41,7 @@ internal fun ProfileTopBar(
             }
         },
         navigationIcon = {
-            IconButton(onClick = { navController.navigate(navigationulr) }) {
+            IconButton(onClick = { navController.popBackStack() }) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrow_left),
                     contentDescription = null

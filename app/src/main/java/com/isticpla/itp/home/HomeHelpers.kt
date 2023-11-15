@@ -58,6 +58,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.BusinessTypeItem
@@ -81,8 +82,9 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.R)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeSectionHeader(homeViewModel: HomeViewMode) {
+fun HomeSectionHeader() {
     val configuration = LocalConfiguration.current
+    val homeViewModel= hiltViewModel<HomeViewMode>()
     val listofShops =
         homeViewModel.shopList.collectAsState(initial = emptyList<Pair<Int, String>>())
 
@@ -130,10 +132,10 @@ fun HomeSectionHeader(homeViewModel: HomeViewMode) {
 @Composable
 fun HomeSectionSectors(
     navController: NavController,
-    homeViewMode: HomeViewMode
 ) {
+    val homeViewModel= hiltViewModel<HomeViewMode>()
     val sectorList =
-        homeViewMode.sectorList.collectAsState(initial = emptyList<BusinessTypeItem>())
+        homeViewModel.sectorList.collectAsState(initial = emptyList<BusinessTypeItem>())
     Column() {
         Spacer(modifier = Modifier.height(40.dp))
         Text("Sektörler", style = homeSectionTitle)
@@ -196,10 +198,10 @@ fun HomeSectionSectors(
 @Composable
 fun HomeSectionDesigns(
     navController: NavController,
-    homeViewMode: HomeViewMode
 ) {
+    val homeViewModel= hiltViewModel<HomeViewMode>()
     val listofDesigns =
-        homeViewMode.designsList.collectAsState(initial = emptyList<HomeDesignItem>())
+        homeViewModel.designsList.collectAsState(initial = emptyList<HomeDesignItem>())
     Column() {
         Spacer(modifier = Modifier.height(40.dp))
         Row(
@@ -209,7 +211,7 @@ fun HomeSectionDesigns(
             Text("Tasarımlar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
-                onClick = { },
+                onClick = {navController.navigate("feed") },
             ) {
                 Text("Hepsini Göster", style = homeSectorShowAll)
             }
@@ -258,10 +260,10 @@ fun HomeSectionDesigns(
 @Composable
 fun HomeSectionCampaigns(
     navController: NavController,
-    homeViewMode: HomeViewMode
 ) {
+    val homeViewModel= hiltViewModel<HomeViewMode>()
     val listofCampaigns =
-        homeViewMode.campaignList.collectAsState(initial = emptyList<HomeCampaignItem>())
+        homeViewModel.campaignList.collectAsState(initial = emptyList<HomeCampaignItem>())
     Column() {
         Spacer(modifier = Modifier.height(40.dp))
         Row(
@@ -271,7 +273,7 @@ fun HomeSectionCampaigns(
             Text("Kampanyalar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
-                onClick = { },
+                onClick = { navController.navigate("home/section/campaigns")},
             ) {
                 Text("Hepsini Göster", style = homeSectorShowAll)
             }
@@ -401,10 +403,10 @@ fun HomeSectionCampaigns(
 @Composable
 fun HomeSectionInStockSales(
     navController: NavController,
-    homeViewMode: HomeViewMode
 ) {
+    val homeViewModel= hiltViewModel<HomeViewMode>()
     val listofStockSales =
-        homeViewMode.stokSaleList.collectAsState(initial = emptyList<HomeDesignItem>())
+        homeViewModel.stokSaleList.collectAsState(initial = emptyList<HomeDesignItem>())
     Column() {
         Spacer(modifier = Modifier.height(40.dp))
         Row(
@@ -476,10 +478,10 @@ fun HomeSectionInStockSales(
 @Composable
 fun HomeSectionSectorNews(
     navController: NavController,
-    homeViewMode: HomeViewMode
 ) {
+    val homeViewModel= hiltViewModel<HomeViewMode>()
     val listofSectorNews =
-        homeViewMode.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
+        homeViewModel.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
     Column() {
         Spacer(modifier = Modifier.height(40.dp))
         Row(
