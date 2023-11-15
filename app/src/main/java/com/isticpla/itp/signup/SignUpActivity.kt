@@ -68,6 +68,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavController
 import com.isticpla.itp.AppNavigate
 import com.isticpla.itp.R
@@ -82,12 +83,16 @@ import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
 import com.isticpla.itp.uimodules.defaultTextFieldColor
 import com.isticpla.itp.uimodules.dropdownMenuItemColors
 import com.isticpla.itp.uimodules.dropdownTextFieldColors
+import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
-
+@AndroidEntryPoint
 class SignUpActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
+
+        //splashScreen.setKeepOnScreenCondition { true }
         setContent {
             ITPTheme {
                 // A surface container using the 'background' color from the theme

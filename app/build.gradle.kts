@@ -7,12 +7,6 @@ plugins {
 
 android {
     signingConfigs {
-        getByName("debug") {
-            storeFile = file("C:\\Users\\user\\Documents\\ITP Documents\\publishkeys")
-            storePassword = "Qwe123.."
-            keyPassword = "Qwe123.."
-            keyAlias = "itp0"
-        }
         create("release") {
             storeFile = file("C:\\Users\\user\\Documents\\ITP Documents\\publishkeys")
             storePassword = "Qwe123.."
@@ -27,7 +21,7 @@ android {
         applicationId = "com.isticpla.itp"
         minSdk = 24
         targetSdk = 33
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -95,6 +89,7 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    implementation("androidx.core:core-splashscreen:1.1.0-alpha02")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")

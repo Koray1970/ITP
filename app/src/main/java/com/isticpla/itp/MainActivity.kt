@@ -45,6 +45,8 @@ import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.Bg
 import com.isticpla.itp.uimodules.BottomBarMenuItem
 import com.isticpla.itp.uimodules.BottomBarMenuItemType
+import dagger.hilt.android.AndroidEntryPoint
+
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.R)

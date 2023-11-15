@@ -76,7 +76,7 @@ import com.isticpla.itp.uimodules.DefaultRoundedCornerButton
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
-@AndroidEntryPoint
+
 class SplashActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
