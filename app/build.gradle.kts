@@ -6,6 +6,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("C:\\Users\\user\\Documents\\ITP Documents\\publishkeys")
+            storePassword = "Qwe123.."
+            keyPassword = "Qwe123.."
+            keyAlias = "itp0"
+        }
+        create("release") {
+            storeFile = file("C:\\Users\\user\\Documents\\ITP Documents\\publishkeys")
+            storePassword = "Qwe123.."
+            keyPassword = "Qwe123.."
+            keyAlias = "itp0"
+        }
+    }
     namespace = "com.isticpla.itp"
     compileSdk = 34
 
@@ -24,7 +38,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isShrinkResources = true
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
