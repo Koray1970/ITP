@@ -465,6 +465,7 @@ val listofProfileMenu = listOf<ProfileMenuItem>(
 )
 
 data class MyStoreItem(
+    val id: Int,
     val image: Int,
     val title: String,
     val content: String,
@@ -478,6 +479,7 @@ data class MyStoreItem(
 
 val listofMyStore = listOf<MyStoreItem>(
     MyStoreItem(
+        id = 1,
         image = R.mipmap.profilephoto,
         title = "Indonesian chicken burger company",
         address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
@@ -487,6 +489,7 @@ val listofMyStore = listOf<MyStoreItem>(
         taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
     ),
     MyStoreItem(
+        id = 2,
         image = R.mipmap.profilephoto,
         title = "Indonesian chicken burger company",
         address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
@@ -496,6 +499,7 @@ val listofMyStore = listOf<MyStoreItem>(
         taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
     ),
     MyStoreItem(
+        id = 3,
         image = R.mipmap.profilephoto,
         title = "Indonesian chicken burger company",
         address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
@@ -505,6 +509,7 @@ val listofMyStore = listOf<MyStoreItem>(
         taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
     ),
     MyStoreItem(
+        id = 4,
         image = R.mipmap.profilephoto,
         title = "Indonesian chicken burger company",
         address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
@@ -514,4 +519,61 @@ val listofMyStore = listOf<MyStoreItem>(
         taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
         isactive = false
     ),
+)
+
+data class ContractedSupplierItem(
+    val id: Int,
+    val image: Int,
+    val code: String,
+    val title: String,
+    val content: String,
+    val address: String,
+    val webaddress: String,
+    val email: String,
+    val isapproved: Boolean = true,
+    val isactive: Boolean = true,
+)
+
+val listofContractedSupplier = listOf<ContractedSupplierItem>(
+    ContractedSupplierItem(
+        id = 1,
+        image = R.mipmap.profilephoto,
+        code = "XTRGOK",
+        title = "Indonesian chicken burger company",
+        content = "6856897584 Vergi Numarası\nBrandenburg Vergi Dairesi",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com"
+    ),
+    ContractedSupplierItem(
+        id = 2,
+        image = R.mipmap.profilephoto,
+        code = "XTRGOK",
+        title = "Indonesian chicken burger company",
+        content = "6856897584 Vergi Numarası\nBrandenburg Vergi Dairesi",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com"
+    ),
+    ContractedSupplierItem(
+        id = 3,
+        image = R.mipmap.profilephoto,
+        code = "XTRGOK",
+        title = "Indonesian chicken burger company",
+        content = "6856897584 Vergi Numarası\nBrandenburg Vergi Dairesi",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com"
+    ),
+    ContractedSupplierItem(
+        id = 4,
+        image = R.mipmap.profilephoto,
+        code = "XTRGOK",
+        title = "Indonesian chicken burger company",
+        content = "6856897584 Vergi Numarası\nBrandenburg Vergi Dairesi",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        isactive = false
+    )
 )

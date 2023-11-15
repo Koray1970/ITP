@@ -225,7 +225,6 @@ internal fun ProfilePhotoViewer() = Row(
         Box(
             modifier = Modifier
                 .requiredSize(100.dp)
-
                 .clip(CircleShape)
                 .background(
                     brush = Brush.radialGradient(

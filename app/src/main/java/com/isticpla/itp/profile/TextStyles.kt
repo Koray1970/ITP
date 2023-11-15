@@ -61,12 +61,19 @@ val myStoreButtonLabel=TextStyle(
     textAlign = TextAlign.Left,
     color=AppColors.grey_138
 )
+val myStoreButtonListViewLabel=TextStyle(
+    fontFamily = poppinFamily,
+    fontSize=12.sp,
+    fontWeight=FontWeight.Normal,
+    textAlign = TextAlign.Center,
+    color=AppColors.grey_138
+)
 val myStoreCardTitle=TextStyle(
     fontFamily = poppinFamily,
     fontSize=14.sp,
     fontWeight=FontWeight.Normal,
     textAlign = TextAlign.Left,
-    lineHeight=16.sp,
+    lineHeight=18.sp,
     color=Color.Black
 )
 val myStoreCardTextStyle=TextStyle(
@@ -74,7 +81,7 @@ val myStoreCardTextStyle=TextStyle(
     fontSize=12.sp,
     fontWeight=FontWeight.Normal,
     textAlign = TextAlign.Left,
-    lineHeight=14.sp,
+    lineHeight=19.sp,
     color=AppColors.grey_159
 )
 val myStoreCardText=SpanStyle(
@@ -83,15 +90,46 @@ val myStoreCardText=SpanStyle(
     fontWeight=FontWeight.Normal,
     color=Color.Black
 )
-val myStoreAddNewShowButtonLabel=SpanStyle(
+val myStoreAddNewStoreButtonLabel=SpanStyle(
     fontSize=14.sp,
     fontWeight=FontWeight.Bold,
     color=AppColors.blue_102
 )
-val myStoreAddNewShowButton= TextStyle(
+val myStoreAddNewStoreButton= TextStyle(
     fontFamily = poppinFamily,
     fontSize=12.sp,
     fontWeight=FontWeight.Normal,
     textAlign=TextAlign.Left,
     color=AppColors.blue_102
+)
+val myStoreAddNewStorePremiumLabel= TextStyle(
+    fontFamily = poppinFamily,
+    fontSize=12.sp,
+    fontWeight=FontWeight.SemiBold,
+    textAlign=TextAlign.Center,
+    color=Color.White
+)
+val myStoreInactive= TextStyle(
+    fontFamily = poppinFamily,
+    fontSize=12.sp,
+    fontWeight=FontWeight.Normal,
+    textAlign=TextAlign.Left,
+    color=AppColors.red_100
+)
+val contractedSuppNewSupplierTitle= TextStyle(
+    fontFamily = poppinFamily,
+    fontSize=16.sp,
+    fontWeight=FontWeight.Normal,
+    textAlign=TextAlign.Left,
+    color=AppColors.grey_138
+)
+val contractedSuppButtonLabel= TextStyle(
+    fontFamily = poppinFamily,
+    fontSize=16.sp,
+    fontWeight=FontWeight.SemiBold,
+    textAlign=TextAlign.Center
+)
+val contractedSuppTextFieldLabel= TextStyle(
+    fontFamily = poppinFamily,
+    fontWeight=FontWeight.SemiBold,
 )

@@ -24,6 +24,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
     val areacodeList = flowOf<List<Pair<String, String>>>(listofAraeCodes)
     val countryList = flowOf<List<Pair<String, String>>>(countryListDB)
+
     //@RequiresApi(Build.VERSION_CODES.R)
     val shopList = flowOf<List<Pair<Int, String>>>(listofShops)
     var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.toMutableList())
@@ -41,16 +42,26 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
     val feedDashboardItems = flowOf<List<FeedDashboardItems>>(listofFeedDashboard)
 
-    val offerDetailsTabs= flowOf<List<OfferDetailTabItem>>(listofOfferDetailTabs)
-    val offerDetailsTracklist= flowOf<List<OfferDetailTrackingItem>>(listofOfferDetailTrackings)
-    val offerDetailsChat= flowOf<List<OfferChatItem>>(listofChatMessages)
+    val offerDetailsTabs = flowOf<List<OfferDetailTabItem>>(listofOfferDetailTabs)
+    val offerDetailsTracklist = flowOf<List<OfferDetailTrackingItem>>(listofOfferDetailTrackings)
+    val offerDetailsChat = flowOf<List<OfferChatItem>>(listofChatMessages)
 
-    val profileMenu=flowOf<List<ProfileMenuItem>>(listofProfileMenu)
+    val profileMenu = flowOf<List<ProfileMenuItem>>(listofProfileMenu)
 
 
-    val mystores= flow<List<MyStoreItem>> {
-        this.emit(listofMyStore)
-    }.flowOn(Dispatchers.IO) //flowOf<List<MyStoreItem>>(listofMyStore)
+    fun mystores(isfiltered: Boolean) = flow<List<MyStoreItem>> {
+        if (isfiltered)
+            this.emit(listofMyStore.filter { a -> a.isactive })
+        else
+            this.emit(listofMyStore)
+    }.flowOn(Dispatchers.IO)
+
+    fun contractedSuppliers(isfiltered: Boolean) = flow<List<ContractedSupplierItem>> {
+        if (isfiltered)
+            this.emit(listofContractedSupplier.filter { a -> a.isactive })
+        else
+            this.emit(listofContractedSupplier)
+    }.flowOn(Dispatchers.IO)
 
     fun updateSectorButtonIsEnabled(id: Int): Boolean {
         return listofBusiness.first { i -> i.id == id }.isSelected!!
