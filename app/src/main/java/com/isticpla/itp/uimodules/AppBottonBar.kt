@@ -94,7 +94,7 @@ fun Bg(navController: NavController, activeMenuList: MutableList<BottomBarMenuIt
                                 center = Offset(size.width / 2, size.height + 15)
                             )
                     }
-                    .clickable { },
+                    .clickable {navController.navigate("mypanel") },
                 contentDescription = null,
                 tint = if (!bookmarkState.isactive) AppColors.grey_118 else Color.Unspecified
             )
@@ -145,12 +145,13 @@ fun Bg(navController: NavController, activeMenuList: MutableList<BottomBarMenuIt
                 painter = painterResource(id = if (!profileState.isactive) R.drawable.menu_i_profile else R.drawable.menu_a_profile ),
                 modifier = Modifier
                     .drawBehind {
-                        if (profileState.hasbadge)
-                        drawCircle(
-                            color = AppColors.red_100,
-                            radius = 4f,
-                            center = Offset(size.width / 2, size.height + 15)
-                        )
+                        if (profileState.hasbadge) {
+                            drawCircle(
+                                color = AppColors.red_100,
+                                radius = 4f,
+                                center = Offset(size.width / 2, size.height + 15)
+                            )
+                        }
                     }
                     .clickable { navController.navigate("profile/dashboard") },
                 contentDescription = null,

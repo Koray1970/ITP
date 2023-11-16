@@ -10,10 +10,10 @@ import androidx.navigation.compose.rememberNavController
 import com.isticpla.itp.home.HomeSectionCampaigns
 import com.isticpla.itp.offerdetails.OfferDetailDashboard
 import com.isticpla.itp.offers.*
-import com.isticpla.itp.profile.Edit
 import com.isticpla.itp.profile.ProfileDashboard
 import com.isticpla.itp.signup.*
 import com.isticpla.itp.splash.*
+import com.isticpla.itp.views.*
 
 @SuppressLint("NewApi")
 @RequiresApi(Build.VERSION_CODES.R)
@@ -21,7 +21,7 @@ import com.isticpla.itp.splash.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "startselectculture") {
+    NavHost(navController = navController, startDestination = "mypanel") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }
@@ -40,6 +40,9 @@ fun AppNavigate() {
 
         composable("feed") { FeedDashboard(navController) }
         composable("feed/productdetail") { FeedProductDetail(navController) }
+
+
+        composable("mypanel") { MyPanel(navController) }
 
         composable("newlist") { NewsListDashboard(navController) }
         composable("newslist/detail") { NewsListDetail(navController) }
