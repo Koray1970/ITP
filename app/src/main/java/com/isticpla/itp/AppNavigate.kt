@@ -21,7 +21,7 @@ import com.isticpla.itp.views.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "profile/contractedSuppliers") {
+    NavHost(navController = navController, startDestination = "startselectculture") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }

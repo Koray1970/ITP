@@ -558,7 +558,7 @@ fun ContractedSuppliers(
                                 modifier = Modifier.border(
                                     1.dp, color = AppColors.blue_102,
                                     RoundedCornerShape(5.dp)
-                                ),
+                                ).fillMaxWidth(.76f),
                                 shape = RoundedCornerShape(5.dp),
                                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters,autoCorrect = false )
                             )
