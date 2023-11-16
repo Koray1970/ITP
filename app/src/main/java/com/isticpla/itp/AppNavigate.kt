@@ -21,7 +21,7 @@ import com.isticpla.itp.views.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "mypanel") {
+    NavHost(navController = navController, startDestination = "profile/contractedSuppliers") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }
@@ -43,6 +43,9 @@ fun AppNavigate() {
 
 
         composable("mypanel") { MyPanel(navController) }
+        composable("mypanel/activeoffers") { MyPanelActiveOffers(navController) }
+        composable("mypanel/collections") { MyPanelCollections(navController) }
+        composable("mypanel/collections/sub") { MyPanelCollectionSub(navController) }
 
         composable("newlist") { NewsListDashboard(navController) }
         composable("newslist/detail") { NewsListDetail(navController) }

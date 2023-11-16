@@ -119,13 +119,13 @@ val myStoreInactive= TextStyle(
 val contractedSuppNewSupplierTitle= TextStyle(
     fontFamily = poppinFamily,
     fontSize=16.sp,
-    fontWeight=FontWeight.Normal,
+    fontWeight=FontWeight.SemiBold,
     textAlign=TextAlign.Left,
     color=AppColors.grey_138
 )
 val contractedSuppButtonLabel= TextStyle(
     fontFamily = poppinFamily,
-    fontSize=16.sp,
+    fontSize=15.sp,
     fontWeight=FontWeight.SemiBold,
     textAlign=TextAlign.Center
 )

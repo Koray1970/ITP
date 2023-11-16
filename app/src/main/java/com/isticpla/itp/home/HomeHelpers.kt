@@ -423,52 +423,47 @@ fun HomeSectionInStockSales(
         }
         Spacer(modifier = Modifier.height(3.dp))
         Row(
-            modifier = Modifier.horizontalScroll(rememberScrollState())
+            modifier = Modifier.horizontalScroll(rememberScrollState()),
+            verticalAlignment=Alignment.Top,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             listofStockSales.value.forEach { b ->
                 Column(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    verticalArrangement = Arrangement.Center
+                    modifier = Modifier
+                        .clickable { }
+                        .requiredWidth(140.dp)
+                        .requiredHeight(290.dp)
                 ) {
-                    Card(
-                        //shape = RoundedCornerShape(8.dp),
-                        colors = CardColors(
-                            containerColor = Color.Transparent,
-                            contentColor = Color.Transparent,
-                            disabledContainerColor = Color.Transparent,
-                            disabledContentColor = Color.Transparent
-                        ),
+                    Row(
                         modifier = Modifier
-                            .width(140.dp)
-                            .height(210.dp)
+                            .size(140.dp, 210.dp)
                             .clip(RoundedCornerShape(8.dp))
                             .paint(
                                 painter = painterResource(id = b.image),
                                 contentScale = ContentScale.Crop
                             ),
-                        onClick = {}
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.End
                     ) {
                         Text(
                             text = b.price,
                             modifier = Modifier
+                                .background(Color.White.copy(.6f))
                                 .fillMaxWidth()
                                 .padding(start = 8.dp, end = 8.dp),
                             style = homeSectorDesignCardPriceLabel
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Box(
-
-                    ) {
-                        Text(
-                            text = b.title,
-                            modifier = Modifier
-                                .width(IntrinsicSize.Min)
-                                .padding(start = 8.dp, end = 8.dp),
-                            maxLines = 3,
-                            style = homeSectorDesignCardLabel
-                        )
-                    }
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(
+                        text = b.title,
+                        modifier = Modifier
+                            .requiredWidth(140.dp)
+                            .requiredHeight(90.dp),
+                        maxLines = 3,
+                        style = homeSectorDesignCardLabel
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }

@@ -56,9 +56,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.gson.Gson
@@ -67,6 +69,7 @@ import com.isticpla.itp.dummydata.ExpendedMenuSelectedCollectionItem
 import com.isticpla.itp.dummydata.ExpendedMenuViewModel
 import com.isticpla.itp.dummydata.FormItemTypes
 import com.isticpla.itp.dummydata.ProductFeatureItem
+import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -77,7 +80,11 @@ fun txtFColors() = TextFieldDefaults.colors(
     focusedContainerColor = Color.Transparent,
     unfocusedContainerColor = Color.Transparent,
     focusedIndicatorColor = Color.Transparent,
-    unfocusedIndicatorColor = Color.Transparent
+    unfocusedIndicatorColor = Color.Transparent,
+    focusedTextColor =AppColors.primaryGrey,
+    unfocusedTextColor = AppColors.primaryGrey,
+    focusedLabelColor = AppColors.primaryGrey,
+    unfocusedLabelColor = AppColors.grey_118,
 )
 
 val txtFKeyboardOptionsCapWord = KeyboardOptions(
@@ -112,18 +119,26 @@ fun appTextField(itms: appTextFieldItems) = Card(
         containerColor = Color.Transparent
     ),
     shape = RoundedCornerShape(8.dp),
-    modifier = itms.cardModifier
+    modifier = Modifier
         .border(1.dp, AppColors.grey_133, RoundedCornerShape(8.dp))
+        .then(
+            itms.cardModifier
+        )
 ) {
     TextField(
         value = itms.fieldValue.value,
         onValueChange = { itms.fieldValue.value = it },
         isError = itms.isError,
         enabled = itms.enabled,
+        textStyle=TextStyle(
+            fontFamily = poppinFamily,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal
+        ),
         readOnly = itms.readonly,
         label = { Text(text = itms.label) },
         singleLine = itms.isSingleLine,
-        //maxLines = if (itms.isSingleLine) 1 else itms.maxLines,
+        maxLines = if (itms.isSingleLine) 1 else itms.maxLines,
         minLines = itms.minLines,
         colors = itms.appTextFieldColor,
         keyboardOptions = itms.appkeyboardOptions,
@@ -345,16 +360,16 @@ fun AppSwitch(
     }
 )
 
-data class PANTFPhoneTextFieldItem (
+data class PANTFPhoneTextFieldItem(
     var fieldValue: MutableState<String> = mutableStateOf(""),
     val label: @Composable (() -> Unit)? = null,
-    var isError:MutableState<Boolean> = mutableStateOf(false),
+    var isError: MutableState<Boolean> = mutableStateOf(false),
     val modifier: Modifier = Modifier
 )
 
-data class PANTFItem<K, V> (
+data class PANTFItem<K, V>(
     var rootCardModifier: Modifier? = null,
-    var dropdownExpended:MutableState<Boolean> = mutableStateOf(false),
+    var dropdownExpended: MutableState<Boolean> = mutableStateOf(false),
     var expMenuTFValue: MutableState<String> = mutableStateOf(""),
     var expMenuTFModifier: Modifier = Modifier,
     val menuItems: List<Pair<K, V>> = emptyList<Pair<K, V>>(),
@@ -413,7 +428,8 @@ fun <K, V> appPhoneAreaAndNumberTextFieldGroup(itms: PANTFItem<K, V>) = Card(
                     modifier = Modifier.background(Color.White)
                 ) {
                     filteringOptions.forEach { selectionOption ->
-                        val soS = "${selectionOption.first.toString()} ${selectionOption.second.toString()}"
+                        val soS =
+                            "${selectionOption.first.toString()} ${selectionOption.second.toString()}"
                         DropdownMenuItem(
                             text = { Text(text = soS) },
                             onClick = {
@@ -428,7 +444,13 @@ fun <K, V> appPhoneAreaAndNumberTextFieldGroup(itms: PANTFItem<K, V>) = Card(
             }
         }
 
-        VerticalDivider(thickness = 1.dp, color = AppColors.secondaryGrey , modifier = Modifier.requiredWidth(1.dp).requiredHeight(IntrinsicSize.Max))
+        VerticalDivider(
+            thickness = 1.dp,
+            color = AppColors.secondaryGrey,
+            modifier = Modifier
+                .requiredWidth(1.dp)
+                .requiredHeight(IntrinsicSize.Max)
+        )
         TextField(
             value = itms.phoneTextFieldItem.fieldValue.value,
             onValueChange = { itms.phoneTextFieldItem.fieldValue.value = it },
@@ -442,7 +464,7 @@ fun <K, V> appPhoneAreaAndNumberTextFieldGroup(itms: PANTFItem<K, V>) = Card(
                 unfocusedIndicatorColor = Color.Transparent,
                 focusedLabelColor = AppColors.primaryGrey,
                 unfocusedLabelColor = AppColors.grey_118,
-                ),
+            ),
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Phone,
                 autoCorrect = false,

@@ -48,6 +48,12 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
     val profileMenu = flowOf<List<ProfileMenuItem>>(listofProfileMenu)
 
+    val panelActiveOffers = flowOf<List<PanelActiveOfferItem>>(listofPanelActiveOffer)
+    val panelCollections = flowOf<List<PanelCollectionItem>>(listofPanelCollection)
+    val panelCollectionSub = flowOf<List<PanelCollectionItem>>(listofPanelCollectionSub)
+    val panelDrafts = flowOf<List<PanelOfferDraftItem>>(listofPanelOfferDraft)
+    val panelCompletedOffers = flowOf<List<PanelOfferCompletedItem>>(listofPanelOfferCompleted)
+
 
     fun mystores(isfiltered: Boolean) = flow<List<MyStoreItem>> {
         if (isfiltered)

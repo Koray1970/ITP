@@ -1,6 +1,7 @@
 package com.isticpla.itp.uistyles
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -15,7 +16,7 @@ val topmenuTitle=TextStyle(
     color= Color.Black
 )
 
-//start::panelim
+//region Panelim
 val sectionTitle=TextStyle(
     fontFamily = poppinFamily,
     fontSize = 20.sp,
@@ -29,4 +30,23 @@ val sectionBadge=TextStyle(
     textAlign=TextAlign.Center,
     color= Color.White
 )
-//end::panelim
+val listitemHeaderLineContent=TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 10.sp,
+    lineHeight=16.sp,
+    fontWeight = FontWeight.Normal,
+    textAlign=TextAlign.Left,
+    color=AppColors.grey_171
+)
+val listitemTitle=SpanStyle(
+    fontSize = 14.sp,
+    fontWeight = FontWeight.SemiBold,
+    color=AppColors.grey_124
+)
+val listitemCompleteTitle=SpanStyle(
+    fontSize = 12.sp,
+    fontWeight = FontWeight.SemiBold,
+    color=AppColors.grey_124
+)
+
+//endregion

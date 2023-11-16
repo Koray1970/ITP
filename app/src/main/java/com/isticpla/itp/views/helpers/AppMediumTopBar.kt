@@ -23,6 +23,7 @@ data class TopBarActionItem(
 )
 
 data class AppMediumTopBarItem(
+    val containerColor: Color = Color.Transparent,
     val title: @Composable () -> Unit = { Text(text = "", style = TextStyle.Default) },
     val actions: MutableList<TopBarActionItem> = emptyList<TopBarActionItem>().toMutableList(),
     val navigationIcon: TopBarActionItem? = TopBarActionItem(icon = R.drawable.arrow_left)
@@ -33,7 +34,8 @@ data class AppMediumTopBarItem(
 fun AppMediumTopBar(topBarItem: AppMediumTopBarItem) = @Composable {
     MediumTopAppBar(
         colors = TopAppBarColors(
-            containerColor = Color.Transparent, scrolledContainerColor = Color.Transparent,
+            containerColor = topBarItem.containerColor,
+            scrolledContainerColor = Color.Transparent,
             navigationIconContentColor = AppColors.primaryGrey,
             titleContentColor = AppColors.primaryGrey,
             actionIconContentColor = AppColors.primaryGrey,

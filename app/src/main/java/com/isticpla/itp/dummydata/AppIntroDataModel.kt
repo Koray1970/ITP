@@ -1,5 +1,6 @@
 package com.isticpla.itp.dummydata
 
+import androidx.annotation.OpenForTesting
 import com.isticpla.itp.R
 import java.sql.Array
 import java.sql.Date
@@ -307,9 +308,13 @@ val listOfOfferDraft = listOf<OfferDraftListItem>(
     OfferDraftListItem(4, R.mipmap.hamburger_01, "27/08/2023", "Karışık pizza", 1)
 )
 
-enum class OrderStagesStatus(val result: String) {
-    TAMAMLANDI(result = "Tamamlandı"),
-    BEKLIYOR(result = "Bekliyor...")
+enum class OrderStagesStatus(val result: String,val id:Int) {
+    BEKLIYOR(result = "Bekliyor...",id=1),
+    ODEMEASAMASINDA(result="Ödeme aşamasında",id=1),
+    URETIMDE(result="Üretimde", id=2),
+    TAMAMLANDI(result = "Tamamlandı",id=2),
+    YOLDA(result="Yolda",id=3),
+    TESLIMEDILDI(result="Teslim edildi",id=4)
 }
 
 data class OrderStages(
@@ -576,4 +581,41 @@ val listofContractedSupplier = listOf<ContractedSupplierItem>(
         email = "info@itpturkey.com",
         isactive = false
     )
+)
+data class PanelActiveOfferItem(val id:Int, val date:String, val image:Int, val title:String="", val status:OrderStagesStatus=OrderStagesStatus.BEKLIYOR)
+val listofPanelActiveOffer= listOf<PanelActiveOfferItem>(
+    PanelActiveOfferItem(1,"31/02/2023",R.mipmap.cocktails,"Indonesian chicken burger",OrderStagesStatus.ODEMEASAMASINDA),
+    PanelActiveOfferItem(2,"31/02/2023",R.mipmap.spagetti_01,"Home made cute pancake",OrderStagesStatus.URETIMDE),
+    PanelActiveOfferItem(3,"31/02/2023",R.mipmap.hamburger_01,"How to make seafood fried r...",OrderStagesStatus.URETIMDE),
+)
+data class PanelCollectionItem(val id:Int, val date:String, val image:Int, val title:String="", val status:OrderStagesStatus=OrderStagesStatus.BEKLIYOR)
+val listofPanelCollection= listOf<PanelCollectionItem>(
+    PanelCollectionItem(1,"31/02/2023",R.mipmap.ac_cocktails,"Indonesian chicken burger",OrderStagesStatus.ODEMEASAMASINDA),
+    PanelCollectionItem(2,"31/02/2023",R.mipmap.ac_cocktail2,"Home made cute pancake",OrderStagesStatus.URETIMDE),
+    PanelCollectionItem(3,"31/02/2023",R.mipmap.ac_hamburger,"How to make seafood fried r...",OrderStagesStatus.URETIMDE),
+    PanelCollectionItem(4,"31/02/2023",R.mipmap.ac_cocktail2,"How to make seafood fried 2",OrderStagesStatus.BEKLIYOR),
+)
+
+val listofPanelCollectionSub= listOf<PanelCollectionItem>(
+    PanelCollectionItem(1,"31/02/2023",R.mipmap.cocktails,"Indonesian chicken burger",OrderStagesStatus.ODEMEASAMASINDA),
+    PanelCollectionItem(2,"31/02/2023",R.mipmap.fries,"Home made cute pancake",OrderStagesStatus.URETIMDE),
+    PanelCollectionItem(3,"31/02/2023",R.mipmap.breakfast,"How to make seafood fried r...",OrderStagesStatus.URETIMDE),
+)
+
+data class PanelOfferDraftItem(val id:Int, val date:String, val image:Int, val title:String="", val status:OrderStagesStatus=OrderStagesStatus.BEKLIYOR)
+val listofPanelOfferDraft= listOf<PanelOfferDraftItem>(
+    PanelOfferDraftItem(2,"31/02/2023",R.mipmap.spagetti_01,"Home made cute pancake",OrderStagesStatus.ODEMEASAMASINDA),
+    PanelOfferDraftItem(3,"31/02/2023",R.mipmap.spagetti,"How to make seafood fried r...",OrderStagesStatus.URETIMDE),
+    PanelOfferDraftItem(4,"31/02/2023",R.mipmap.breakfast,"Indonesian chicken burger",OrderStagesStatus.YOLDA),
+    PanelOfferDraftItem(5,"31/02/2023",R.mipmap.hamburger_01,"Home made cute pancake",OrderStagesStatus.URETIMDE),
+    PanelOfferDraftItem(6,"31/02/2023",R.mipmap.cocktails,"How to make seafood fried r...",OrderStagesStatus.URETIMDE),
+)
+
+data class PanelOfferCompletedItem(val id:Int, val date:String, val image:Int, val title:String="", val status:OrderStagesStatus=OrderStagesStatus.BEKLIYOR)
+val listofPanelOfferCompleted= listOf<PanelOfferCompletedItem>(
+    PanelOfferCompletedItem(2,"31/02/2023",R.mipmap.spagetti_01,"Home made cute pancake",OrderStagesStatus.TESLIMEDILDI),
+    PanelOfferCompletedItem(3,"31/02/2023",R.mipmap.spagetti,"How to make seafood fried r...",OrderStagesStatus.TESLIMEDILDI),
+    PanelOfferCompletedItem(4,"31/02/2023",R.mipmap.breakfast,"Indonesian chicken burger",OrderStagesStatus.TESLIMEDILDI),
+    PanelOfferCompletedItem(5,"31/02/2023",R.mipmap.hamburger_01,"Home made cute pancake",OrderStagesStatus.TESLIMEDILDI),
+    PanelOfferCompletedItem(6,"31/02/2023",R.mipmap.cocktails,"How to make seafood fried r...",OrderStagesStatus.TESLIMEDILDI),
 )
