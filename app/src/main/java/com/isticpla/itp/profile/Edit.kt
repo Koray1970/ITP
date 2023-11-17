@@ -100,7 +100,6 @@ fun Edit(
         ) {
             Row(
                 modifier = Modifier
-
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)

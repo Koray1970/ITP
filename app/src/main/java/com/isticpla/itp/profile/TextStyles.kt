@@ -11,125 +11,137 @@ import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 
 
-val profileName= TextStyle(
+val profileName = TextStyle(
     fontFamily = poppinFamily,
     fontSize = 24.sp,
     fontWeight = FontWeight.SemiBold,
     color = Color.Black
 )
-val profileTitleLocation= TextStyle(
+val profileTitleLocation = TextStyle(
     fontFamily = poppinFamily,
     fontSize = 12.sp,
     fontWeight = FontWeight.Normal,
     color = AppColors.grey_177
 )
-val profileInfoThreeCol=TextStyle(
+val profileInfoThreeCol = TextStyle(
     fontFamily = poppinFamily,
     textAlign = TextAlign.Center
 )
 
-val profileInfoThreeColHeader= SpanStyle(
+val profileInfoThreeColHeader = SpanStyle(
     fontSize = 16.sp,
     fontWeight = FontWeight.SemiBold,
     color = Color.Black
 )
-val profileInfoThreeColValue= SpanStyle(
+val profileInfoThreeColValue = SpanStyle(
     fontSize = 12.sp,
     fontWeight = FontWeight.Normal,
     color = AppColors.grey_177
 )
 
-val profileMenuItemLabel=TextStyle(
+val profileMenuItemLabel = TextStyle(
     fontFamily = poppinFamily,
-    fontSize=14.sp,
-    fontWeight=FontWeight.SemiBold,
+    fontSize = 14.sp,
+    fontWeight = FontWeight.SemiBold,
     textAlign = TextAlign.Left,
-    color=AppColors.grey_186
+    color = AppColors.grey_186
 )
-val profileMenuItemExitLabel=TextStyle(
+val profileMenuItemExitLabel = TextStyle(
     fontFamily = poppinFamily,
-    fontSize=14.sp,
-    fontWeight=FontWeight.SemiBold,
+    fontSize = 14.sp,
+    fontWeight = FontWeight.SemiBold,
     textAlign = TextAlign.Left,
-    color=AppColors.red_100
+    color = AppColors.red_100
 )
 
-val myStoreButtonLabel=TextStyle(
+val myStoreButtonLabel = TextStyle(
     fontFamily = poppinFamily,
-    fontSize=12.sp,
-    fontWeight=FontWeight.Normal,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
     textAlign = TextAlign.Left,
-    color=AppColors.grey_138
+    color = AppColors.grey_138
 )
-val myStoreButtonListViewLabel=TextStyle(
+val myStoreButtonListViewLabel = TextStyle(
     fontFamily = poppinFamily,
-    fontSize=12.sp,
-    fontWeight=FontWeight.Normal,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
     textAlign = TextAlign.Center,
-    color=AppColors.grey_138
+    color = AppColors.grey_138
 )
-val myStoreCardTitle=TextStyle(
+val myStoreCardTitle = TextStyle(
     fontFamily = poppinFamily,
-    fontSize=14.sp,
-    fontWeight=FontWeight.Normal,
+    fontSize = 14.sp,
+    fontWeight = FontWeight.Normal,
     textAlign = TextAlign.Left,
-    lineHeight=18.sp,
-    color=Color.Black
+    lineHeight = 18.sp,
+    color = Color.Black
 )
-val myStoreCardTextStyle=TextStyle(
+val myStoreCardTextStyle = TextStyle(
     fontFamily = poppinFamily,
-    fontSize=12.sp,
-    fontWeight=FontWeight.Normal,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
     textAlign = TextAlign.Left,
-    lineHeight=19.sp,
-    color=AppColors.grey_159
+    lineHeight = 19.sp,
+    color = AppColors.grey_159
 )
-val myStoreCardText=SpanStyle(
+val myStoreCardText = SpanStyle(
     fontFamily = poppinFamily,
-    fontSize=14.sp,
-    fontWeight=FontWeight.Normal,
-    color=Color.Black
+    fontSize = 14.sp,
+    fontWeight = FontWeight.Normal,
+    color = Color.Black
 )
-val myStoreAddNewStoreButtonLabel=SpanStyle(
-    fontSize=14.sp,
-    fontWeight=FontWeight.Bold,
-    color=AppColors.blue_102
+val myStoreAddNewStoreButtonLabel = SpanStyle(
+    fontSize = 14.sp,
+    fontWeight = FontWeight.Bold,
+    color = AppColors.blue_102
 )
-val myStoreAddNewStoreButton= TextStyle(
+val myStoreAddNewStoreButton = TextStyle(
     fontFamily = poppinFamily,
-    fontSize=12.sp,
-    fontWeight=FontWeight.Normal,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
+    textAlign = TextAlign.Left,
+    color = AppColors.blue_102
+)
+val myStoreAddNewStorePremiumLabel = TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.SemiBold,
+    textAlign = TextAlign.Center,
+    color = Color.White
+)
+val myStoreInactive = TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
+    textAlign = TextAlign.Left,
+    color = AppColors.red_100
+)
+val contractedSuppNewSupplierTitle = TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 16.sp,
+    fontWeight = FontWeight.SemiBold,
+    textAlign = TextAlign.Left,
+    color = AppColors.grey_138
+)
+val contractedSuppButtonLabel = TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 15.sp,
+    fontWeight = FontWeight.SemiBold,
+    textAlign = TextAlign.Center
+)
+val contractedSuppTextFieldLabel = TextStyle(
+    fontFamily = poppinFamily,
+    fontWeight = FontWeight.SemiBold,
+)
+val mystoreeditfileloaderTextStyle = TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 10.sp,
+    fontWeight = FontWeight.SemiBold,
     textAlign=TextAlign.Left,
-    color=AppColors.blue_102
+    color = AppColors.grey_118
 )
-val myStoreAddNewStorePremiumLabel= TextStyle(
-    fontFamily = poppinFamily,
-    fontSize=12.sp,
-    fontWeight=FontWeight.SemiBold,
-    textAlign=TextAlign.Center,
-    color=Color.White
-)
-val myStoreInactive= TextStyle(
-    fontFamily = poppinFamily,
-    fontSize=12.sp,
-    fontWeight=FontWeight.Normal,
-    textAlign=TextAlign.Left,
-    color=AppColors.red_100
-)
-val contractedSuppNewSupplierTitle= TextStyle(
-    fontFamily = poppinFamily,
-    fontSize=16.sp,
-    fontWeight=FontWeight.SemiBold,
-    textAlign=TextAlign.Left,
-    color=AppColors.grey_138
-)
-val contractedSuppButtonLabel= TextStyle(
-    fontFamily = poppinFamily,
-    fontSize=15.sp,
-    fontWeight=FontWeight.SemiBold,
-    textAlign=TextAlign.Center
-)
-val contractedSuppTextFieldLabel= TextStyle(
-    fontFamily = poppinFamily,
-    fontWeight=FontWeight.SemiBold,
+val mystoreeditfileloaderTextStyleTitle = SpanStyle(
+    fontSize = 14.sp,
+    fontWeight = FontWeight.Normal,
+    color = Color.Black
 )

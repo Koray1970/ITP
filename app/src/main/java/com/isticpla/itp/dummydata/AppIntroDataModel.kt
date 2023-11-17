@@ -57,11 +57,11 @@ val listofAraeCodes =
     )
 val listofEmployeePosition =
     listOf<Pair<String, String>>(
-        Pair("CEO", "ceo"),
-        Pair("Position 1", "position1"),
-        Pair("Position 2", "position2"),
-        Pair("Position 3", "position3"),
-        Pair("Position 4", "position4")
+        Pair("1","CEO"),
+        Pair("2", "position1"),
+        Pair("3", "Position2"),
+        Pair("4", "Position3"),
+        Pair("5", "position4")
     )
 val listofCarousel = listOf<Int>(R.mipmap.caroussel1, R.mipmap.caroussel2, R.mipmap.caroussel3)
 

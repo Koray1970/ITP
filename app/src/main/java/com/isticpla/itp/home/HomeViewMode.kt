@@ -21,6 +21,7 @@ import javax.inject.Inject
 class HomeViewMode @Inject constructor() : ViewModel() {
     val carouselList = flowOf<List<Int>>(listofCarousel)
 
+    val employeePositions = flowOf<List<Pair<String, String>>>(listofEmployeePosition)
 
     val areacodeList = flowOf<List<Pair<String, String>>>(listofAraeCodes)
     val countryList = flowOf<List<Pair<String, String>>>(countryListDB)

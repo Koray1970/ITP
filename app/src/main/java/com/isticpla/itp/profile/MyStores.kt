@@ -477,7 +477,9 @@ fun MyStores(
                 Row(
                     modifier = Modifier
                         .then(subColumnPadding)
-                        .clickable { }
+                        .clickable {
+                            navController.navigate("profile/mystores/edit")
+                        }
                         .drawBehind {
                             drawRoundRect(
                                 color = AppColors.grey_127.copy(.5f),

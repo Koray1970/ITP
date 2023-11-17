@@ -1,6 +1,5 @@
 package com.isticpla.itp.offers
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -8,27 +7,17 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -43,13 +32,8 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,16 +45,12 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.gson.Gson
 import com.isticpla.itp.R
-import com.isticpla.itp.dummydata.ExpendedMenuSelectedCollectionItem
 import com.isticpla.itp.dummydata.ExpendedMenuViewModel
-import com.isticpla.itp.dummydata.FormItemTypes
 import com.isticpla.itp.dummydata.ProductFeatureItem
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Objects
@@ -81,7 +61,7 @@ fun txtFColors() = TextFieldDefaults.colors(
     unfocusedContainerColor = Color.Transparent,
     focusedIndicatorColor = Color.Transparent,
     unfocusedIndicatorColor = Color.Transparent,
-    focusedTextColor =AppColors.primaryGrey,
+    focusedTextColor = AppColors.primaryGrey,
     unfocusedTextColor = AppColors.primaryGrey,
     focusedLabelColor = AppColors.primaryGrey,
     unfocusedLabelColor = AppColors.grey_118,
@@ -103,10 +83,10 @@ data class appTextFieldItems(
     var trialingIcon: @Composable (() -> Unit)? = null,
     var leadingIcon: @Composable (() -> Unit)? = null,
     val label: String,
-    val isError: Boolean,
-    var enabled: Boolean,
-    var readonly: Boolean,
-    var isSingleLine: Boolean,
+    val isError: Boolean = false,
+    var enabled: Boolean = true,
+    var readonly: Boolean = false,
+    var isSingleLine: Boolean = true,
     var maxLines: Int,
     var minLines: Int = 1,
     val appTextFieldColor: TextFieldColors,
@@ -130,7 +110,7 @@ fun appTextField(itms: appTextFieldItems) = Card(
         onValueChange = { itms.fieldValue.value = it },
         isError = itms.isError,
         enabled = itms.enabled,
-        textStyle=TextStyle(
+        textStyle = TextStyle(
             fontFamily = poppinFamily,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal
@@ -178,8 +158,9 @@ fun <K, V> DropDownMenu(
                 containerColor = Color.Transparent
             ),
             shape = RoundedCornerShape(8.dp),
-            modifier = itms.txfItems.cardModifier
+            modifier = Modifier
                 .border(1.dp, AppColors.grey_133, RoundedCornerShape(8.dp))
+                .then(itms.txfItems.cardModifier)
         ) {
             ExposedDropdownMenuBox(
                 expanded = itms.expanded.value,
@@ -194,6 +175,7 @@ fun <K, V> DropDownMenu(
                         .then(itms.txfItems.textFieldModifier),
                     label = { Text(text = itms.txfItems.label) },
                     singleLine = itms.txfItems.isSingleLine,
+                    readOnly = itms.txfItems.readonly,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = itms.expanded.value) },
                     colors = ExposedDropdownMenuDefaults.textFieldColors(
                         focusedContainerColor = Color.Transparent,
