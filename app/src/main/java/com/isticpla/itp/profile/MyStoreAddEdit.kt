@@ -7,8 +7,11 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,6 +38,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,17 +47,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.home.HomeViewMode
-import com.isticpla.itp.offers.DropDownMenu
-import com.isticpla.itp.offers.DropdownMenuItems
-import com.isticpla.itp.offers.appTextFieldItems
-import com.isticpla.itp.offers.txtFColors
-import com.isticpla.itp.offers.txtFKeyboardOptionsCapSentence
+import com.isticpla.itp.offers.*
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
-import com.isticpla.itp.uimodules.DropDownTextField
-import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
-import com.isticpla.itp.uimodules.dropdownMenuItemColors
-import com.isticpla.itp.uimodules.dropdownTextFieldColors
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -65,10 +62,24 @@ fun MyStoreAddEdit(
         homeviewModel.employeePositions.collectAsStateWithLifecycle(initialValue = emptyList<Pair<String, String>>())
     var empPositionexpanded = remember { mutableStateOf(false) }
     var empPositionselectedOptionText = remember { mutableStateOf("") }
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         delay(120)
-        empPositionselectedOptionText.value=employeePositions.value.first().second
+        empPositionselectedOptionText.value = employeePositions.value.first().second
     }
+    var comNameValue = remember { mutableStateOf("") }
+    var comTaxOfficeValue = rememberSaveable { mutableStateOf("") }
+    var comTaxNumberValue = rememberSaveable { mutableStateOf("") }
+    var comAddressValue = rememberSaveable { mutableStateOf("") }
+
+    var comCityexpanded = remember { mutableStateOf(false) }
+    var comCityselectedOptionText = remember { mutableStateOf("") }
+
+    var comCountryexpanded = remember { mutableStateOf(false) }
+    var comCountryselectedOptionText = remember { mutableStateOf("") }
+
+    var comEmailValue = rememberSaveable { mutableStateOf("") }
+    var comWebValue = rememberSaveable { mutableStateOf("") }
+
 
     Scaffold(
         containerColor = Color.White,
@@ -161,9 +172,8 @@ fun MyStoreAddEdit(
             DropDownMenu<String, String>(
                 itms = DropdownMenuItems(
                     txfItems = appTextFieldItems(
-                        Modifier
-                            .border(1.dp, AppColors.blue_102, RoundedCornerShape(8.dp)),
                         Modifier,
+                        Modifier.fillMaxWidth(),
                         empPositionselectedOptionText,
                         {
                             Icon(
@@ -191,11 +201,216 @@ fun MyStoreAddEdit(
                         ),
                         txtFKeyboardOptionsCapSentence
                     ),
+                    cardBorderColor = AppColors.blue_102,
                     expanded = empPositionexpanded,
                     menuitems = employeePositions.value,
                 )
             )
-            //appTextField(itms =)
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    comNameValue,
+                    null,
+                    null,
+                    "İşletme Adı",
+                    false,
+                    true,
+                    false,
+                    true,
+                    1,
+                    minLines = 1,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    comTaxNumberValue,
+                    null,
+                    null,
+                    "İşletme Vergi No",
+                    false,
+                    true,
+                    false,
+                    true,
+                    1,
+                    minLines = 1,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    comTaxOfficeValue,
+                    null,
+                    null,
+                    "İşletme Vergi Dairesi",
+                    false,
+                    true,
+                    false,
+                    true,
+                    1,
+                    minLines = 1,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    comAddressValue,
+                    null,
+                    null,
+                    "İşletme Tam Adresi",
+                    false,
+                    true,
+                    false,
+                    true,
+                    1,
+                    minLines = 1,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start)
+            ) {
+                DropDownMenu<String, String>(
+                    itms = DropdownMenuItems(
+                        txfItems = appTextFieldItems(
+                            Modifier
+                                .fillMaxWidth(.5f),
+                            Modifier,
+                            comCityselectedOptionText,
+                            {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_unfold_more_24),
+                                    contentDescription = null
+                                )
+                            },
+                            null,
+                            "İşletme Şehri",
+                            false,
+                            true,
+                            true,
+                            true,
+                            1,
+                            1,
+                            txtFColors(),
+                            txtFKeyboardOptionsCapSentence
+                        ),
+                        expanded = comCityexpanded,
+                        menuitems = employeePositions.value,
+                    )
+                )
+                DropDownMenu<String, String>(
+                    itms = DropdownMenuItems(
+                        txfItems = appTextFieldItems(
+                            Modifier,
+                            Modifier,
+                            comCountryselectedOptionText,
+                            {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_unfold_more_24),
+                                    contentDescription = null
+                                )
+                            },
+                            null,
+                            "İşletme Ülke",
+                            false,
+                            true,
+                            true,
+                            true,
+                            1,
+                            1,
+                            txtFColors(),
+                            txtFKeyboardOptionsCapSentence
+                        ),
+                        expanded = comCountryexpanded,
+                        menuitems = employeePositions.value,
+                    )
+                )
+            }
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    comEmailValue,
+                    null,
+                    null,
+                    "İşletme E-posta Adresi",
+                    false,
+                    true,
+                    false,
+                    true,
+                    1,
+                    minLines = 1,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            appTextField(
+                itms = appTextFieldItems(
+                    Modifier,
+                    Modifier
+                        .fillMaxWidth(),
+                    comWebValue,
+                    null,
+                    null,
+                    "İşletme Web Adresi",
+                    false,
+                    true,
+                    false,
+                    true,
+                    1,
+                    minLines = 1,
+                    txtFColors(),
+                    txtFKeyboardOptionsCapWord
+                )
+            )
+            Spacer(modifier = Modifier.height(26.dp))
+            Button(
+                onClick = { navController.navigate("offer/create/publish") },
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppColors.blue_102,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+            ) {
+                Text(text = "Mağazamı Ekle", style = offerStagePublishButton)
+                Icon(
+                    painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+            Spacer(modifier = Modifier.height(26.dp))
+            Text(
+                text = "İptal",
+                style = TextStyle(
+                    fontFamily = poppinFamily,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = AppColors.grey_165
+                )
+            )
+            Spacer(modifier = Modifier.height(30.dp))
             //endregion
         }
     }

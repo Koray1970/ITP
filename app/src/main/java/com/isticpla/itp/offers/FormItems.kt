@@ -75,10 +75,11 @@ val txtFKeyboardOptionsCapSentence = KeyboardOptions(
     autoCorrect = false,
     capitalization = KeyboardCapitalization.Sentences
 )
-
+val dropdownMenuCardBorderDefaultColor=AppColors.grey_133
 data class appTextFieldItems(
-    val cardModifier: Modifier,
-    val textFieldModifier: Modifier,
+    val cardModifier: Modifier = Modifier,
+    val textFieldModifier: Modifier = Modifier,
+
     var fieldValue: MutableState<String>,
     var trialingIcon: @Composable (() -> Unit)? = null,
     var leadingIcon: @Composable (() -> Unit)? = null,
@@ -130,6 +131,7 @@ fun appTextField(itms: appTextFieldItems) = Card(
 
 data class DropdownMenuItems<K, V>(
     var txfItems: appTextFieldItems,
+    val cardBorderColor: Color = dropdownMenuCardBorderDefaultColor,
     var expanded: MutableState<Boolean>,
     val menuitems: List<Pair<K, V>>,
     val buttonModifier: Modifier? = null,
@@ -141,75 +143,61 @@ data class DropdownMenuItems<K, V>(
 @Composable
 fun <K, V> DropDownMenu(
     itms: DropdownMenuItems<K, V>
-) = Column(
+) = Card(
+    colors = CardDefaults.cardColors(
+        containerColor = Color.Transparent
+    ),
+    shape = RoundedCornerShape(8.dp),
     modifier = Modifier
-        .fillMaxWidth(),
-    verticalArrangement = Arrangement.Top,
-    horizontalAlignment = Alignment.CenterHorizontally
+        .border(1.dp, itms.cardBorderColor, RoundedCornerShape(8.dp))
+        .then(itms.txfItems.cardModifier)
 ) {
-    val scope = rememberCoroutineScope()
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+    ExposedDropdownMenuBox(
+        expanded = itms.expanded.value,
+        onExpandedChange = { itms.expanded.value = !itms.expanded.value }
     ) {
-        Card(
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Transparent
-            ),
-            shape = RoundedCornerShape(8.dp),
+        TextField(
+            value = itms.txfItems.fieldValue.value,
+            onValueChange = { itms.txfItems.fieldValue.value = it },
             modifier = Modifier
-                .border(1.dp, AppColors.grey_133, RoundedCornerShape(8.dp))
-                .then(itms.txfItems.cardModifier)
-        ) {
-            ExposedDropdownMenuBox(
+                .menuAnchor()
+                //.fillMaxWidth()
+                .then(itms.txfItems.textFieldModifier),
+            label = { Text(text = itms.txfItems.label) },
+            singleLine = itms.txfItems.isSingleLine,
+            readOnly = itms.txfItems.readonly,
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = itms.expanded.value) },
+            colors = ExposedDropdownMenuDefaults.textFieldColors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+        )
+        // filter options based on text field value
+        val filteringOptions = itms.menuitems.filter {
+            it.second.toString().contains(
+                itms.txfItems.fieldValue.value,
+                ignoreCase = true
+            )
+        }
+        if (filteringOptions.isNotEmpty()) {
+            ExposedDropdownMenu(
                 expanded = itms.expanded.value,
-                onExpandedChange = { itms.expanded.value = !itms.expanded.value }
+                onDismissRequest = { itms.expanded.value = false },
+                modifier = Modifier.background(Color.White)
             ) {
-                TextField(
-                    value = itms.txfItems.fieldValue.value,
-                    onValueChange = { itms.txfItems.fieldValue.value = it },
-                    modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth()
-                        .then(itms.txfItems.textFieldModifier),
-                    label = { Text(text = itms.txfItems.label) },
-                    singleLine = itms.txfItems.isSingleLine,
-                    readOnly = itms.txfItems.readonly,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = itms.expanded.value) },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                )
-                // filter options based on text field value
-                val filteringOptions = itms.menuitems.filter {
-                    it.second.toString().contains(
-                        itms.txfItems.fieldValue.value,
-                        ignoreCase = true
+                filteringOptions.forEach { selectionOption ->
+                    val soS = selectionOption.second.toString()
+                    DropdownMenuItem(
+                        text = { Text(text = soS) },
+                        onClick = {
+                            itms.txfItems.fieldValue.value = soS
+                            itms.expanded.value = false
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                        colors = MenuDefaults.itemColors()
                     )
-                }
-                if (filteringOptions.isNotEmpty()) {
-                    ExposedDropdownMenu(
-                        expanded = itms.expanded.value,
-                        onDismissRequest = { itms.expanded.value = false },
-                        modifier = Modifier.background(Color.White)
-                    ) {
-                        filteringOptions.forEach { selectionOption ->
-                            val soS = selectionOption.second.toString()
-                            DropdownMenuItem(
-                                text = { Text(text = soS) },
-                                onClick = {
-                                    itms.txfItems.fieldValue.value = soS
-                                    itms.expanded.value = false
-                                },
-                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                                colors = MenuDefaults.itemColors()
-                            )
-                        }
-                    }
                 }
             }
         }
