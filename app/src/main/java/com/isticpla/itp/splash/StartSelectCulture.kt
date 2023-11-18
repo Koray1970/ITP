@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +27,8 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,7 +36,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -41,11 +49,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.dummydata.AppCultureDataModel
+import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.signup.signupSubmitButton
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppTextField
+import com.isticpla.itp.uimodules.AppTextFieldDefaults
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,14 +67,21 @@ fun StartSelectCulture(
     navController: NavController,
 ) {
     val context = LocalContext.current.applicationContext
+    val homeViewModel = hiltViewModel<HomeViewMode>()
+    val listOfAppCulture =
+        homeViewModel.appCultures.collectAsStateWithLifecycle(initialValue = mutableListOf<AppCultureDataModel>())
     var cultureDropdownExpandState by remember { mutableStateOf(false) }
+    var dummy = remember { mutableStateOf("") }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
         floatingActionButton = {
             FloatingActionButton(onClick = { navController.navigate("home") }) {
-                Icon(painter = painterResource(id = R.drawable.baseline_arrow_forward_24), contentDescription = null)
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_arrow_forward_24),
+                    contentDescription = null
+                )
             }
         },
         floatingActionButtonPosition = FabPosition.EndOverlay
@@ -75,93 +96,21 @@ fun StartSelectCulture(
         ) {
             Image(painter = painterResource(id = R.drawable.logo_blue), contentDescription = null)
             Spacer(modifier = Modifier.height(40.dp))
-            Box(
-                modifier = Modifier
-                    .width(265.dp)
-                    .wrapContentSize(Alignment.TopStart)
-            ) {
-                OutlinedCard(
-                    modifier = Modifier
-                        .width(265.dp)
-                        .height(51.dp)
-                        .border(1.dp, Color(0x9BA5B7FF), RoundedCornerShape(6.dp)),
-                    shape = RoundedCornerShape(6.dp),
-                    onClick = { cultureDropdownExpandState = true }) {
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                "Lisan Seçiniz",
-                                style = TextStyle(color = Color.Gray, fontWeight = FontWeight.Bold)
-                            )
-                        },
-                        supportingContent = {
-                            Text(
-                                "Türkçe",
-                                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                            )
-                        },
-                        leadingContent = {
-                            Image(
-                                painter = painterResource(id = R.drawable.flg_tr),
-                                modifier = Modifier.size(48.dp),
-                                contentDescription = null
-                            )
-                        },
-                        trailingContent = {
-                            Icon(
-                                painter = painterResource(id = R.drawable.baseline_expand_more_24),
-                                contentDescription = null
-                            )
-                        }
+            AppTextField(txtvalue = dummy,
+                modifier=Modifier
+                    .border(1.dp,AppColors.blue_102,AppTextFieldDefaults.RoundCornderShape()),
+                label = {
+                    Text(
+                        text = "Deneme",
+                        style = TextStyle(
+                            fontFamily = poppinFamily,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
                     )
                 }
-                DropdownMenu(
-                    modifier = Modifier.width(265.dp),
-                    expanded = cultureDropdownExpandState,
-                    onDismissRequest = { cultureDropdownExpandState = false }) {
-                    DropdownMenuItem(
-                        text = { Text("Türkçe") },
-                        onClick = { cultureDropdownExpandState = false },
-                        leadingIcon = {
-                            Image(
-                                painter = painterResource(id = R.drawable.flg_tr),
-                                modifier = Modifier.size(38.dp),
-                                contentDescription = null
-                            )
-                        })
-                    DropdownMenuItem(
-                        text = { Text("English") },
-                        onClick = { cultureDropdownExpandState = false },
-                        leadingIcon = {
-                            Image(
-                                painter = painterResource(id = R.drawable.flg_uk),
-                                modifier = Modifier.size(38.dp),
-                                contentDescription = null
-                            )
-                        })
-                    DropdownMenuItem(
-                        text = { Text("Français") },
-                        onClick = { cultureDropdownExpandState = false },
-                        leadingIcon = {
-                            Image(
-                                painter = painterResource(id = R.drawable.flg_fr),
-                                modifier = Modifier.size(38.dp),
-                                contentDescription = null
-                            )
-                        })
-                    DropdownMenuItem(
-                        text = { Text("Deutsch") },
-                        onClick = { cultureDropdownExpandState = false },
-                        leadingIcon = {
-                            Image(
-                                painter = painterResource(id = R.drawable.flg_de),
-                                modifier = Modifier.size(38.dp),
-                                contentDescription = null
-                            )
-                        })
+            )
 
-                }
-            }
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = { navController.navigate("appintro") },

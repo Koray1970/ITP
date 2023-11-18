@@ -19,6 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewMode @Inject constructor() : ViewModel() {
+    val appCultures = flowOf<List<AppCultureDataModel>>(listOfAppCulture)
+
     val carouselList = flowOf<List<Int>>(listofCarousel)
 
     val employeePositions = flowOf<List<Pair<String, String>>>(listofEmployeePosition)
