@@ -1,29 +1,17 @@
-package com.isticpla.itp
+package com.isticpla.itp.home
 
-import android.os.Build
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowColumn
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -40,10 +28,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MediumTopAppBar
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
@@ -56,7 +42,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -68,42 +53,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.BusinessTypeItem
-import com.isticpla.itp.dummydata.HomeDesignItem
 import com.isticpla.itp.dummydata.SectorNewsItem
-import com.isticpla.itp.home.HomeViewMode
-import com.isticpla.itp.home.homeSectorDesignCardLabel
-import com.isticpla.itp.home.homeSectorDesignCardPriceLabel
-import com.isticpla.itp.home.homeSectorNewsContent
-import com.isticpla.itp.home.homeSectorNewsDate
-import com.isticpla.itp.home.homeSectorNewsTitle
-import com.isticpla.itp.home.homeSubSectionTitle
-import com.isticpla.itp.ui.theme.ITPTheme
+import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.Bg
 import com.isticpla.itp.uimodules.SearchbarWithChips
+import com.isticpla.itp.uimodules.defaultmenuItemState
 import java.util.Locale
 
-class StockedSalesActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.R)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            ITPTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    AppNavigate()
-                }
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StockSalesDashboard(
+fun NewsListDashboard(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
@@ -128,10 +90,11 @@ fun StockSalesDashboard(
         selectedOption = sectorlist.first()
         onOptionSelected(sectorlist.first())
     }
-    val listofStockSales =
-        homeViewMode.stokSaleList.collectAsState(initial = emptyList<HomeDesignItem>())
+    val listofSectorNews =
+        homeViewMode.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
     Scaffold(
         containerColor = Color.White,
+        bottomBar = { Bg(navController, defaultmenuItemState) },
         topBar = {
             MediumTopAppBar(
                 colors = TopAppBarColors(
@@ -140,7 +103,7 @@ fun StockSalesDashboard(
                     titleContentColor = AppColors.primaryGrey,
                     actionIconContentColor = AppColors.primaryGrey,
                 ),
-                title = { Text("Stoklu Satışlar", style = homeSubSectionTitle) },
+                title = { Text("Sektörler", style = homeSubSectionTitle) },
                 actions = {
                     IconButton(onClick = { navController.navigate("home") }) {
                         Icon(
@@ -233,58 +196,66 @@ fun StockSalesDashboard(
             Spacer(modifier = Modifier.height(20.dp))
             SearchbarWithChips()
             Spacer(modifier = Modifier.height(20.dp))
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                FlowRow(
-                    modifier = Modifier.padding(horizontal = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(30.dp),
-                    maxItemsInEachRow = 2
-                ) {
-                    listofStockSales.value.forEach { b ->
+            listofSectorNews.value.forEach { b ->
+                ListItem(
+                    modifier = Modifier.clickable {
+                        navController.navigate("newslist/detail")
+                    },
+                    colors = ListItemColors(
+                        containerColor = Color.Transparent,
+                        headlineColor = AppColors.primaryGrey,
+                        leadingIconColor = Color.Transparent,
+                        overlineColor = Color.Transparent,
+                        supportingTextColor = AppColors.primaryGrey,
+                        trailingIconColor = AppColors.primaryGrey,
+                        disabledHeadlineColor = AppColors.primaryGrey,
+                        disabledLeadingIconColor = Color.Transparent,
+                        disabledTrailingIconColor = AppColors.primaryGrey,
+                    ),
+                    headlineContent = {
+                        Text(
+                            b.title,
+                            modifier = Modifier.fillMaxWidth(),
+                            style = homeSectorNewsTitle
+                        )
+                    },
+                    supportingContent = {
                         Column(
-                            modifier = Modifier
-                                .clickable { }
-                                .requiredWidth(140.dp)
-                                .requiredHeight(290.dp)
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Row(
-                                modifier = Modifier
-                                    .size(140.dp, 210.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .paint(
-                                        painter = painterResource(id = b.image),
-                                        contentScale = ContentScale.Crop
-                                    ),
-                                verticalAlignment = Alignment.Bottom,
-                                horizontalArrangement = Arrangement.End
-                            ) {
-                                Text(
-                                    text = b.price,
-                                    modifier = Modifier
-                                        .background(Color.White.copy(.6f))
-                                        .fillMaxWidth()
-                                        .padding(start = 8.dp, end = 8.dp),
-                                    style = homeSectorDesignCardPriceLabel
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(10.dp))
                             Text(
-                                text = b.title,
-                                modifier = Modifier
-                                    .requiredWidth(140.dp)
-                                    .requiredHeight(90.dp),
-                                maxLines = 3,
-                                style = homeSectorDesignCardLabel
+                                b.content,
+                                modifier = Modifier.fillMaxWidth(),
+                                style = homeSectorNewsContent
                             )
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(b.date, style = homeSectorNewsDate)
+                        }
+                    },
+                    leadingContent = {
+                        Box(
+                            modifier = Modifier
+                                .size(64.dp)
+                                .clip(RoundedCornerShape(6.dp)),
+                        ) {
+                            Image(
+                                painter = painterResource(id = b.icon),
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    },
+                    trailingContent = {
+                        IconButton(onClick = {}) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.baseline_keyboard_arrow_right_24),
+                                contentDescription = null,
+
+                                )
                         }
                     }
-                }
+                )
+                HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
             }
         }
     }
 }
-

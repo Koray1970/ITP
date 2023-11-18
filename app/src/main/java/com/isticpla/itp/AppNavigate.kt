@@ -7,10 +7,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.isticpla.itp.home.HomeSectionCampaigns
-import com.isticpla.itp.offerdetails.OfferDetailDashboard
+import com.isticpla.itp.feed.*
+import com.isticpla.itp.home.*
+import com.isticpla.itp.offerdetails.*
 import com.isticpla.itp.offers.*
-import com.isticpla.itp.profile.ProfileDashboard
+import com.isticpla.itp.profile.*
 import com.isticpla.itp.signup.*
 import com.isticpla.itp.splash.*
 import com.isticpla.itp.views.*
