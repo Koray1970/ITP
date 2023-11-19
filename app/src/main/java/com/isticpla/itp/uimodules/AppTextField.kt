@@ -4,7 +4,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
@@ -14,9 +17,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.isticpla.itp.R
+import com.isticpla.itp.poppinFamily
 
 class AppTextFieldDefaults() {
     companion object {
@@ -33,29 +42,62 @@ class AppTextFieldDefaults() {
 
         @Composable
         fun TextFieldDefaultsColors() = TextFieldDefaults.colors(
+            selectionColors = TextSelectionColors(
+                backgroundColor = AppColors.primaryGrey.copy(.2f),
+                handleColor = AppColors.grey_118
+            ),
+            cursorColor = AppColors.primaryGrey,
             unfocusedContainerColor = Color.White,
             focusedContainerColor = Color.White,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
-            focusedTextColor =AppColors.primaryGrey,
+            focusedTextColor = AppColors.primaryGrey,
             unfocusedTextColor = AppColors.primaryGrey,
-            focusedLabelColor = AppColors.grey_118,
-            unfocusedLabelColor = AppColors.primaryGrey,
-            focusedSuffixColor =AppColors.grey_118,
+            focusedLabelColor = AppColors.primaryGrey,
+            unfocusedLabelColor =AppColors.grey_118 ,
+            focusedSuffixColor = AppColors.grey_118,
             unfocusedSuffixColor = AppColors.primaryGrey,
             focusedPrefixColor = AppColors.grey_118,
             unfocusedPrefixColor = AppColors.primaryGrey,
-            focusedLeadingIconColor =AppColors.secondaryGrey,
+            focusedLeadingIconColor = AppColors.grey_118,
             unfocusedLeadingIconColor = AppColors.secondaryGrey,
+            focusedTrailingIconColor = AppColors.grey_118,
+            unfocusedTrailingIconColor = AppColors.secondaryGrey,
             focusedPlaceholderColor = AppColors.grey_118,
             unfocusedPlaceholderColor = AppColors.primaryGrey,
-            focusedTrailingIconColor = AppColors.secondaryGrey,
-            unfocusedTrailingIconColor = AppColors.secondaryGrey,
+            disabledContainerColor = Color.White,
+            disabledIndicatorColor = Color.Transparent,
+            disabledLabelColor = AppColors.grey_118,
+            disabledTextColor = AppColors.grey_118,
+            disabledPlaceholderColor = AppColors.grey_118,
+            disabledTrailingIconColor = AppColors.grey_118,
+            disabledLeadingIconColor = AppColors.grey_118,
         )
+
         @Composable
-        fun TextFieldKeyboardOptions()=KeyboardOptions(
+        fun TextFieldKeyboardOptions() = KeyboardOptions(
             capitalization = KeyboardCapitalization.Words,
             autoCorrect = false
+        )
+
+        @Composable
+        fun ClearTextIcon(text: MutableState<String>, isenabled: Boolean = true) {
+            if (isenabled)
+                if (text.value.length > 0) {
+                    IconButton(
+                        onClick = { text.value = "" }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_clear_24),
+                            contentDescription = null
+                        )
+                    }
+                }
+        }
+        val TextFieldTextStyle=TextStyle(
+            fontFamily = poppinFamily,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal
         )
     }
 }
@@ -71,7 +113,9 @@ fun AppTextField(
     label: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = {
+        AppTextFieldDefaults.ClearTextIcon(text = txtvalue, isenabled = true)
+    },
     prefix: @Composable (() -> Unit)? = null,
     suffix: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
@@ -96,9 +140,9 @@ fun AppTextField(
     prefix = prefix,
     suffix = suffix,
     supportingText = supportingText,
-    keyboardOptions=keyboardOptions,
-    keyboardActions=keyboardActions,
-    singleLine=singleLine,
-    maxLines=maxLines,
-    minLines=minLines
+    keyboardOptions = keyboardOptions,
+    keyboardActions = keyboardActions,
+    singleLine = singleLine,
+    maxLines = maxLines,
+    minLines = minLines
 )

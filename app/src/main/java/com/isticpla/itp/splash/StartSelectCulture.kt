@@ -58,8 +58,11 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.signup.signupSubmitButton
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppDropdown
+import com.isticpla.itp.uimodules.AppMediaUploader
 import com.isticpla.itp.uimodules.AppTextField
 import com.isticpla.itp.uimodules.AppTextFieldDefaults
+import com.isticpla.itp.uimodules.AppTextFieldWithPhoneArea
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,8 +72,10 @@ fun StartSelectCulture(
     val context = LocalContext.current.applicationContext
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val listOfAppCulture =
-        homeViewModel.appCultures.collectAsStateWithLifecycle(initialValue = mutableListOf<AppCultureDataModel>())
-    var cultureDropdownExpandState by remember { mutableStateOf(false) }
+        homeViewModel.areacodeList.collectAsStateWithLifecycle(initialValue = mutableListOf<Pair<String, String>>())
+    var cultureDropdownExpandState = remember { mutableStateOf(false) }
+    var dropdownisenabled = remember { mutableStateOf(true) }
+    var dropdowndummy = remember { mutableStateOf("") }
     var dummy = remember { mutableStateOf("") }
     Scaffold(
         modifier = Modifier
@@ -96,20 +101,7 @@ fun StartSelectCulture(
         ) {
             Image(painter = painterResource(id = R.drawable.logo_blue), contentDescription = null)
             Spacer(modifier = Modifier.height(40.dp))
-            AppTextField(txtvalue = dummy,
-                modifier=Modifier
-                    .border(1.dp,AppColors.blue_102,AppTextFieldDefaults.RoundCornderShape()),
-                label = {
-                    Text(
-                        text = "Deneme",
-                        style = TextStyle(
-                            fontFamily = poppinFamily,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    )
-                }
-            )
+            AppMediaUploader()
 
             Spacer(modifier = Modifier.height(16.dp))
             Button(
