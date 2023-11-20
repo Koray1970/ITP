@@ -58,6 +58,9 @@ val signupCheckboxLabel = TextStyle(
     fontSize = 12.sp,
     color = AppColors.primaryGrey//Color(context.getColor(R.color.gray99))
 )
+val signupCheckboxLinkText = SpanStyle(
+    color = AppColors.blue_0xFF0495f1//Color(context.getColor(R.color.gray99))
+)
 
 val signupSegmentTitle = TextStyle(
     fontFamily = poppinFamily,

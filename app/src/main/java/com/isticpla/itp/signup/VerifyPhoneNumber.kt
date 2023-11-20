@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,6 +29,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -65,6 +68,7 @@ fun VerifyPhoneNumber(
     var ph4 by rememberSaveable { mutableStateOf("") }
     var ph4FocusColor by remember { mutableStateOf(textFieldinactive) }
     val maxChar = 1
+    val focusRequester=remember { FocusRequester() }
 
     Scaffold(
         modifier = Modifier
@@ -109,12 +113,19 @@ fun VerifyPhoneNumber(
                         .border(
                             1.dp, ph1FocusColor.second,
                             RoundedCornerShape(8.dp)
-                        ),
+                        )
+                        .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next,
-                        autoCorrect = false
+                        autoCorrect = false,
                     ),
+                    keyboardActions= KeyboardActions(
+                        onDone = {
+                            ImeAction.Next
+                        }
+                    ),
+
                     colors = defaultTextFieldColor(null, true)
                 )
                 Spacer(Modifier.weight(1f))
@@ -134,7 +145,8 @@ fun VerifyPhoneNumber(
                         .border(
                             1.dp, ph2FocusColor.second,
                             RoundedCornerShape(8.dp)
-                        ),
+                        )
+                        .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next,
@@ -159,7 +171,8 @@ fun VerifyPhoneNumber(
                         .border(
                             1.dp, ph3FocusColor.second,
                             RoundedCornerShape(8.dp)
-                        ),
+                        )
+                        .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next,
@@ -184,7 +197,8 @@ fun VerifyPhoneNumber(
                         .border(
                             1.dp, ph4FocusColor.second,
                             RoundedCornerShape(8.dp)
-                        ),
+                        )
+                        .focusRequester(focusRequester),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Number,
                         autoCorrect = false

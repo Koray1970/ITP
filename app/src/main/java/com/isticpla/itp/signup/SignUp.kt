@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,18 +20,23 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -40,14 +46,18 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppTextFieldDefaults.Companion.TextFieldDefaultModifier
 import com.isticpla.itp.uimodules.AppTextFieldWithPhoneArea
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUp(navController: NavController) {
     val context = LocalContext.current.applicationContext
+    val scope = rememberCoroutineScope()
     val homeviewModel = hiltViewModel<HomeViewMode>()
     val areacodelist =
         homeviewModel.areacodeList.collectAsStateWithLifecycle(initialValue = mutableListOf<Pair<String, String>>())
+
+    var bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
     var dropdownexpended = remember { mutableStateOf(false) }
     var phoneAreaValue = remember { mutableStateOf("") }
     var phoneNumberValue = remember { mutableStateOf("") }
@@ -62,12 +72,17 @@ fun SignUp(navController: NavController) {
     var chkContractedstate = remember { mutableStateOf(false) }
 
     BottomSheetScaffold(
+        scaffoldState = bottomSheetScaffoldState,
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
         containerColor = Color.White,
         sheetContent = {
-
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text("Üyelik Sözleşmesi")
+            }
         }
     ) { innerpadding ->
         Column(
@@ -136,8 +151,55 @@ fun SignUp(navController: NavController) {
                     onCheckedChange = null, // null recommended for accessibility with screenreaders
                     colors = signCheckBoxColors(isrequired = chkContractedstate)
                 )
+                val txtannotatedstring = buildAnnotatedString {
+                    val clickabletext = "Üyelik Sözleşmesini okudum ve kabul ediyorum."
+                    append(clickabletext)
+                    val start = clickabletext.indexOf("Üyelik Sözleşmesini")
+                    val end = start + "Üyelik Sözleşmesini".length
+                    addStyle(
+                        style = signupCheckboxLinkText,
+                        start = start,
+                        end = end
+                    )
+                    addStringAnnotation(
+                        tag = "membercontract",
+                        annotation = "",
+                        start = start,
+                        end = end
+                    )
+                }
+                val uriHandler = LocalUriHandler.current
+                ClickableText(
+                    text = txtannotatedstring,
+                    modifier = Modifier.padding(start = 16.dp),
+                    style = signupCheckboxLabel,
+                    onClick = { offset ->
+                        val uri = txtannotatedstring.getStringAnnotations(
+                            tag = "txtannotatedstring",
+                            offset,
+                            offset
+                        ).firstOrNull()?.item
+                        scope.launch {
+                            bottomSheetScaffoldState.bottomSheetState.expand()
+                        }
+                    })
                 Text(
-                    text = "Üyelik Sözleşmesini okudum ve kabul ediyorum.",
+                    text = buildAnnotatedString {
+                        val clickabletext = "Üyelik Sözleşmesini okudum ve kabul ediyorum."
+                        val start = clickabletext.indexOf("Üyelik Sözleşmesini")
+                        val end = start + "Üyelik Sözleşmesini".length
+                        addStyle(
+                            style = signupCheckboxLinkText,
+                            start = start,
+                            end = end
+                        )
+                        addStringAnnotation(
+                            tag = "membercontract",
+                            annotation = "",
+                            start = start,
+                            end = end
+                        )
+                    },
                     style = signupCheckboxLabel,
                     modifier = Modifier.padding(start = 16.dp)
                 )
@@ -145,11 +207,8 @@ fun SignUp(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = {
-                    if (phoneNumberValue.value.isNullOrEmpty() || !pcontractCheckedState) {
-                        if (phoneNumberValue.value.isNullOrEmpty())
-                            phonenumberIsError.value = true
-                        else
-                            phonenumberIsError.value = true
+                    if (phoneNumberValue.value.isEmpty() || !pcontractCheckedState) {
+                        phonenumberIsError.value = phoneNumberValue.value.isEmpty()
                         chkContractedstate.value = !pcontractCheckedState
                     } else
                         navController.navigate("verifyphonenumber")

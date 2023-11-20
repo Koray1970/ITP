@@ -52,6 +52,7 @@ class AppColors {
         val blue_0xFF0493F0 = Color(0xFF0493F0)
         val blue_103 = Color(0xFF1C84FF)
         val blue_104 = Color(0xFF0495f1)
+        val blue_0xFF0495f1 = Color(0xFF0495f1)
         val blue_105 = Color(0xffeef1f4)
 
         //yellow colors
