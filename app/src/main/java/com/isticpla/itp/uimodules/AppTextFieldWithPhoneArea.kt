@@ -22,7 +22,9 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -74,12 +76,12 @@ private val dropdownItemTextStyle =
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTextFieldWithPhoneArea(
-    phonetextmodifier: Modifier = AppTextFieldDefaults.TextFieldDefaultModifier(),
+    phonetextmodifier: MutableState<Modifier> = mutableStateOf(AppTextFieldDefaults.TextFieldDefaultModifier()),
     dropdowntextfieldmodifier: Modifier = Modifier,
     dropdownexpended: MutableState<Boolean> = mutableStateOf(false),
     dropdownselectedoptionvalue: MutableState<String> = mutableStateOf(""),
     dropdownlabel: @Composable (() -> Unit)? = { Text(text = "+00") },
-    dropdowndata: List<Pair<String, String>> = emptyList<Pair<String, String>>(),
+    dropdowndata: MutableList<Pair<String, String>> = mutableStateListOf<Pair<String, String>>(),
     phonetextlabel: @Composable (() -> Unit)? = null,
     phonetextfieldvalue: MutableState<String> = mutableStateOf(""),
     phonetexttrailingIcon: @Composable (() -> Unit)? = {
@@ -89,83 +91,95 @@ fun AppTextFieldWithPhoneArea(
             isenabled = true
         )
     },
+    phonetextiserror: MutableState<Boolean> = mutableStateOf(false),
     phonetextfieldcolors: TextFieldColors = AppTextFieldDefaults.TextFieldDefaultsColors()
-) = TextField(
-    modifier = phonetextmodifier,
-    value = phonetextfieldvalue.value,
-    onValueChange = {
-        if (it.length <= 15)
-            phonetextfieldvalue.value = it
-    },
-    label = phonetextlabel,
-    singleLine = true,
-    trailingIcon = phonetexttrailingIcon,
-    leadingIcon = {
-        //region Exposed Dropdown Menu Box
-        ExposedDropdownMenuBox(
-            expanded = dropdownexpended.value,
-            onExpandedChange = { dropdownexpended.value = !dropdownexpended.value },
-        ) {
-            TextField(
-                // The `menuAnchor` modifier must be passed to the text field for correctness.
-                modifier = Modifier
-                    .fillMaxWidth(.24f)
-                    .menuAnchor()
-                    .then(dropdowntextfieldmodifier),
-                value = dropdownselectedoptionvalue.value,
-                onValueChange = {
-                    if (it.length <= 3)
-                        dropdownselectedoptionvalue.value = it
-                },
-                singleLine = true,
-                label = dropdownlabel,
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropdownexpended.value) },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Characters,
-                    autoCorrect = false
-                ),
-                colors = AppTextFieldDefaults.TextFieldDefaultsColors() //ExposedDropdownMenuDefaults.textFieldColors(),
-            )
-            val filteringOptions = dropdowndata.filter {
-                "${it.first} ${it.second}".contains(
-                    dropdownselectedoptionvalue.value,
-                    ignoreCase = true
-                )
+) {
+    var fieldiserror = remember { mutableStateOf(false) }
+    fieldiserror.value = phonetextiserror.value
+    phonetextmodifier.value =
+        AppTextFieldDefaults.TextFieldDefaultModifier(iserror = fieldiserror)
+    TextField(
+        modifier = phonetextmodifier.value,
+        value = phonetextfieldvalue.value,
+        onValueChange = {
+            if (it.length > 0) {
+                fieldiserror.value = false
+                phonetextiserror.value=false
             }
-            if (filteringOptions.isNotEmpty()) {
-                ExposedDropdownMenu(
-                    modifier = Modifier.background(Color.White),
-                    expanded = dropdownexpended.value,
-                    onDismissRequest = { dropdownexpended.value = false },
-                ) {
-                    filteringOptions.forEach { selectionOption ->
-                        DropdownMenuItem(
-                            modifier = Modifier.background(Color.White),
-                            text = {
-                                Text(
-                                    text = "${selectionOption.first} ${selectionOption.second}",
-                                    style = AppTextFieldWithPhoneAreaDefaults.TextFieldTextStyle
+            if (it.length <= 15)
+                phonetextfieldvalue.value = it
+        },
+        label = phonetextlabel,
+        isError = phonetextiserror.value,
+        singleLine = true,
+        trailingIcon = phonetexttrailingIcon,
+        leadingIcon = {
+            //region Exposed Dropdown Menu Box
+            ExposedDropdownMenuBox(
+                expanded = dropdownexpended.value,
+                onExpandedChange = { dropdownexpended.value = !dropdownexpended.value },
+            ) {
+                TextField(
+                    // The `menuAnchor` modifier must be passed to the text field for correctness.
+                    modifier = Modifier
+                        .fillMaxWidth(.30f)
+                        .menuAnchor()
+                        .then(dropdowntextfieldmodifier),
+                    value = dropdownselectedoptionvalue.value,
+                    onValueChange = {
+                        if (it.length <= 3)
+                            dropdownselectedoptionvalue.value = it
+                    },
+                    singleLine = true,
+                    label = dropdownlabel,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = dropdownexpended.value) },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Characters,
+                        autoCorrect = false
+                    ),
+                    colors = AppTextFieldDefaults.TextFieldDefaultsColors() //ExposedDropdownMenuDefaults.textFieldColors(),
+                )
+                val filteringOptions = dropdowndata.filter {
+                    "${it.first} ${it.second}".contains(
+                        dropdownselectedoptionvalue.value,
+                        ignoreCase = true
+                    )
+                }
+                if (filteringOptions.isNotEmpty()) {
+                    ExposedDropdownMenu(
+                        modifier = Modifier.background(Color.White),
+                        expanded = dropdownexpended.value,
+                        onDismissRequest = { dropdownexpended.value = false },
+                    ) {
+                        filteringOptions.forEach { selectionOption ->
+                            DropdownMenuItem(
+                                modifier = Modifier.background(Color.White),
+                                text = {
+                                    Text(
+                                        text = "${selectionOption.first} ${selectionOption.second}",
+                                        style = AppTextFieldWithPhoneAreaDefaults.TextFieldTextStyle
+                                    )
+                                },
+                                onClick = {
+                                    dropdownselectedoptionvalue.value = selectionOption.second
+                                    dropdownexpended.value = false
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                                colors = MenuDefaults.itemColors(
+                                    textColor = AppColors.primaryGrey
                                 )
-                            },
-                            onClick = {
-                                dropdownselectedoptionvalue.value = selectionOption.second
-                                dropdownexpended.value = false
-                            },
-                            contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                            colors = MenuDefaults.itemColors(
-                                textColor = AppColors.primaryGrey
                             )
-                        )
+                        }
                     }
                 }
             }
-        }
-        //endregion
-    },
-    colors = phonetextfieldcolors,
-    keyboardOptions = KeyboardOptions(
-        keyboardType = KeyboardType.Phone,
-        autoCorrect = false,
-        capitalization = KeyboardCapitalization.None
+            //endregion
+        },
+        colors = phonetextfieldcolors,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Phone,
+            autoCorrect = false,
+            capitalization = KeyboardCapitalization.None
+        )
     )
-)
+}

@@ -5,13 +5,18 @@ import com.isticpla.itp.R
 import java.sql.Array
 import java.sql.Date
 
-data class AppCultureDataModel(val id: Int, val icon: Int, val name: String)
+data class AppCultureDataModel(
+    val id: Int,
+    val icon: Int,
+    val name: String,
+    val isdefault: Boolean = false
+)
 
 val listOfAppCulture = listOf<AppCultureDataModel>(
-    AppCultureDataModel(1, R.drawable.flg_tr, "Türkçe"),
-    AppCultureDataModel(1, R.drawable.flg_uk, "English"),
-    AppCultureDataModel(1, R.drawable.flg_fr, "Français"),
-    AppCultureDataModel(1, R.drawable.flg_de, "Deutsch")
+    AppCultureDataModel(1, R.drawable.flg_tr, "Türkçe", isdefault = true),
+    AppCultureDataModel(2, R.drawable.flg_uk, "English"),
+    AppCultureDataModel(3, R.drawable.flg_fr, "Français"),
+    AppCultureDataModel(4, R.drawable.flg_de, "Deutsch")
 )
 
 data class AppIntroDataModel(val img: Int, val title: String, val content: String)

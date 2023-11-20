@@ -14,6 +14,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -36,9 +37,14 @@ class AppTextFieldDefaults() {
         @Composable
         fun TextFieldDefaultModifier(
             borderWidth: Dp = 1.dp,
-            strokeColor: Color = AppColors.secondaryGrey
+            strokeColor: Color = AppColors.secondaryGrey,
+            iserror: MutableState<Boolean> = mutableStateOf(false)
         ) = Modifier
-            .border(width = borderWidth, color = strokeColor, shape = RoundedCornerShape(10))
+            .border(
+                width = borderWidth,
+                color = if (iserror.value) Color.Red else strokeColor,
+                shape = RoundedCornerShape(10)
+            )
 
         @Composable
         fun TextFieldDefaultsColors() = TextFieldDefaults.colors(
@@ -49,12 +55,14 @@ class AppTextFieldDefaults() {
             cursorColor = AppColors.primaryGrey,
             unfocusedContainerColor = Color.White,
             focusedContainerColor = Color.White,
+            errorContainerColor = Color.White,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
             focusedTextColor = AppColors.primaryGrey,
             unfocusedTextColor = AppColors.primaryGrey,
-            focusedLabelColor = AppColors.primaryGrey,
-            unfocusedLabelColor =AppColors.grey_118 ,
+            focusedLabelColor = AppColors.grey_118,
+            unfocusedLabelColor = AppColors.grey_118,
             focusedSuffixColor = AppColors.grey_118,
             unfocusedSuffixColor = AppColors.primaryGrey,
             focusedPrefixColor = AppColors.grey_118,
@@ -94,7 +102,8 @@ class AppTextFieldDefaults() {
                     }
                 }
         }
-        val TextFieldTextStyle=TextStyle(
+
+        val TextFieldTextStyle = TextStyle(
             fontFamily = poppinFamily,
             fontSize = 14.sp,
             fontWeight = FontWeight.Normal
@@ -105,7 +114,7 @@ class AppTextFieldDefaults() {
 
 @Composable
 fun AppTextField(
-    modifier: Modifier = AppTextFieldDefaults.TextFieldDefaultModifier(),
+    modifier: MutableState<Modifier> = mutableStateOf(AppTextFieldDefaults.TextFieldDefaultModifier()),
     shape: Shape = AppTextFieldDefaults.RoundCornderShape(),
     txtvalue: MutableState<String> = mutableStateOf(""),
     enabled: MutableState<Boolean> = mutableStateOf(true),
@@ -125,24 +134,30 @@ fun AppTextField(
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
     colors: TextFieldColors = AppTextFieldDefaults.TextFieldDefaultsColors()
-) = TextField(
-    value = txtvalue.value,
-    onValueChange = { txtvalue.value = it },
-    shape = shape,
-    enabled = enabled.value,
-    isError = isError.value,
-    modifier = modifier,
-    colors = colors,
-    label = label,
-    placeholder = placeholder,
-    leadingIcon = leadingIcon,
-    trailingIcon = trailingIcon,
-    prefix = prefix,
-    suffix = suffix,
-    supportingText = supportingText,
-    keyboardOptions = keyboardOptions,
-    keyboardActions = keyboardActions,
-    singleLine = singleLine,
-    maxLines = maxLines,
-    minLines = minLines
-)
+) {
+    val fieldiserror = remember{ mutableStateOf(false) }
+    fieldiserror.value= isError.value
+    modifier.value =
+        AppTextFieldDefaults.TextFieldDefaultModifier(iserror = fieldiserror)
+    TextField(
+        value = txtvalue.value,
+        onValueChange = { txtvalue.value = it },
+        modifier = modifier.value,
+        shape = shape,
+        enabled = enabled.value,
+        isError = isError.value,
+        colors = colors,
+        label = label,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        prefix = prefix,
+        suffix = suffix,
+        supportingText = supportingText,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        minLines = minLines
+    )
+}

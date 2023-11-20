@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,24 +32,44 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppTextFieldDefaults.Companion.TextFieldDefaultModifier
+import com.isticpla.itp.uimodules.AppTextFieldWithPhoneArea
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUp(navController: NavController) {
     val context = LocalContext.current.applicationContext
-    var phoneareaDropdownExpandState = remember { mutableStateOf(false) }
-    var phoneNumberValue by remember { mutableStateOf("") }
+    val homeviewModel = hiltViewModel<HomeViewMode>()
+    val areacodelist =
+        homeviewModel.areacodeList.collectAsStateWithLifecycle(initialValue = mutableListOf<Pair<String, String>>())
+    var dropdownexpended = remember { mutableStateOf(false) }
+    var phoneAreaValue = remember { mutableStateOf("") }
+    var phoneNumberValue = remember { mutableStateOf("") }
+    var phonenumberIsError = remember { mutableStateOf(false) }
+    var phoneTextModifier = remember { mutableStateOf<Modifier>(Modifier) }
+    phoneTextModifier.value.then(
+        TextFieldDefaultModifier(iserror = phonenumberIsError).then(Modifier.fillMaxWidth())
+    )
+
     val (approveCheckedState, onStateChangeApprove) = remember { mutableStateOf(true) }
-    val (pcontractCheckedState, onStateChangepContract) = remember { mutableStateOf(false) }
-    Scaffold(
+    var (pcontractCheckedState, onStateChangepContract) = remember { mutableStateOf(false) }
+    var chkContractedstate = remember { mutableStateOf(false) }
+
+    BottomSheetScaffold(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
-        containerColor = Color.White
-    ) { innerpadding ->
+        containerColor = Color.White,
+        sheetContent = {
 
+        }
+    ) { innerpadding ->
         Column(
             modifier = Modifier
                 .padding(innerpadding)
@@ -60,7 +83,17 @@ fun SignUp(navController: NavController) {
             headerReq.title = context.getString(R.string.reg100)
             headerReq.subtitle = context.getString(R.string.reg102)
             SingUpHeader(context, headerReq)
-            AreaPhoneTextField(modifier = Modifier, context)
+            //AreaPhoneTextField(modifier = Modifier, context)
+            AppTextFieldWithPhoneArea(
+                phonetextmodifier = phoneTextModifier,
+                //dropdowntextfieldmodifier=Modifier.fillMaxWidth(.40f),
+                dropdownexpended = dropdownexpended,
+                dropdownselectedoptionvalue = phoneAreaValue,
+                phonetextfieldvalue = phoneNumberValue,
+                phonetextlabel = { Text(text = "Telefon Numaranız") },
+                dropdowndata = areacodelist.value.toMutableList(),
+                phonetextiserror = phonenumberIsError
+            )
             Spacer(modifier = Modifier.height(20.dp))
             Row(
                 Modifier
@@ -72,16 +105,16 @@ fun SignUp(navController: NavController) {
                         role = Role.Checkbox
                     )
                     .padding(horizontal = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
                 Checkbox(
                     checked = approveCheckedState,
                     onCheckedChange = null, // null recommended for accessibility with screenreaders
-                    colors = signCheckBoxColors(context)
+                    colors = signCheckBoxColors()
                 )
                 Text(
                     text = "Özel bildirim, güncelleme ve haberler hakkında tarafımla e-posta ve SMS ile iletişime geçilmesini istiyorum.",
-                    style = signupCheckboxLabel(context),
+                    style = signupCheckboxLabel,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
@@ -101,17 +134,26 @@ fun SignUp(navController: NavController) {
                 Checkbox(
                     checked = pcontractCheckedState,
                     onCheckedChange = null, // null recommended for accessibility with screenreaders
-                    colors = signCheckBoxColors(context)
+                    colors = signCheckBoxColors(isrequired = chkContractedstate)
                 )
                 Text(
                     text = "Üyelik Sözleşmesini okudum ve kabul ediyorum.",
-                    style = signupCheckboxLabel(context),
+                    style = signupCheckboxLabel,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
             Button(
-                onClick = { navController.navigate("verifyphonenumber") },
+                onClick = {
+                    if (phoneNumberValue.value.isNullOrEmpty() || !pcontractCheckedState) {
+                        if (phoneNumberValue.value.isNullOrEmpty())
+                            phonenumberIsError.value = true
+                        else
+                            phonenumberIsError.value = true
+                        chkContractedstate.value = !pcontractCheckedState
+                    } else
+                        navController.navigate("verifyphonenumber")
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -123,7 +165,7 @@ fun SignUp(navController: NavController) {
                     disabledContentColor = Color.White
                 )
             ) {
-                Text(text = "Devam Et", style = signupSubmitButton(context))
+                Text(text = "Devam Et", style = signupSubmitButton)
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.arrow_right),
@@ -133,7 +175,7 @@ fun SignUp(navController: NavController) {
             Spacer(modifier = Modifier.height(30.dp))
             Text(
                 text = "Burada yer alan bilgilerinizi asla kimseyle paylaşmıyoruz, bilgilerinizi profilinizden değiştirebilirsiniz!",
-                style = signupSegmentTitle(context),
+                style = signupFooterContent,
                 modifier = Modifier.padding(start = 16.dp)
             )
         }

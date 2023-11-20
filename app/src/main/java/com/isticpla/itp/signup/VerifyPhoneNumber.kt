@@ -100,7 +100,7 @@ fun VerifyPhoneNumber(
                             ph1 = it
                         ph1FocusColor = if (it.isNotEmpty()) textFieldactive else textFieldinactive
                     },
-                    textStyle = validatePhoneTextFieldTextStyle(context),
+                    textStyle = validatePhoneTextFieldTextStyle,
                     shape = RoundedCornerShape(8.dp),
                     singleLine = true,
                     modifier = Modifier
@@ -125,7 +125,7 @@ fun VerifyPhoneNumber(
                             ph2 = it
                         ph2FocusColor = if (it.isNotEmpty()) textFieldactive else textFieldinactive
                     },
-                    textStyle = validatePhoneTextFieldTextStyle(context),
+                    textStyle = validatePhoneTextFieldTextStyle,
                     shape = RoundedCornerShape(8.dp),
                     singleLine = true,
                     modifier = Modifier
@@ -150,7 +150,7 @@ fun VerifyPhoneNumber(
                             ph3 = it
                         ph3FocusColor = if (it.isNotEmpty()) textFieldactive else textFieldinactive
                     },
-                    textStyle = validatePhoneTextFieldTextStyle(context),
+                    textStyle = validatePhoneTextFieldTextStyle,
                     shape = RoundedCornerShape(8.dp),
                     singleLine = true,
                     modifier = Modifier
@@ -175,7 +175,7 @@ fun VerifyPhoneNumber(
                             ph4 = it
                         ph4FocusColor = if (it.isNotEmpty()) textFieldactive else textFieldinactive
                     },
-                    textStyle = validatePhoneTextFieldTextStyle(context),
+                    textStyle = validatePhoneTextFieldTextStyle,
                     shape = RoundedCornerShape(8.dp),
                     singleLine = true,
                     modifier = Modifier
@@ -207,7 +207,7 @@ fun VerifyPhoneNumber(
                     disabledContentColor = Color.White
                 )
             ) {
-                Text(text = "Doğrula", style = signupSubmitButton(context))
+                Text(text = "Doğrula", style = signupSubmitButton)
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.arrow_right),

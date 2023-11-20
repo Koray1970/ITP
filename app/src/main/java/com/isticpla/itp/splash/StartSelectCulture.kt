@@ -30,7 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -58,11 +60,13 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.signup.signupSubmitButton
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppCultureDropdown
 import com.isticpla.itp.uimodules.AppDropdown
 import com.isticpla.itp.uimodules.AppMediaUploader
 import com.isticpla.itp.uimodules.AppTextField
 import com.isticpla.itp.uimodules.AppTextFieldDefaults
 import com.isticpla.itp.uimodules.AppTextFieldWithPhoneArea
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -71,12 +75,14 @@ fun StartSelectCulture(
 ) {
     val context = LocalContext.current.applicationContext
     val homeViewModel = hiltViewModel<HomeViewMode>()
-    val listOfAppCulture =
-        homeViewModel.areacodeList.collectAsStateWithLifecycle(initialValue = mutableListOf<Pair<String, String>>())
-    var cultureDropdownExpandState = remember { mutableStateOf(false) }
-    var dropdownisenabled = remember { mutableStateOf(true) }
-    var dropdowndummy = remember { mutableStateOf("") }
-    var dummy = remember { mutableStateOf("") }
+    val listOfAppCulture = homeViewModel.appCultures.collectAsStateWithLifecycle(initialValue = mutableListOf<AppCultureDataModel>())
+    var expanded = remember { mutableStateOf(false) }
+    var selectedOptionValue =
+        remember { mutableStateOf<AppCultureDataModel>(AppCultureDataModel(0, 0, ",false")) }
+    LaunchedEffect(Unit) {
+        delay(200)
+        selectedOptionValue.value = listOfAppCulture.value.first { a -> a.isdefault }
+    }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -101,8 +107,11 @@ fun StartSelectCulture(
         ) {
             Image(painter = painterResource(id = R.drawable.logo_blue), contentDescription = null)
             Spacer(modifier = Modifier.height(40.dp))
-            AppMediaUploader()
-
+            AppCultureDropdown(
+                expanded = expanded,
+                selectedOptionValue = selectedOptionValue,
+                options = listOfAppCulture.value.toMutableList()
+            )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = { navController.navigate("appintro") },
@@ -117,7 +126,7 @@ fun StartSelectCulture(
                     disabledContentColor = Color.White
                 )
             ) {
-                Text(text = "Başla", style = signupSubmitButton(context))
+                Text(text = "Başla", style = signupSubmitButton)
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.arrow_right),

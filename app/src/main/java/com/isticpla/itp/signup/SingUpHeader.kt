@@ -15,13 +15,13 @@ fun SingUpHeader(context: Context, request: SignUpHeaderRequest) {
     if (request.title != null && request.subtitle != null) {
         Text(
             text = request.title!!,//context.getString(R.string.reg100),
-            style = signupHeader(context),
+            style = signupHeader,
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = request.subtitle!!,//context.getString(R.string.reg102),
-            style = signupSubTitle(context),
+            style = signupSubTitle,
             modifier = Modifier.fillMaxWidth()
         )
     }

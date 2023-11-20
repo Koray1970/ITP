@@ -2,6 +2,10 @@ package com.isticpla.itp.signup
 
 import android.content.Context
 import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
@@ -14,7 +18,7 @@ import com.isticpla.itp.R
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 
-fun signupHeader(context: Context) = TextStyle(
+val signupHeader = TextStyle(
     fontFamily = poppinFamily,
     fontStyle = FontStyle.Normal,
     fontWeight = FontWeight.Bold,
@@ -31,7 +35,7 @@ val signupHeaderSpanStyle = SpanStyle(
     color = AppColors.primaryGrey
 )
 
-fun signupSubTitle(context: Context) = TextStyle(
+val signupSubTitle = TextStyle(
     fontFamily = poppinFamily,
     fontStyle = FontStyle.Normal,
     fontWeight = FontWeight.W400,
@@ -39,7 +43,7 @@ fun signupSubTitle(context: Context) = TextStyle(
     color = AppColors.primaryGrey//Color(context.getColor(R.color.gray99))
 )
 
-fun signupSubmitButton(context: Context) = TextStyle(
+val signupSubmitButton = TextStyle(
     fontFamily = poppinFamily,
     fontStyle = FontStyle.Normal,
     fontWeight = FontWeight.W400,
@@ -47,7 +51,7 @@ fun signupSubmitButton(context: Context) = TextStyle(
     color = Color.White
 )
 
-fun signupCheckboxLabel(context: Context) = TextStyle(
+val signupCheckboxLabel = TextStyle(
     fontFamily = poppinFamily,
     fontStyle = FontStyle.Normal,
     fontWeight = FontWeight.W400,
@@ -55,7 +59,7 @@ fun signupCheckboxLabel(context: Context) = TextStyle(
     color = AppColors.primaryGrey//Color(context.getColor(R.color.gray99))
 )
 
-fun signupSegmentTitle(context: Context) = TextStyle(
+val signupSegmentTitle = TextStyle(
     fontFamily = poppinFamily,
     fontStyle = FontStyle.Normal,
     fontWeight = FontWeight.W600,
@@ -63,8 +67,16 @@ fun signupSegmentTitle(context: Context) = TextStyle(
     fontSize = 16.sp,
     color = AppColors.grey_124//Color(context.getColor(R.color.neutral90))
 )
+val signupFooterContent = TextStyle(
+    fontFamily = poppinFamily,
+    fontStyle = FontStyle.Normal,
+    fontWeight = FontWeight.Normal,
+    lineHeight = 22.4.sp,
+    fontSize = 12.sp,
+    color = AppColors.grey_0xFF8391A1
+)
 
-fun signupBlueText(context: Context) = TextStyle(
+val signupBlueText = TextStyle(
     fontFamily = poppinFamily,
     fontStyle = FontStyle.Normal,
     fontWeight = FontWeight.Bold,
@@ -72,24 +84,22 @@ fun signupBlueText(context: Context) = TextStyle(
     color = AppColors.blue_104//Color(context.getColor(R.color.blue002))
 )
 
-fun validatePhoneTextFieldTextStyle(context: Context) = TextStyle(
+val validatePhoneTextFieldTextStyle = TextStyle(
     fontFamily = poppinFamily,
     textAlign = TextAlign.Center,
     fontSize = 22.sp,
     fontWeight = FontWeight.Bold
 )
 
-fun signCheckBoxColors(context: Context): CheckboxColors = CheckboxColors(
-    checkedCheckmarkColor = Color.White,
-    uncheckedCheckmarkColor = Color.Transparent,
-    checkedBoxColor = AppColors.blue_103,//Color(context.getColor(R.color.blue001))
-    uncheckedBoxColor = Color.Transparent,
-    disabledCheckedBoxColor = AppColors.grey_118,//Color(context.getColor(R.color.gray105))
-    disabledUncheckedBoxColor = Color.Transparent,
-    disabledIndeterminateBoxColor = AppColors.grey_118,//Color(context.getColor(R.color.gray105))
-    checkedBorderColor = AppColors.blue_103,//Color(context.getColor(R.color.blue001))
-    uncheckedBorderColor = AppColors.grey_121,//Color(context.getColor(R.color.gray100))
-    disabledBorderColor = AppColors.grey_118,//Color(context.getColor(R.color.gray105))
-    disabledUncheckedBorderColor = AppColors.grey_118,// Color(context.getColor(R.color.gray105))
-    disabledIndeterminateBorderColor = AppColors.grey_118//Color(context.getColor(R.color.gray105))
-)
+@Composable
+fun signCheckBoxColors(
+    isrequired: MutableState<Boolean> = mutableStateOf(false)
+) =
+    CheckboxDefaults.colors(
+        checkedColor = AppColors.blue_103,
+        uncheckedColor = if (!isrequired.value) AppColors.blue_103 else AppColors.red_0xffe23e3e,
+        checkmarkColor = Color.White,
+        disabledCheckedColor = AppColors.blue_103.copy(.5f),
+        disabledUncheckedColor = AppColors.red_0xffe23e3e.copy(.5f),
+        disabledIndeterminateColor = AppColors.grey_118.copy(.5f)
+    )

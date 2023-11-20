@@ -212,7 +212,7 @@ fun AddYourBusiness(navController: NavController) {
                     disabledContentColor = Color.White
                 )
             ) {
-                Text(text = "Devam Et", style = signupSubmitButton(context))
+                Text(text = "Devam Et", style = signupSubmitButton)
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.arrow_right),
