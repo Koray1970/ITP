@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -42,11 +43,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.database.Account
+import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppTextFieldDefaults.Companion.TextFieldDefaultModifier
 import com.isticpla.itp.uimodules.AppTextFieldWithPhoneArea
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.reflect.typeOf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +59,10 @@ fun SignUp(navController: NavController) {
     val context = LocalContext.current.applicationContext
     val scope = rememberCoroutineScope()
     val homeviewModel = hiltViewModel<HomeViewMode>()
+    val accountViewModel = hiltViewModel<AccountViewModel>()
+    var getAccountdb =
+        accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
+
     val areacodelist =
         homeviewModel.areacodeList.collectAsStateWithLifecycle(initialValue = mutableListOf<Pair<String, String>>())
 
@@ -67,9 +76,21 @@ fun SignUp(navController: NavController) {
         TextFieldDefaultModifier(iserror = phonenumberIsError).then(Modifier.fillMaxWidth())
     )
 
-    val (approveCheckedState, onStateChangeApprove) = remember { mutableStateOf(true) }
+    var (approveCheckedState, onStateChangeApprove) = remember { mutableStateOf(true) }
     var (pcontractCheckedState, onStateChangepContract) = remember { mutableStateOf(false) }
     var chkContractedstate = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(300)
+        if (!getAccountdb.value.areacode.isNullOrEmpty())
+            phoneAreaValue.value = getAccountdb.value.areacode!!
+        if (!getAccountdb.value.phonenumber.isNullOrEmpty())
+            phoneNumberValue.value = getAccountdb.value.phonenumber!!
+        approveCheckedState = getAccountdb.value.contactapproved
+
+        pcontractCheckedState = getAccountdb.value.contractapproved
+        onStateChangepContract(getAccountdb.value.contractapproved)
+    }
 
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
@@ -210,8 +231,17 @@ fun SignUp(navController: NavController) {
                     if (phoneNumberValue.value.isEmpty() || !pcontractCheckedState) {
                         phonenumberIsError.value = phoneNumberValue.value.isEmpty()
                         chkContractedstate.value = !pcontractCheckedState
-                    } else
-                        navController.navigate("verifyphonenumber")
+                    } else {
+                        scope.launch {
+                            getAccountdb.value.areacode = phoneAreaValue.value
+                            getAccountdb.value.phonenumber = phoneNumberValue.value
+                            getAccountdb.value.contactapproved = approveCheckedState
+                            getAccountdb.value.contractapproved = pcontractCheckedState
+                            accountViewModel.UpsertAccount(getAccountdb.value)
+                            delay(200)
+                            navController.navigate("verifyphonenumber")
+                        }
+                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

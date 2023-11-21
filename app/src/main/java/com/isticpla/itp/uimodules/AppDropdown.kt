@@ -60,7 +60,8 @@ class AppDropdownDefaults {
 fun <K, V> AppDropdown(
     dropdownmodifier: Modifier = Modifier,
     expended: MutableState<Boolean> = mutableStateOf(false),
-    selectedOptionText: MutableState<String>,
+    selectedOptionText: MutableState<String> = mutableStateOf(""),
+    selectedOptionKey: MutableState<String> = mutableStateOf(""),
     isError: MutableState<Boolean> = mutableStateOf(false),
     enabled: MutableState<Boolean> = mutableStateOf(true),
     dropdownlabel: @Composable (() -> Unit)? = null,
@@ -107,7 +108,10 @@ fun <K, V> AppDropdown(
                 horizontalArrangement = Arrangement.Center
             ) {
                 if (hascleartext.value) {
-                    AppDropdownDefaults.ClearTextIcon(text = selectedOptionText, isenabled = true)
+                    AppDropdownDefaults.ClearTextIcon(
+                        text = selectedOptionText,
+                        isenabled = true
+                    )
                 }
                 ExposedDropdownMenuDefaults.TrailingIcon(expanded = expended.value)
             }
@@ -139,8 +143,9 @@ fun <K, V> AppDropdown(
                     },
                     onClick = {
                         selectedOptionText.value = selectionOption.second.toString()
+                        selectedOptionKey.value = selectionOption.first.toString()
                         expended.value = false
-                        isError.value=false
+                        isError.value = false
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     colors = MenuDefaults.itemColors(

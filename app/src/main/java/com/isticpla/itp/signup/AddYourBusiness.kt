@@ -25,9 +25,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,24 +42,57 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.database.Account
+import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.dummydata.listofEmployeePosition
+import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppDropdown
+import com.isticpla.itp.uimodules.AppTextField
+import com.isticpla.itp.uimodules.AppTextFieldDefaults
 import com.isticpla.itp.uimodules.DropDownTextField
 import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
 import com.isticpla.itp.uimodules.defaultTextFieldColor
 import com.isticpla.itp.uimodules.dropdownMenuItemColors
 import com.isticpla.itp.uimodules.dropdownTextFieldColors
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
-fun AddYourBusiness(navController: NavController) {
+fun AddYourBusiness(
+    navController: NavController
+) {
     val context = LocalContext.current.applicationContext
-    var companynameValue by rememberSaveable { mutableStateOf("") }
-    var companynameError by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    val homeviewModel = hiltViewModel<HomeViewMode>()
+
+    val accountViewModel = hiltViewModel<AccountViewModel>()
+    val getaccountdb =
+        accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
+
+    val empoyeepositions =
+        homeviewModel.employeePositions.collectAsStateWithLifecycle(initialValue = emptyList<Pair<String, String>>())
+    var companynameValue = rememberSaveable { mutableStateOf("") }
+    var companynameError = remember { mutableStateOf(false) }
 
     var positionValue = rememberSaveable { mutableStateOf("") }
+    var positionKey = rememberSaveable { mutableStateOf("") }
     var positionExpand = remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        delay(300)
+        if (!getaccountdb.value.companyname.isNullOrEmpty())
+            companynameValue.value = getaccountdb.value.companyname!!
+        if (getaccountdb.value.employeeposition != null)
+            positionKey.value = getaccountdb.value.employeeposition!!.toString()
+        homeviewModel.getEmployeePositionResul(positionKey.value).collectLatest {
+            positionValue.value = it.first().second
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -71,7 +106,8 @@ fun AddYourBusiness(navController: NavController) {
                 .padding(innerpadding)
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically)
         ) {
             Row(
                 modifier = Modifier
@@ -104,6 +140,7 @@ fun AddYourBusiness(navController: NavController) {
             headerReq.title = "İşletmenizi ekleyin"
             headerReq.subtitle = "İşletmenizin bilgilerini giriniz!"
             SingUpHeader(context = context, request = headerReq)
+            //region File loader
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -166,41 +203,52 @@ fun AddYourBusiness(navController: NavController) {
                     }
                 }
             }
+            //endregion
             Spacer(modifier = Modifier.height(40.dp))
-            TextField(
-                value = companynameValue,
-                onValueChange = {
-                    companynameValue = it
+
+            AppTextField(
+                modifier = AppTextFieldDefaults.TextFieldDefaultModifier(
+                    fillmaxwidth = 1f,
+                    iserror = companynameError
+                ),
+                txtvalue = companynameValue,
+                label = {
+                    Text(
+                        text = "İşletme Adı (zorunlu)",
+                        style = AppTextFieldDefaults.TextFieldTextStyle
+                    )
                 },
-                label = { Text("İşletme Adı (zorunlu)") },
-                colors = defaultTextFieldColor(null, true),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp))
+                isError = companynameError,
+                singleLine = true,
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            DropDownTextField(
-                request = DropDowndTextFieldRequest(
-                    exposedDropdownMenuBoxModifier = Modifier.fillMaxWidth(),
-                    label = "İşletmediki Pozisyonunuz",
-                    selectedOptionText = positionValue,
-                    expended = positionExpand,
-                    listOfOptions = listofEmployeePosition,
-                    textFieldModifier = Modifier
-                        .fillMaxWidth()
-                        .border(
-                            1.dp,
-                            AppColors.grey_130,
-                            RoundedCornerShape(5.dp)
-                        ),
-                    textFieldReadOnly = true,
-                    textfieldColors = dropdownTextFieldColors(null, true),
-                    menuItemColors = dropdownMenuItemColors(null, true),
-                )
+            AppDropdown(
+                selectedOptionText = positionValue,
+                selectedOptionKey=positionKey,
+                expended = positionExpand,
+                listdata = empoyeepositions.value,
+                dropdownlabel = {
+                    Text(
+                        "İşletmediki Pozisyonunuz",
+                        style = AppTextFieldDefaults.TextFieldTextStyle
+                    )
+                }
             )
             Spacer(modifier = Modifier.height(40.dp))
             Button(
-                onClick = { navController.navigate("choosebusinesssalesareas") },
+                onClick = {
+                    if (companynameValue.value.isEmpty()) {
+                        companynameError.value = true
+                    } else {
+                        scope.launch {
+                            getaccountdb.value.companyname = companynameValue.value
+                            if (positionKey.value.isNotEmpty())
+                                getaccountdb.value.employeeposition = positionKey.value.toInt()
+                            accountViewModel.UpsertAccount(getaccountdb.value)
+                            delay(200)
+                            navController.navigate("choosebusinesssalesareas")
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

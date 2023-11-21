@@ -9,11 +9,19 @@ import com.isticpla.itp.data.countryListDB
 import com.isticpla.itp.dummydata.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.util.concurrent.Flow
 import javax.inject.Inject
@@ -25,9 +33,15 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val carouselList = flowOf<List<Int>>(listofCarousel)
 
     val employeePositions = flowOf<List<Pair<String, String>>>(listofEmployeePosition)
+    fun getEmployeePositionResul(id:String)=employeePositions.mapLatest { i->i.filter { it.first==id } }
 
     val areacodeList = flowOf<List<Pair<String, String>>>(listofAraeCodes)
     val countryList = flowOf<List<Pair<String, String>>>(GetCountryList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun countryResult(code: String) =
+        countryList.mapLatest { i -> i.filter { it.first == code } }
+
 
     //@RequiresApi(Build.VERSION_CODES.R)
     val shopList = flowOf<List<Pair<Int, String>>>(listofShops)

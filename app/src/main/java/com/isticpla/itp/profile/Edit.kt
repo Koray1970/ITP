@@ -249,8 +249,8 @@ fun Edit(
         }
     }
     if (showDatePicker) {
-        AppDatePicker(
+        /*AppDatePicker(
             onDateSelected = { txtPDateofBirth.value = it },
-            onDismiss = { showDatePicker = false })
+            onDismiss = { showDatePicker = false })*/
     }
 }

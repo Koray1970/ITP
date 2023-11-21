@@ -24,6 +24,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -49,16 +50,25 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.database.Account
+import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.defaultTextFieldColor
+import kotlinx.coroutines.delay
 
 @Composable
 fun VerifyPhoneNumber(
     navController: NavController,
 ) {
     val context = LocalContext.current.applicationContext
+    val accountViewModel = hiltViewModel<AccountViewModel>()
+    val account = accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
+    var _phonenumber by remember{ mutableStateOf("") }
+
     val codesize = 4
     val textFieldInactive = Pair<Color, Color>(
         AppColors.grey_0xFFF7F8F9,
@@ -76,7 +86,11 @@ fun VerifyPhoneNumber(
     val maxChar = 1
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
-
+    LaunchedEffect(Unit) {
+        delay(300)
+        if (!account.value.phonenumber.isNullOrEmpty())
+            _phonenumber = "${account.value.areacode}  ${account.value.phonenumber}"
+    }
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
@@ -95,7 +109,7 @@ fun VerifyPhoneNumber(
             val headerReq = SignUpHeaderRequest()
             headerReq.annotatedStringRequest = AnnotatedStringRequest()
             headerReq.annotatedStringRequest!!.annotatedString =
-                sendCodeAgainString("+905555555555")
+                sendCodeAgainString(_phonenumber)
             headerReq.annotatedStringRequest!!.tag = "changephonenumber"
             headerReq.annotatedStringRequest!!.event = { navController.navigate("signup") }
             SingUpHeader(context, headerReq)

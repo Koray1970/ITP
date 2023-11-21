@@ -9,8 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -18,21 +16,22 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -42,18 +41,31 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
-import com.isticpla.itp.data.countryListDB
+import com.isticpla.itp.database.Account
+import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.home.HomeViewMode
+import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppDatePicker
 import com.isticpla.itp.uimodules.AppDropdown
 import com.isticpla.itp.uimodules.AppTextField
 import com.isticpla.itp.uimodules.AppTextFieldDefaults
 import com.isticpla.itp.uimodules.AppTextFieldDefaults.Companion.TextFieldKeyboardOptions
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @Composable
 fun CreateUserAccount(navController: NavController) {
     val context = LocalContext.current.applicationContext
+    val scope = rememberCoroutineScope()
     val homeviewmodel = hiltViewModel<HomeViewMode>()
+    val accountViewModel = hiltViewModel<AccountViewModel>()
+    val getaccountdb =
+        accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
+
     var nameValue = rememberSaveable { mutableStateOf("") }
     var nameError = remember { mutableStateOf(false) }
     val nameMaxLength = 60
@@ -67,17 +79,39 @@ fun CreateUserAccount(navController: NavController) {
 
     val birthdateValue = rememberSaveable { mutableStateOf("") }
     var birthdateError = remember { mutableStateOf(false) }
+    var datepickerDialogState = remember { mutableStateOf(false) }
 
 
     val countryoptions =
         homeviewmodel.countryList.collectAsStateWithLifecycle(initialValue = emptyList<Pair<String, String>>())
     var countryexpanded = remember { mutableStateOf(false) }
-    var countryselectedOptionText = remember { mutableStateOf("") }
+    var countryselectedOption = remember { mutableStateOf<String>("") }
+    var countryselectedKey = remember { mutableStateOf<String>("") }
     var countryError = remember { mutableStateOf(false) }
 
     var referanceCodeValue = rememberSaveable { mutableStateOf("") }
     var referanceCodeError = remember { mutableStateOf(false) }
     val referanceCodeMaxLength = 16
+
+    LaunchedEffect(Unit) {
+        delay(400)
+        if (!getaccountdb.value.name.isNullOrEmpty())
+            nameValue.value = getaccountdb.value.name!!
+        if (!getaccountdb.value.lastname.isNullOrEmpty())
+            lastNameValue.value = getaccountdb.value.lastname!!
+        if (!getaccountdb.value.email.isNullOrEmpty())
+            emailValue.value = getaccountdb.value.email!!
+        if (!getaccountdb.value.birthdate.isNullOrEmpty())
+            birthdateValue.value = getaccountdb.value.birthdate!!
+        if (!getaccountdb.value.country.isNullOrEmpty()) {
+            countryselectedKey.value = getaccountdb.value.country!!
+
+            homeviewmodel.countryResult(countryselectedKey.value).collectLatest {
+                countryselectedOption.value = it.first().second
+            }
+        }
+
+    }
 
     Scaffold(
         modifier = Modifier
@@ -194,11 +228,20 @@ fun CreateUserAccount(navController: NavController) {
                             style = AppTextFieldDefaults.TextFieldTextStyle
                         )
                     },
+                    leadingIcon = {
+                        IconButton(onClick = { datepickerDialogState.value = true }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_calendar_month_24),
+                                contentDescription = null
+                            )
+                        }
+                    },
                     isError = birthdateError,
                     singleLine = true
                 )
                 AppDropdown(
-                    selectedOptionText = countryselectedOptionText,
+                    selectedOptionText = countryselectedOption,
+                    selectedOptionKey = countryselectedKey,
                     expended = countryexpanded,
                     listdata = countryoptions.value,
                     isError = countryError,
@@ -262,14 +305,25 @@ fun CreateUserAccount(navController: NavController) {
                 )
                 Button(
                     onClick = {
-                        if (nameValue.value.isEmpty() || lastNameValue.value.isEmpty() || emailValue.value.isEmpty() || countryselectedOptionText.value.isEmpty()) {
+                        if (nameValue.value.isEmpty() || lastNameValue.value.isEmpty() || emailValue.value.isEmpty() || countryselectedOption.value.isEmpty()) {
                             nameError.value = nameValue.value.isEmpty()
                             lastNameError.value = lastNameValue.value.isEmpty()
                             emailError.value = emailValue.value.isEmpty()
-                            countryError.value = countryselectedOptionText.value.isEmpty()
+                            countryError.value = countryselectedOption.value.isEmpty()
 
                         } else {
-                            navController.navigate("addyourbusiness")
+                            scope.launch {
+                                getaccountdb.value.name = nameValue.value
+                                getaccountdb.value.lastname = lastNameValue.value
+                                getaccountdb.value.email = emailValue.value
+                                getaccountdb.value.birthdate = birthdateValue.value
+                                getaccountdb.value.country = countryselectedKey.value
+                                if (referanceCodeValue.value.isNotEmpty())
+                                    getaccountdb.value.refcode = referanceCodeValue.value
+                                accountViewModel.UpsertAccount(getaccountdb.value)
+                                delay(200)
+                                navController.navigate("addyourbusiness")
+                            }
                         }
                     },
                     modifier = Modifier
@@ -294,4 +348,18 @@ fun CreateUserAccount(navController: NavController) {
             Spacer(modifier = Modifier.height(70.dp))
         }
     }
+    AppDatePicker(
+        onDateSelected = birthdateValue,
+        onDatePickerDismissState = datepickerDialogState,
+        title = {
+            Text(
+                text = "Doğum Tarihini Seçiniz",
+                style = TextStyle(
+                    fontFamily = poppinFamily,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            )
+        }
+    )
 }
