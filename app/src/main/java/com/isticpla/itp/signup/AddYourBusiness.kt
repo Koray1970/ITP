@@ -1,5 +1,14 @@
 package com.isticpla.itp.signup
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
+import android.os.Build
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -13,8 +22,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -23,19 +30,18 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -45,24 +51,30 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil.ImageLoader
+import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ErrorResult
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import com.isticpla.itp.R
 import com.isticpla.itp.database.Account
 import com.isticpla.itp.database.AccountViewModel
-import com.isticpla.itp.dummydata.listofEmployeePosition
 import com.isticpla.itp.home.HomeViewMode
+import com.isticpla.itp.mediaworks.MediaWorksEvents
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppDropdown
 import com.isticpla.itp.uimodules.AppTextField
 import com.isticpla.itp.uimodules.AppTextFieldDefaults
-import com.isticpla.itp.uimodules.DropDownTextField
-import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
-import com.isticpla.itp.uimodules.defaultTextFieldColor
-import com.isticpla.itp.uimodules.dropdownMenuItemColors
-import com.isticpla.itp.uimodules.dropdownTextFieldColors
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.io.File
+import java.util.UUID
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun AddYourBusiness(
     navController: NavController
@@ -83,14 +95,48 @@ fun AddYourBusiness(
     var positionValue = rememberSaveable { mutableStateOf("") }
     var positionKey = rememberSaveable { mutableStateOf("") }
     var positionExpand = remember { mutableStateOf(false) }
+
+
+    val uriparse = Uri.parse("android.resource://${context.packageName}/${R.raw.profilephoto}")
+    var imageUri = remember { mutableStateOf(uriparse) }
+
+    var coilPainter = rememberAsyncImagePainter(model = uriparse)
+    var bitmap: Bitmap? = null
+    val pickMedia =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
+            // Callback is invoked after the user selects a media item or closes the
+            // photo picker.
+            if (uri != null) {
+                imageUri.value = uri
+                val loadBitmap = scope.launch(Dispatchers.IO) {
+                    val loader = ImageLoader(context)
+                    val request = ImageRequest.Builder(context)
+                        .data(uri)
+                        .allowHardware(false)
+                        .build()
+                    val result = loader.execute(request)
+                    if (result is SuccessResult) {
+                        bitmap = (result.drawable as BitmapDrawable).bitmap
+                    } else if (result is ErrorResult) {
+                        cancel(result.throwable.localizedMessage ?: "ErrorResult", result.throwable)
+                    }
+                }
+                Log.d("PhotoPicker", "Selected URI: $uri")
+            } else {
+                Log.d("PhotoPicker", "No media selected")
+            }
+        }
     LaunchedEffect(Unit) {
-        delay(300)
+        delay(1000)
         if (!getaccountdb.value.companyname.isNullOrEmpty())
             companynameValue.value = getaccountdb.value.companyname!!
         if (getaccountdb.value.employeeposition != null)
             positionKey.value = getaccountdb.value.employeeposition!!.toString()
         homeviewModel.getEmployeePositionResul(positionKey.value).collectLatest {
             positionValue.value = it.first().second
+        }
+        if (!getaccountdb.value.companylogo.isNullOrEmpty()) {
+            imageUri.value = Uri.parse(getaccountdb.value.companylogo)
         }
     }
 
@@ -145,23 +191,36 @@ fun AddYourBusiness(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.Start,
+                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.Start),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
-                        .wrapContentSize()
-                        .border(5.dp, Color.White, RoundedCornerShape(10.dp))
-                        .background(Color.White)
-                        .shadow(4.dp, RoundedCornerShape(10.dp), false)
+                        .background(Color.Transparent)
+                        .size(100.dp)
+                        .shadow(
+                            elevation = 10.dp,
+                            shape = RoundedCornerShape(10.dp),
+                            clip = true
+                        ),
+                    contentAlignment = Alignment.Center
+
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_insert_photo_24),
+
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(imageUri.value)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = null,
-                        modifier = Modifier.size(100.dp)
+                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .border(5.dp, Color.White, RoundedCornerShape(10.dp))
                     )
                 }
-                Spacer(modifier = Modifier.width(16.dp))
+
                 Column {
                     Text(
                         text = "İşletme Logo",
@@ -181,7 +240,9 @@ fun AddYourBusiness(
                         modifier = Modifier.padding(vertical = 3.dp)
                     )
                     Button(
-                        onClick = {},
+                        onClick = {
+                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                        },
                         shape = RoundedCornerShape(6.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = AppColors.blue_104,
@@ -223,7 +284,7 @@ fun AddYourBusiness(
             )
             AppDropdown(
                 selectedOptionText = positionValue,
-                selectedOptionKey=positionKey,
+                selectedOptionKey = positionKey,
                 expended = positionExpand,
                 listdata = empoyeepositions.value,
                 dropdownlabel = {
@@ -242,9 +303,26 @@ fun AddYourBusiness(
                         scope.launch {
                             getaccountdb.value.companyname = companynameValue.value
                             if (positionKey.value.isNotEmpty())
-                                getaccountdb.value.employeeposition = positionKey.value.toInt()
+                                getaccountdb.value.employeeposition =
+                                    positionKey.value.toInt()
+                            if(bitmap!=null) {
+                                val mediaWorksEvents = MediaWorksEvents(context)
+                                val newfilename = UUID.randomUUID().toString()
+                                if (bitmap != null) {
+                                    mediaWorksEvents.saveImageToInternalStorage(
+                                        newfilename,
+                                        bitmap!!
+                                    )
+                                }
+                                delay(400)
+                                val file = File(context.filesDir, "$newfilename.jpg")
+                                if (file.exists())
+                                    getaccountdb.value.companylogo = file.absolutePath
+                                else
+                                    getaccountdb.value.companylogo = null
+                            }
                             accountViewModel.UpsertAccount(getaccountdb.value)
-                            delay(200)
+                            delay(400)
                             navController.navigate("choosebusinesssalesareas")
                         }
                     }

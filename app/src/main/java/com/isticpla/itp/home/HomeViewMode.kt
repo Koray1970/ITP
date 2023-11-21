@@ -2,6 +2,7 @@ package com.isticpla.itp.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.isticpla.itp.data.GetCountryList
@@ -33,7 +34,8 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val carouselList = flowOf<List<Int>>(listofCarousel)
 
     val employeePositions = flowOf<List<Pair<String, String>>>(listofEmployeePosition)
-    fun getEmployeePositionResul(id:String)=employeePositions.mapLatest { i->i.filter { it.first==id } }
+    fun getEmployeePositionResul(id: String) =
+        employeePositions.mapLatest { i -> i.filter { it.first == id } }
 
     val areacodeList = flowOf<List<Pair<String, String>>>(listofAraeCodes)
     val countryList = flowOf<List<Pair<String, String>>>(GetCountryList())
@@ -45,7 +47,10 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
     //@RequiresApi(Build.VERSION_CODES.R)
     val shopList = flowOf<List<Pair<Int, String>>>(listofShops)
-    var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.toMutableList())
+    var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.filter { a -> !a.except }
+        .toMutableList())
+    var sectorOthers = flowOf<BusinessTypeItem>(listofBusiness.first { a -> a.except })
+
     val designsList = flowOf<List<HomeDesignItem>>(listofDesigns)
     val campaignList = flowOf<List<HomeCampaignItem>>(listofHomeCampaigns)
     val stokSaleList = flowOf<List<HomeDesignItem>>(listofStokSale)
@@ -88,13 +93,13 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     }.flowOn(Dispatchers.IO)
 
     fun updateSectorButtonIsEnabled(id: Int): Boolean {
-        return listofBusiness.first { i -> i.id == id }.isSelected!!
+        return listofBusiness.first { i -> i.id == id }.isSelected!!.value
     }
 
     fun UpdateSectorListSelection(id: Int) = viewModelScope.launch {
         sectorList.collect {
             it.forEach { b ->
-                b.isSelected = b.id != id
+                b.isSelected.value = b.id != id
             }
         }
     }

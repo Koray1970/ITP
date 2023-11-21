@@ -69,12 +69,11 @@ fun FeedDashboard(
     val gson = Gson()
     var sectorlist = remember { mutableListOf<BusinessTypeItem>() }
     var (selectedOption, onOptionSelected) = remember {
-        mutableStateOf(
+        mutableStateOf<BusinessTypeItem>(
             BusinessTypeItem(
-                0,
-                false,
-                0,
-                ""
+                id = 0,
+                icon = 0,
+                label = ""
             )
         )
     }
@@ -138,7 +137,7 @@ fun FeedDashboard(
             ) {
                 sectorListState.value.forEach { b ->
                     var toggleButtonState by remember { mutableStateOf(b.isSelected) }
-                    val cColor=if ((b != selectedOption))
+                    val cColor = if ((b != selectedOption))
                         CardColors(
                             containerColor = AppColors.grey_133,
                             contentColor = Color.Black,

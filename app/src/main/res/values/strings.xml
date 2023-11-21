@@ -11,4 +11,5 @@
     <string name="title_activity_offer">OfferActivity</string>
     <string name="title_activity_offer_detail">OfferDetailActivity</string>
     <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_media_works">MediaWorksActivity</string>
 </resources>

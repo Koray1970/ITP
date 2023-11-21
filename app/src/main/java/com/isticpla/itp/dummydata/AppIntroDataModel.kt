@@ -1,6 +1,8 @@
 package com.isticpla.itp.dummydata
 
 import androidx.annotation.OpenForTesting
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import com.isticpla.itp.R
 import java.sql.Array
 import java.sql.Date
@@ -80,15 +82,21 @@ val listofEmployeePosition =
     )
 val listofCarousel = listOf<Int>(R.mipmap.caroussel1, R.mipmap.caroussel2, R.mipmap.caroussel3)
 
-data class BusinessTypeItem(val id: Int, var isSelected: Boolean, val icon: Int, val label: String)
+data class BusinessTypeItem(
+    val id: Int,
+    var isSelected: MutableState<Boolean> = mutableStateOf(true),
+    val icon: Int,
+    val label: String,
+    val except: Boolean = false
+)
 
 val listofBusiness = listOf<BusinessTypeItem>(
-    BusinessTypeItem(1, false, R.drawable.ico_metal, "Metal"),
-    BusinessTypeItem(2, true, R.drawable.ico_wood, "Ağaç"),
-    BusinessTypeItem(3, true, R.drawable.ico_plastic, "Plastik"),
-    BusinessTypeItem(4, true, R.drawable.ico_glass, "Cam"),
-    BusinessTypeItem(5, true, R.drawable.ico_textile, "Tekstil"),
-    BusinessTypeItem(6, true, R.drawable.ico_others, "Diğer")
+    BusinessTypeItem(1, icon = R.drawable.ico_metal, label = "Metal"),
+    BusinessTypeItem(2, icon = R.drawable.ico_wood, label = "Ağaç"),
+    BusinessTypeItem(3, icon = R.drawable.ico_plastic, label = "Plastik"),
+    BusinessTypeItem(4, icon = R.drawable.ico_glass, label = "Cam"),
+    BusinessTypeItem(5, icon = R.drawable.ico_textile, label = "Tekstil"),
+    BusinessTypeItem(6, icon = R.drawable.ico_others, label = "Diğer", except = true)
 )
 
 

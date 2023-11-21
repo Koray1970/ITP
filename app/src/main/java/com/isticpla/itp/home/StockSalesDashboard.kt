@@ -73,10 +73,9 @@ fun StockSalesDashboard(
     var (selectedOption, onOptionSelected) = remember {
         mutableStateOf(
             BusinessTypeItem(
-                0,
-                false,
-                0,
-                ""
+                id = 0,
+                icon = 0,
+                label = ""
             )
         )
     }
