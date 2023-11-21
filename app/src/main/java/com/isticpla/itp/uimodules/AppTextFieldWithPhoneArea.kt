@@ -99,7 +99,12 @@ fun AppTextFieldWithPhoneArea(
     phonetextmodifier.value =
         AppTextFieldDefaults.TextFieldDefaultModifier(iserror = fieldiserror)
     TextField(
-        modifier = phonetextmodifier.value,
+        modifier =Modifier
+            .border(
+                width = 1.dp,
+                color = if (phonetextiserror.value) AppColors.red_0xffe23e3e else AppColors.secondaryGrey,
+                shape = RoundedCornerShape(10)
+            ).then(phonetextmodifier.value),
         value = phonetextfieldvalue.value,
         onValueChange = {
             if (it.length > 0) {

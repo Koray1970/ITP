@@ -1,9 +1,6 @@
 package com.isticpla.itp.signup
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,10 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -41,60 +38,45 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.data.countryListDB
+import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.uimodules.AppColors
-import com.isticpla.itp.uimodules.DropDownTextField
-import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
-import com.isticpla.itp.uimodules.defaultTextFieldColor
-import com.isticpla.itp.uimodules.dropdownMenuItemColors
-import java.time.LocalDate
+import com.isticpla.itp.uimodules.AppDropdown
+import com.isticpla.itp.uimodules.AppTextField
+import com.isticpla.itp.uimodules.AppTextFieldDefaults
+import com.isticpla.itp.uimodules.AppTextFieldDefaults.Companion.TextFieldKeyboardOptions
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CreateUserAccount(navController: NavController) {
     val context = LocalContext.current.applicationContext
-    var nameValue by rememberSaveable { mutableStateOf("") }
-    var nameError by remember { mutableStateOf(false) }
+    val homeviewmodel = hiltViewModel<HomeViewMode>()
+    var nameValue = rememberSaveable { mutableStateOf("") }
+    var nameError = remember { mutableStateOf(false) }
     val nameMaxLength = 60
-    var lastNameValue by rememberSaveable { mutableStateOf("") }
-    var lastNameError by remember { mutableStateOf(false) }
+    var lastNameValue = rememberSaveable { mutableStateOf("") }
+    var lastNameError = remember { mutableStateOf(false) }
     val lastNameMaxLength = 60
-    var emailValue by rememberSaveable { mutableStateOf("") }
-    var emailError by remember { mutableStateOf(false) }
+
+    var emailValue = rememberSaveable { mutableStateOf("") }
+    var emailError = remember { mutableStateOf(false) }
     val emailMaxLength = 360
 
-    val birthDateoptions = arrayListOf<Pair<String, String>>()
-    (1..31).forEach {
-        birthDateoptions.add(Pair(it.toString(), it.toString()))
-    }
-    var birthDateexpanded = remember { mutableStateOf(false) }
-    var birthDateselectedOptionText = remember { mutableStateOf("") }
-
-    val birthMonthoptions = arrayListOf<Pair<String, String>>()
-    (1..12).forEach {
-        birthMonthoptions.add(Pair(it.toString(), it.toString()))
-    }
-    var birthMonthexpanded = remember { mutableStateOf(false) }
-    var birthMonthselectedOptionText = remember { mutableStateOf("") }
-
-    val pastyear = LocalDate.now().minusYears(80L).year
-    val thisyear = LocalDate.now().year
-    val birthYearoptions = arrayListOf<Pair<String, String>>()
-    (pastyear..thisyear).forEach {
-        birthYearoptions.add(Pair(it.toString(), it.toString()))
-    }
-    var birthYearexpanded = remember { mutableStateOf(false) }
-    var birthYearselectedOptionText = remember { mutableStateOf("") }
+    val birthdateValue = rememberSaveable { mutableStateOf("") }
+    var birthdateError = remember { mutableStateOf(false) }
 
 
-    val countryoptions = countryListDB
+    val countryoptions =
+        homeviewmodel.countryList.collectAsStateWithLifecycle(initialValue = emptyList<Pair<String, String>>())
     var countryexpanded = remember { mutableStateOf(false) }
     var countryselectedOptionText = remember { mutableStateOf("") }
+    var countryError = remember { mutableStateOf(false) }
 
-    var referanceCodeValue by rememberSaveable { mutableStateOf("") }
-    var referanceCodeError by remember { mutableStateOf(false) }
+    var referanceCodeValue = rememberSaveable { mutableStateOf("") }
+    var referanceCodeError = remember { mutableStateOf(false) }
     val referanceCodeMaxLength = 16
 
     Scaffold(
@@ -111,6 +93,7 @@ fun CreateUserAccount(navController: NavController) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Row(
                 modifier = Modifier
                     .padding(top = 72.dp, bottom = 30.dp)
@@ -142,203 +125,171 @@ fun CreateUserAccount(navController: NavController) {
             headerReq.title = "Hesabınızı oluşturun"
             headerReq.subtitle = "Başlamak için bilgilerinizi tamamlayın!"
             SingUpHeader(context = context, request = headerReq)
-            Row() {
-                TextField(
-                    value = nameValue,
-                    onValueChange = {
-                        if (it.length <= nameMaxLength)
-                            nameValue = it
-                    },
-                    isError = nameError,
-                    label = { Text(text = "Adınız") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        autoCorrect = false,
-                        capitalization = KeyboardCapitalization.Words
-                    ),
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                    colors = defaultTextFieldColor(null, true)
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                TextField(
-                    value = lastNameValue,
-                    onValueChange = {
-                        if (it.length <= lastNameMaxLength)
-                            lastNameValue = it
-                    },
-                    isError = lastNameError,
-                    label = { Text(text = "Soyadınız") },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Text,
-                        autoCorrect = false,
-                        capitalization = KeyboardCapitalization.Words
-                    ),
-                    shape = RoundedCornerShape(5.dp),
-                    modifier = Modifier
-                        .weight(1f)
-                        .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                    colors = defaultTextFieldColor(null, true)
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            TextField(
-                value = emailValue,
-                onValueChange = {
-                    if (it.length <= emailMaxLength)
-                        emailValue = it
-                },
-                isError = emailError,
-                label = { Text(text = "E-posta adresiniz") },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    autoCorrect = false,
-                    capitalization = KeyboardCapitalization.None
-                ),
-                shape = RoundedCornerShape(5.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                colors = defaultTextFieldColor(null, true)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Row(
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                DropDownTextField(
-                    request = DropDowndTextFieldRequest(
-                        exposedDropdownMenuBoxModifier = Modifier.weight(.33f),
-                        label = "Gün",
-                        selectedOptionText = birthDateselectedOptionText,
-                        expended = birthDateexpanded,
-                        listOfOptions = birthDateoptions,
-                        textFieldModifier = Modifier
-                            .weight(.33f)
-                            .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                        textFieldReadOnly = true,
-                        textfieldColors = defaultTextFieldColor(null, true),
-                        menuItemColors = dropdownMenuItemColors(null, true),
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(
+                        10.dp,
+                        Alignment.CenterHorizontally
+                    )
+                ) {
+                    AppTextField(
+                        modifier = AppTextFieldDefaults.TextFieldDefaultModifier(
+                            fillmaxwidth = .5f,
+                            iserror = nameError
+                        ),
+                        txtvalue = nameValue,
+                        label = {
+                            Text(
+                                text = "Adınız",
+                                style = AppTextFieldDefaults.TextFieldTextStyle
+                            )
+                        },
+                        isError = nameError,
+                        singleLine = true,
+                    )
+                    AppTextField(
+                        modifier = AppTextFieldDefaults.TextFieldDefaultModifier(
+                            fillmaxwidth = 1f,
+                            iserror = nameError
+                        ),
+                        txtvalue = lastNameValue,
+                        label = {
+                            Text(
+                                text = "Soyadınız",
+                                style = AppTextFieldDefaults.TextFieldTextStyle
+                            )
+                        },
+                        isError = lastNameError,
+                        singleLine = true,
+                    )
+                }
+                AppTextField(
+                    modifier = AppTextFieldDefaults.TextFieldDefaultModifier(fillmaxwidth = 1f),
+                    txtvalue = emailValue,
+                    label = {
+                        Text(
+                            text = "E-posta adresiniz",
+                            style = AppTextFieldDefaults.TextFieldTextStyle
+                        )
+                    },
+                    isError = emailError,
+                    singleLine = true,
+                    keyboardOptions = TextFieldKeyboardOptions(
+                        keyboardtype = KeyboardType.Email,
+                        capitalization = KeyboardCapitalization.None
                     )
                 )
-                Spacer(modifier = Modifier.width(10.dp))
-                DropDownTextField(
-                    request = DropDowndTextFieldRequest(
-                        exposedDropdownMenuBoxModifier = Modifier.weight(.33f),
-                        label = "Ay",
-                        selectedOptionText = birthMonthselectedOptionText,
-                        expended = birthMonthexpanded,
-                        listOfOptions = birthMonthoptions,
-                        textFieldModifier = Modifier
-                            .weight(.33f)
-                            .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                        textFieldReadOnly = true,
-                        textfieldColors = defaultTextFieldColor(null, true),
-                        menuItemColors = dropdownMenuItemColors(null, true),
-                    )
+                AppTextField(
+                    modifier = AppTextFieldDefaults.TextFieldDefaultModifier(fillmaxwidth = 1f),
+                    txtvalue = birthdateValue,
+                    label = {
+                        Text(
+                            text = "Doğum tarihiniz",
+                            style = AppTextFieldDefaults.TextFieldTextStyle
+                        )
+                    },
+                    isError = birthdateError,
+                    singleLine = true
                 )
-                Spacer(modifier = Modifier.width(10.dp))
-                DropDownTextField(
-                    request = DropDowndTextFieldRequest(
-                        exposedDropdownMenuBoxModifier = Modifier.weight(.33f),
-                        label = "Yıl",
-                        selectedOptionText = birthYearselectedOptionText,
-                        expended = birthYearexpanded,
-                        listOfOptions = birthYearoptions,
-                        textFieldModifier = Modifier
-                            .weight(.33f)
-                            .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                        textFieldReadOnly = true,
-                        textfieldColors = defaultTextFieldColor(null, true),
-                        menuItemColors = dropdownMenuItemColors(null, true),
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.height(10.dp))
-            DropDownTextField(
-                request = DropDowndTextFieldRequest(
-                    exposedDropdownMenuBoxModifier = Modifier.fillMaxWidth(),
-                    label = "Ülke",
+                AppDropdown(
                     selectedOptionText = countryselectedOptionText,
                     expended = countryexpanded,
-                    listOfOptions = countryListDB,
-                    textFieldModifier = Modifier
-                        //.menuAnchor()
-                        .fillMaxWidth()
-                        .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp)),
-                    textFieldReadOnly = true,
-                    textfieldColors = defaultTextFieldColor(null, true),
-                    menuItemColors = dropdownMenuItemColors(null, true),
-                )
-            )
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 30.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                HorizontalDivider(
-                    modifier = Modifier.weight(.33f),
-                    thickness = 1.dp,
-                    color = AppColors.grey_113
+                    listdata = countryoptions.value,
+                    isError = countryError,
+                    dropdownlabel = {
+                        Text(
+                            "Ülke",
+                            style = AppTextFieldDefaults.TextFieldTextStyle
+                        )
+                    }
                 )
 
-                Text(
-                    text = "Referans Kodu",
+                Row(
                     modifier = Modifier
-                        .weight(.33f)
-                        .padding(10.dp)
-                        .background(Color.White),
-                    style = TextStyle(fontSize = 14.sp),
-                    textAlign = TextAlign.Center,
-                    color = AppColors.primaryGrey
+                        .fillMaxWidth()
+                        .padding(vertical = 30.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    HorizontalDivider(
+                        modifier = Modifier.weight(.33f),
+                        thickness = 1.dp,
+                        color = AppColors.grey_113
+                    )
+                    Text(
+                        text = "Referans Kodu",
+                        modifier = Modifier
+                            .weight(.33f)
+                            .padding(10.dp)
+                            .background(Color.White),
+                        style = TextStyle(fontSize = 14.sp),
+                        textAlign = TextAlign.Center,
+                        color = AppColors.primaryGrey
+                    )
+                    HorizontalDivider(
+                        modifier = Modifier.weight(.33f),
+                        thickness = 1.dp,
+                        color = AppColors.grey_113
+                    )
+                }
+                AppTextField(
+                    modifier = AppTextFieldDefaults.TextFieldDefaultModifier(fillmaxwidth = 1f),
+                    txtvalue = referanceCodeValue,
+                    label = {
+                        Text(
+                            text = "Referans kodunuz",
+                            style = AppTextFieldDefaults.TextFieldTextStyle
+                        )
+                    },
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_warning_amber_24),
+                            contentDescription = null
+                        )
+                    },
+                    keyboardOptions = TextFieldKeyboardOptions(
+                        keyboardtype = KeyboardType.Ascii,
+                        capitalization = KeyboardCapitalization.Characters
+                    )
                 )
-                HorizontalDivider(
-                    modifier = Modifier.weight(.33f),
-                    thickness = 1.dp,
-                    color = AppColors.grey_113
-                )
-            }
-            TextField(
-                value = referanceCodeValue,
-                onValueChange = { referanceCodeValue = it },
-                label = { Text(text = "Referans kodunuz") },
-                leadingIcon = {
+                Button(
+                    onClick = {
+                        if (nameValue.value.isEmpty() || lastNameValue.value.isEmpty() || emailValue.value.isEmpty() || countryselectedOptionText.value.isEmpty()) {
+                            nameError.value = nameValue.value.isEmpty()
+                            lastNameError.value = lastNameValue.value.isEmpty()
+                            emailError.value = emailValue.value.isEmpty()
+                            countryError.value = countryselectedOptionText.value.isEmpty()
+
+                        } else {
+                            navController.navigate("addyourbusiness")
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    shape = RoundedCornerShape(6.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
+                        contentColor = Color.White,
+                        disabledContainerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
+                        disabledContentColor = Color.White
+                    )
+                ) {
+                    Text(text = "Devam Et", style = signupSubmitButton)
+                    Spacer(modifier = Modifier.weight(1f))
                     Icon(
-                        painter = painterResource(id = R.drawable.baseline_warning_24),
+                        painter = painterResource(id = R.drawable.arrow_right),
                         contentDescription = null
                     )
-                },
-                colors = defaultTextFieldColor(null, true),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp))
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-            Button(
-                onClick = { navController.navigate("addyourbusiness") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(6.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
-                    contentColor = Color.White,
-                    disabledContainerColor = AppColors.primaryGrey,//context.getColor(R.color.gray99)
-                    disabledContentColor = Color.White
-                )
-            ) {
-                Text(text = "Devam Et", style = signupSubmitButton)
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    painter = painterResource(id = R.drawable.arrow_right),
-                    contentDescription = null
-                )
+                }
             }
             Spacer(modifier = Modifier.height(70.dp))
         }

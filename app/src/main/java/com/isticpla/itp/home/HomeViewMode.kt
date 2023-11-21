@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.isticpla.itp.data.GetCountryList
 import com.isticpla.itp.data.countryListDB
 import com.isticpla.itp.dummydata.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,7 +27,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val employeePositions = flowOf<List<Pair<String, String>>>(listofEmployeePosition)
 
     val areacodeList = flowOf<List<Pair<String, String>>>(listofAraeCodes)
-    val countryList = flowOf<List<Pair<String, String>>>(countryListDB)
+    val countryList = flowOf<List<Pair<String, String>>>(GetCountryList())
 
     //@RequiresApi(Build.VERSION_CODES.R)
     val shopList = flowOf<List<Pair<Int, String>>>(listofShops)

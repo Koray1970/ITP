@@ -1,6 +1,8 @@
 package com.isticpla.itp.uimodules
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,17 +37,24 @@ class AppTextFieldDefaults() {
         @Composable
         fun RoundCornderShape(radius: Int = 10) = RoundedCornerShape(radius)
 
-        @Composable
         fun TextFieldDefaultModifier(
+            fillmaxwidth: Float = 1f,
             borderWidth: Dp = 1.dp,
             strokeColor: Color = AppColors.secondaryGrey,
             iserror: MutableState<Boolean> = mutableStateOf(false)
         ) = Modifier
+            .fillMaxWidth(fillmaxwidth)
             .border(
                 width = borderWidth,
                 color = if (iserror.value) Color.Red else strokeColor,
                 shape = RoundedCornerShape(10)
             )
+
+        val textfieldBorderModifier = Modifier.border(
+            width = 1.dp,
+            color = AppColors.secondaryGrey,
+            shape = RoundedCornerShape(10)
+        )
 
         @Composable
         fun TextFieldDefaultsColors() = TextFieldDefaults.colors(
@@ -67,8 +77,8 @@ class AppTextFieldDefaults() {
             unfocusedSuffixColor = AppColors.primaryGrey,
             focusedPrefixColor = AppColors.grey_118,
             unfocusedPrefixColor = AppColors.primaryGrey,
-            focusedLeadingIconColor = AppColors.grey_118,
-            unfocusedLeadingIconColor = AppColors.secondaryGrey,
+            focusedLeadingIconColor = AppColors.primaryGrey,
+            unfocusedLeadingIconColor = AppColors.primaryGrey,
             focusedTrailingIconColor = AppColors.grey_118,
             unfocusedTrailingIconColor = AppColors.secondaryGrey,
             focusedPlaceholderColor = AppColors.grey_118,
@@ -83,10 +93,16 @@ class AppTextFieldDefaults() {
         )
 
         @Composable
-        fun TextFieldKeyboardOptions() = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Words,
-            autoCorrect = false
-        )
+        fun TextFieldKeyboardOptions(
+            keyboardtype: KeyboardType = KeyboardType.Ascii,
+            capitalization: KeyboardCapitalization = KeyboardCapitalization.Words,
+            autoCorrect: Boolean = false
+        ) =
+            KeyboardOptions(
+                keyboardType = keyboardtype,
+                capitalization = capitalization,
+                autoCorrect = autoCorrect
+            )
 
         @Composable
         fun ClearTextIcon(text: MutableState<String>, isenabled: Boolean = true) {
@@ -111,10 +127,9 @@ class AppTextFieldDefaults() {
     }
 }
 
-
 @Composable
 fun AppTextField(
-    modifier: MutableState<Modifier> = mutableStateOf(AppTextFieldDefaults.TextFieldDefaultModifier()),
+    modifier: Modifier = Modifier,
     shape: Shape = AppTextFieldDefaults.RoundCornderShape(),
     txtvalue: MutableState<String> = mutableStateOf(""),
     enabled: MutableState<Boolean> = mutableStateOf(true),
@@ -133,16 +148,26 @@ fun AppTextField(
     singleLine: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     minLines: Int = 1,
-    colors: TextFieldColors = AppTextFieldDefaults.TextFieldDefaultsColors()
+    colors: TextFieldColors = AppTextFieldDefaults.TextFieldDefaultsColors(),
+    maxLength: Int? = null
 ) {
-    val fieldiserror = remember{ mutableStateOf(false) }
-    fieldiserror.value= isError.value
-    modifier.value =
-        AppTextFieldDefaults.TextFieldDefaultModifier(iserror = fieldiserror)
     TextField(
         value = txtvalue.value,
-        onValueChange = { txtvalue.value = it },
-        modifier = modifier.value,
+        onValueChange = {
+            if (maxLength != null) {
+                if (it.length <= maxLength)
+                    txtvalue.value = it
+            } else
+                txtvalue.value = it
+            isError.value = it.isEmpty()
+        },
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = if (isError.value) AppColors.red_0xffe23e3e else AppColors.secondaryGrey,
+                shape = RoundedCornerShape(10)
+            )
+            .then(modifier),
         shape = shape,
         enabled = enabled.value,
         isError = isError.value,

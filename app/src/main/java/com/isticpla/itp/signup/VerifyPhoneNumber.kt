@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -23,16 +25,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -52,23 +59,23 @@ fun VerifyPhoneNumber(
     navController: NavController,
 ) {
     val context = LocalContext.current.applicationContext
-    var ph1 by rememberSaveable { mutableStateOf("") }
-    val textFieldinactive = Pair<Color, Color>(
-        AppColors.grey_109,//context.getColor(R.color.gray109),
-        AppColors.grey_113//context.getColor(R.color.gray107)
+    val codesize = 4
+    val textFieldInactive = Pair<Color, Color>(
+        AppColors.grey_0xFFF7F8F9,
+        AppColors.grey_0xFFE8ECF4
     )
-    val textFieldactive =
-        Pair<Color, Color>(Color.White, AppColors.blue_104)//context.getColor(R.color.blue002)
-    //color > first background, second border
-    var ph1FocusColor by remember { mutableStateOf(textFieldinactive) }
-    var ph2 by rememberSaveable { mutableStateOf("") }
-    var ph2FocusColor by remember { mutableStateOf(textFieldinactive) }
-    var ph3 by rememberSaveable { mutableStateOf("") }
-    var ph3FocusColor by remember { mutableStateOf(textFieldinactive) }
-    var ph4 by rememberSaveable { mutableStateOf("") }
-    var ph4FocusColor by remember { mutableStateOf(textFieldinactive) }
+    val textFieldActive = Pair<Color, Color>(
+        Color.White, AppColors.blue_0xFF0495f1
+    )
+    val textFieldIsError = Pair<Color, Color>(
+        AppColors.grey_0xFFF7F8F9,
+        AppColors.red_0xffe23e3e
+    )
+    var isFormValid by remember { mutableStateOf(true) }
+    val smsvalidatecode = remember { mutableStateListOf<Int?>() }
     val maxChar = 1
-    val focusRequester=remember { FocusRequester() }
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
         modifier = Modifier
@@ -94,122 +101,91 @@ fun VerifyPhoneNumber(
             SingUpHeader(context, headerReq)
 
             Row(
-                horizontalArrangement = Arrangement.Center,
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                TextField(
-                    value = ph1,
-                    onValueChange = {
-                        if (it.length <= 1)
-                            ph1 = it
-                        ph1FocusColor = if (it.isNotEmpty()) textFieldactive else textFieldinactive
-                    },
-                    textStyle = validatePhoneTextFieldTextStyle,
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                    modifier = Modifier
-                        .width(67.dp)
-                        .height(60.dp)
-                        .border(
-                            1.dp, ph1FocusColor.second,
-                            RoundedCornerShape(8.dp)
-                        )
-                        .focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                        autoCorrect = false,
-                    ),
-                    keyboardActions= KeyboardActions(
-                        onDone = {
-                            ImeAction.Next
+                repeat(codesize) { t ->
+                    var textfieldColorize by remember { mutableStateOf(textFieldInactive) }
+                    BasicTextField(
+                        value = if (smsvalidatecode.isNotEmpty()) {
+                            if (smsvalidatecode.size > t)
+                                if (smsvalidatecode.get(t) != null)
+                                    smsvalidatecode.get(t).toString()
+                                else
+                                    ""
+                            else
+                                ""
+                        } else "",
+                        onValueChange = { v ->
+                            if (v.length == 1) {
+                                if (smsvalidatecode.isNotEmpty()) {
+                                    if (smsvalidatecode.size > t) {
+                                        smsvalidatecode?.set(t, v.toInt())
+                                    } else {
+                                        smsvalidatecode.add(v.toInt())
+                                    }
+                                } else
+                                    smsvalidatecode.add(v.toInt())
+
+                                if (t < codesize - 1)
+                                    focusManager.moveFocus(focusDirection = FocusDirection.Next)
+                            } else {
+                                smsvalidatecode?.set(t, null)
+                            }
+
+                            if (smsvalidatecode[t] != null)
+                                textfieldColorize = textFieldActive
+                            else {
+                                textfieldColorize = if (!isFormValid)
+                                    textFieldIsError
+                                else
+                                    textFieldInactive
+                            }
+                        },
+                        textStyle = validatePhoneTextFieldTextStyle,
+                        singleLine = true,
+                        modifier = Modifier
+                            .background(textfieldColorize.first)
+                            .wrapContentHeight(align = Alignment.Bottom)
+                            .width(67.dp)
+                            .height(60.dp)
+                            .border(
+                                1.dp, textfieldColorize.second,
+                                RoundedCornerShape(8.dp)
+                            )
+                            .focusRequester(focusRequester),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.NumberPassword,
+                            imeAction = if (t < codesize) ImeAction.Next else ImeAction.None,
+                            autoCorrect = false,
+                        ),
+                        decorationBox = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                it()
+                            }
                         }
-                    ),
-
-                    colors = defaultTextFieldColor(null, true)
-                )
-                Spacer(Modifier.weight(1f))
-                TextField(
-                    value = ph2,
-                    onValueChange = {
-                        if (it.length <= 1)
-                            ph2 = it
-                        ph2FocusColor = if (it.isNotEmpty()) textFieldactive else textFieldinactive
-                    },
-                    textStyle = validatePhoneTextFieldTextStyle,
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                    modifier = Modifier
-                        .width(67.dp)
-                        .height(60.dp)
-                        .border(
-                            1.dp, ph2FocusColor.second,
-                            RoundedCornerShape(8.dp)
-                        )
-                        .focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                        autoCorrect = false
-                    ),
-                    colors = defaultTextFieldColor(null, true)
-                )
-                Spacer(Modifier.weight(1f))
-                TextField(
-                    value = ph3,
-                    onValueChange = {
-                        if (it.length <= 1)
-                            ph3 = it
-                        ph3FocusColor = if (it.isNotEmpty()) textFieldactive else textFieldinactive
-                    },
-                    textStyle = validatePhoneTextFieldTextStyle,
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                    modifier = Modifier
-                        .width(67.dp)
-                        .height(60.dp)
-                        .border(
-                            1.dp, ph3FocusColor.second,
-                            RoundedCornerShape(8.dp)
-                        )
-                        .focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                        autoCorrect = false
-                    ),
-                    colors = defaultTextFieldColor(null, true)
-                )
-                Spacer(Modifier.weight(1f))
-                TextField(
-                    value = ph4,
-                    onValueChange = {
-                        if (it.length <= 1)
-                            ph4 = it
-                        ph4FocusColor = if (it.isNotEmpty()) textFieldactive else textFieldinactive
-                    },
-                    textStyle = validatePhoneTextFieldTextStyle,
-                    shape = RoundedCornerShape(8.dp),
-                    singleLine = true,
-                    modifier = Modifier
-                        .width(67.dp)
-                        .height(60.dp)
-                        .border(
-                            1.dp, ph4FocusColor.second,
-                            RoundedCornerShape(8.dp)
-                        )
-                        .focusRequester(focusRequester),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        autoCorrect = false
-                    ),
-                    colors = defaultTextFieldColor(null, true)
-                )
-
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(20.dp))
             Button(
-                onClick = { navController.navigate("createuseraccount") },
+                onClick = {
+                    if (smsvalidatecode.isNullOrEmpty()) {
+                        isFormValid = false
+                    } else {
+                        if (smsvalidatecode.size < codesize) {
+                            isFormValid = false
+                        } else {
+                            if (smsvalidatecode.any { a -> a == null }) {
+                                isFormValid = false
+                            } else
+                                navController.navigate("createuseraccount")
+                        }
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),

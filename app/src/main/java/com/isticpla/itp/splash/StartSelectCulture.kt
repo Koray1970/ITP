@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -75,7 +76,8 @@ fun StartSelectCulture(
 ) {
     val context = LocalContext.current.applicationContext
     val homeViewModel = hiltViewModel<HomeViewMode>()
-    val listOfAppCulture = homeViewModel.appCultures.collectAsStateWithLifecycle(initialValue = mutableListOf<AppCultureDataModel>())
+    val listOfAppCulture =
+        homeViewModel.appCultures.collectAsStateWithLifecycle(initialValue = mutableListOf<AppCultureDataModel>())
     var expanded = remember { mutableStateOf(false) }
     var selectedOptionValue =
         remember { mutableStateOf<AppCultureDataModel>(AppCultureDataModel(0, 0, ",false")) }
@@ -101,6 +103,7 @@ fun StartSelectCulture(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerpadding)
+                .padding(horizontal = 20.dp)
                 .background(Color.White),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -108,6 +111,7 @@ fun StartSelectCulture(
             Image(painter = painterResource(id = R.drawable.logo_blue), contentDescription = null)
             Spacer(modifier = Modifier.height(40.dp))
             AppCultureDropdown(
+                textfieldmodifier=AppTextFieldDefaults.TextFieldDefaultModifier(fillmaxwidth=.67f),
                 expanded = expanded,
                 selectedOptionValue = selectedOptionValue,
                 options = listOfAppCulture.value.toMutableList()

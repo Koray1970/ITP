@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,9 +31,11 @@ class AppDropdownDefaults {
     companion object {
         @Composable
         fun ExposedDropdownMenuBoxModifier(
+            maxwidth: Float = 1f,
             borderWidth: Dp = 1.dp,
             strokeColor: Color = AppColors.secondaryGrey
         ) = Modifier
+            .fillMaxWidth(maxwidth)
             .border(width = borderWidth, color = strokeColor, shape = RoundedCornerShape(10))
 
         @Composable
@@ -55,7 +58,7 @@ class AppDropdownDefaults {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <K, V> AppDropdown(
-    dropdownmodifier: Modifier = AppDropdownDefaults.ExposedDropdownMenuBoxModifier(),
+    dropdownmodifier: Modifier = Modifier,
     expended: MutableState<Boolean> = mutableStateOf(false),
     selectedOptionText: MutableState<String>,
     isError: MutableState<Boolean> = mutableStateOf(false),
@@ -82,9 +85,18 @@ fun <K, V> AppDropdown(
         colors = colors,
         // The `menuAnchor` modifier must be passed to the text field for correctness.
         modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = if (isError.value) AppColors.red_0xffe23e3e else AppColors.secondaryGrey,
+                shape = RoundedCornerShape(10)
+            )
             .menuAnchor(),
         value = selectedOptionText.value,
-        onValueChange = { selectedOptionText.value = it },
+        onValueChange = {
+            selectedOptionText.value = it
+            isError.value = it.isEmpty()
+        },
         enabled = enabled.value,
         isError = isError.value,
         singleLine = true,
@@ -128,6 +140,7 @@ fun <K, V> AppDropdown(
                     onClick = {
                         selectedOptionText.value = selectionOption.second.toString()
                         expended.value = false
+                        isError.value=false
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     colors = MenuDefaults.itemColors(

@@ -1,6 +1,6 @@
 package com.isticpla.itp.data
 
-val countryListDB = listOf<Pair<String,String>>(
+val countryListDB = listOf<Pair<String, String>>(
     Pair("Afghanistan", "AF"),
     Pair("Åland Islands", "AX"),
     Pair("Albania", "AL"),
@@ -245,3 +245,11 @@ val countryListDB = listOf<Pair<String,String>>(
     Pair("Zambia", "ZM"),
     Pair("Zimbabwe", "ZW")
 )
+
+fun GetCountryList(): List<Pair<String, String>> {
+    var ll = arrayListOf<Pair<String, String>>()
+    countryListDB.forEach { i ->
+        ll.add(Pair(i.second, i.first))
+    }
+    return ll
+}
