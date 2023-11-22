@@ -93,7 +93,7 @@ class IBusinessTypeItem(
 
 data class BusinessTypeItem(
     val id: Int,
-    var isSelected: MutableState<Boolean> = mutableStateOf(false),
+    var isSelected: MutableState<Boolean> = mutableStateOf(true),
     val icon: Int,
     val label: String,
     val except: Boolean = false

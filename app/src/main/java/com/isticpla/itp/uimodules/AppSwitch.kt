@@ -20,7 +20,7 @@ fun AppSwitch(
     colors = SwitchDefaults.colors(
         checkedBorderColor = Color.Transparent,
         uncheckedBorderColor = Color.Transparent,
-        checkedTrackColor = AppColors.grey_133,
+        checkedTrackColor = AppColors.green_103,
         uncheckedTrackColor = AppColors.grey_133,
         checkedThumbColor = Color.White,
         uncheckedThumbColor = AppColors.grey_135,

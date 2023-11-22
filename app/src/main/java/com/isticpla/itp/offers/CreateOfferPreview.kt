@@ -74,7 +74,7 @@ fun CreateOfferPreview(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("offer/create") }) {
+                    IconButton(onClick = { navController.navigate("offer/create/requestdetails") }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null

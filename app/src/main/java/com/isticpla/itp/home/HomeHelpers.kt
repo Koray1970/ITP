@@ -115,11 +115,16 @@ fun HomeSectionHeader(homeViewModel: HomeViewMode) {
 
     Column {
         AppDropdown(
-            expended=shopExpend,
-            selectedOptionText=shopselectedOptionText,
-            selectedOptionKey=shopselectedOptionKey,
-            listdata =listofShops.value,
-            dropdownlabel = {Text(text="Mağazalarım", style = AppTextFieldDefaults.TextFieldTextStyle)}
+            expended = shopExpend,
+            selectedOptionText = shopselectedOptionText,
+            selectedOptionKey = shopselectedOptionKey,
+            listdata = listofShops.value,
+            dropdownlabel = {
+                Text(
+                    text = "Mağazalarım",
+                    style = AppTextFieldDefaults.TextFieldTextStyle
+                )
+            }
         )
         Spacer(modifier = Modifier.height(20.dp))
         Carousel(requests = carouselRequest)
@@ -136,12 +141,13 @@ fun HomeSectionSectors(
     val account = accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
     var sectorList = remember { mutableListOf<BusinessTypeItem>() }
 
-    account.value.sectors?.let {
-        val cc = accountViewModel.getSectorList(it)
-            .collectAsStateWithLifecycle(initialValue = emptyList<BusinessTypeItem>())
-        if (cc.value.isNotEmpty())
-            sectorList = cc.value.toMutableList()
-    }
+    if (!account.value.sectors.isNullOrEmpty())
+        account.value.sectors?.let {
+            val cc = accountViewModel.getSectorList(it)
+                .collectAsStateWithLifecycle(initialValue = emptyList<BusinessTypeItem>())
+            if (cc.value.isNotEmpty())
+                sectorList = cc.value.toMutableList()
+        }
 
 
     Column() {
@@ -365,7 +371,7 @@ fun HomeSectionCampaigns(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(20.dp, Alignment.Start)
             ) {
-                if(listofCampaigns.value.isNotEmpty()) {
+                if (listofCampaigns.value.isNotEmpty()) {
                     //region left side
                     val lastOne = listofCampaigns.value[2]
                     Card(
@@ -383,7 +389,7 @@ fun HomeSectionCampaigns(
                         onClick = {}
                     ) {
                         Column(
-                            modifier= Modifier
+                            modifier = Modifier
                                 .fillMaxSize()
                                 .paint(
                                     sizeToIntrinsics = false,
@@ -433,7 +439,7 @@ fun HomeSectionCampaigns(
                         onClick = {}
                     ) {
                         Column(
-                            modifier= Modifier
+                            modifier = Modifier
                                 .fillMaxSize()
                                 .paint(
                                     sizeToIntrinsics = false,
