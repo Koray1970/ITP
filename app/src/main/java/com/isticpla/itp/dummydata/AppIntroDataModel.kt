@@ -1,13 +1,9 @@
 package com.isticpla.itp.dummydata
 
-import androidx.annotation.OpenForTesting
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.room.Ignore
 import com.isticpla.itp.R
-import java.sql.Array
-import java.sql.Date
 
 data class AppCultureDataModel(
     val id: Int,
