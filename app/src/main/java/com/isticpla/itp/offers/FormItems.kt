@@ -301,34 +301,7 @@ fun <K, V> DropDownMenuWithAddButton(
     }
 }
 
-@Composable
-fun AppSwitch(
-    cChecked: MutableState<Boolean>
-) = Switch(
-    checked = cChecked.value,
-    onCheckedChange = { cChecked.value = it },
-    colors = SwitchDefaults.colors(
-        checkedBorderColor = Color.Transparent,
-        uncheckedBorderColor = Color.Transparent,
-        checkedTrackColor = AppColors.grey_133,
-        uncheckedTrackColor = AppColors.grey_133,
-        checkedThumbColor = Color.White,
-        uncheckedThumbColor = AppColors.grey_135,
-        uncheckedIconColor = Color.White,
-        checkedIconColor = Color.Black
-    ),
-    thumbContent = if (cChecked.value) {
-        {
-            Icon(
-                painter = painterResource(id = R.drawable.round_check_24),
-                contentDescription = null,
-                modifier = Modifier.size(SwitchDefaults.IconSize),
-            )
-        }
-    } else {
-        null
-    }
-)
+
 
 data class PANTFPhoneTextFieldItem(
     var fieldValue: MutableState<String> = mutableStateOf(""),

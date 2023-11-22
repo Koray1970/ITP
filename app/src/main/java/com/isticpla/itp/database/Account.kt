@@ -12,7 +12,7 @@ import java.sql.Blob
 @Entity(tableName = "accounts")
 data class Account(
     @PrimaryKey(autoGenerate = true)
-    val id: Int=0,
+    val id: Int = 0,
     var cultureid: Int? = null,
     var areacode: String? = null,
     var phonenumber: String? = null,
@@ -39,5 +39,5 @@ interface AccountDAO {
     fun getAccount(): Flow<Account>
 
     @Query("SELECT sectors FROM accounts LIMIT 1")
-    fun getAccountSectors():Flow<String>
+    fun getAccountSectors(): Flow<String>
 }

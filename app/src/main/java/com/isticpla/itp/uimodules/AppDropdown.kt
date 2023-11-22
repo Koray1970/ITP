@@ -156,6 +156,11 @@ fun <K, V> AppDropdown(
         }
     }
 }
+@Composable
+fun AppDefaultStyleText(value:String)=Text(
+    text = value,
+    style = AppTextFieldDefaults.TextFieldTextStyle
+)
 /*
 usage model
 val listOfAppCulture =

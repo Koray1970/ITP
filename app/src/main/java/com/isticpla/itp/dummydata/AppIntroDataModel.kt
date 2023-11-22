@@ -2,7 +2,9 @@ package com.isticpla.itp.dummydata
 
 import androidx.annotation.OpenForTesting
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.room.Ignore
 import com.isticpla.itp.R
 import java.sql.Array
 import java.sql.Date
@@ -82,10 +84,16 @@ val listofEmployeePosition =
     )
 val listofCarousel = listOf<Int>(R.mipmap.caroussel1, R.mipmap.caroussel2, R.mipmap.caroussel3)
 
-
-class BusinessTypeItem(
+class IBusinessTypeItem(
     val id: Int,
-    var isSelected: MutableState<Boolean> = mutableStateOf(true),
+    val icon: Int,
+    val label: String,
+    val except: Boolean = false
+)
+
+data class BusinessTypeItem(
+    val id: Int,
+    var isSelected: MutableState<Boolean> = mutableStateOf(false),
     val icon: Int,
     val label: String,
     val except: Boolean = false
@@ -99,6 +107,14 @@ val listofBusiness = listOf<BusinessTypeItem>(
     BusinessTypeItem(5, icon = R.drawable.ico_textile, label = "Tekstil"),
     BusinessTypeItem(6, icon = R.drawable.ico_others, label = "Diğer", except = true)
 )
+
+fun listofBussiness(): MutableList<IBusinessTypeItem> {
+    val dd = mutableStateListOf<IBusinessTypeItem>()
+    listofBusiness.forEach { i ->
+        dd.add(IBusinessTypeItem(i.id, i.icon, i.label, i.except))
+    }
+    return dd
+}
 
 
 val listofShops = listOf<Pair<Int, String>>(
@@ -152,8 +168,8 @@ val listofHomeCampaigns = listOf<HomeCampaignItem>(
         "Most Sexy & Fabulous Design",
         "Summer Collection 2023"
     ),
-    HomeCampaignItem(3, 1, R.mipmap.tmodel_03, null, "The Office Life", "T-Shirts"),
-    HomeCampaignItem(4, 1, R.mipmap.tmodel_04, null, "Elegant Design", "Dresses"),
+    HomeCampaignItem(3, 1, R.mipmap.tmodel_03_helfleft, 1, "The Office Life", "T-Shirts"),
+    HomeCampaignItem(4, 1, R.mipmap.tmodel_04_halfright, 2, "Elegant Design", "Dresses"),
 )
 
 data class SectorNewsItem(val icon: Int, val title: String, val content: String, val date: String)
