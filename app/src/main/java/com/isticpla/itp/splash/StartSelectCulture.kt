@@ -55,12 +55,22 @@ fun StartSelectCulture(
     val scope = rememberCoroutineScope()
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val accountViewModel = hiltViewModel<AccountViewModel>()
-    var getaccountdb=accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
+    var getaccountdb =
+        accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
 
     val listOfAppCulture =
         homeViewModel.appCultures.collectAsStateWithLifecycle(initialValue = mutableListOf<AppCultureDataModel>())
     var expanded = remember { mutableStateOf(false) }
-    var selectedOptionValue = remember { mutableStateOf(AppCultureDataModel(1, R.drawable.flg_tr, "Türkçe", isdefault = true)) }
+    var selectedOptionValue = remember {
+        mutableStateOf(
+            AppCultureDataModel(
+                1,
+                R.drawable.flg_tr,
+                "Türkçe",
+                isdefault = true
+            )
+        )
+    }
     LaunchedEffect(Unit) {
         delay(200)
         selectedOptionValue.value = listOfAppCulture.value.first { a -> a.isdefault }
@@ -100,11 +110,11 @@ fun StartSelectCulture(
             Button(
                 onClick = {
                     scope.launch {
-                        if(getaccountdb.value.id>0) {
-                            getaccountdb.value.cultureid=selectedOptionValue.value.id
+
+                        if (getaccountdb.value != null) {
+                            getaccountdb.value.cultureid = selectedOptionValue.value.id
                             accountViewModel.UpsertAccount(getaccountdb.value)
-                        }
-                        else
+                        } else
                             accountViewModel.UpsertAccount(Account(cultureid = selectedOptionValue.value.id))
                         delay(200)
                         navController.navigate("appintro")

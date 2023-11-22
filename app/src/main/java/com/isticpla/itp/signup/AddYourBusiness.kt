@@ -133,7 +133,8 @@ fun AddYourBusiness(
         if (getaccountdb.value.employeeposition != null)
             positionKey.value = getaccountdb.value.employeeposition!!.toString()
         homeviewModel.getEmployeePositionResul(positionKey.value).collectLatest {
-            positionValue.value = it.first().second
+            if (it.isNotEmpty())
+                positionValue.value = it.first().second
         }
         if (!getaccountdb.value.companylogo.isNullOrEmpty()) {
             imageUri.value = Uri.parse(getaccountdb.value.companylogo)
@@ -305,7 +306,7 @@ fun AddYourBusiness(
                             if (positionKey.value.isNotEmpty())
                                 getaccountdb.value.employeeposition =
                                     positionKey.value.toInt()
-                            if(bitmap!=null) {
+                            if (bitmap != null) {
                                 val mediaWorksEvents = MediaWorksEvents(context)
                                 val newfilename = UUID.randomUUID().toString()
                                 if (bitmap != null) {

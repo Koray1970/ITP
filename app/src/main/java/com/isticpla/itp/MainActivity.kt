@@ -52,6 +52,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
+        //applicationContext.deleteDatabase("itpdatabase")
         installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {

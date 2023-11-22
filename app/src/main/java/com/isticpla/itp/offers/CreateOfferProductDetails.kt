@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,6 +41,8 @@ import com.isticpla.itp.dummydata.ProductFeatureItem
 import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppDefaultStyleText
+import com.isticpla.itp.uimodules.AppTextField
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -108,6 +112,17 @@ fun CreateOfferProductDetails(
                     Spacer(modifier = Modifier.height(40.dp))
                     Text(text = "Ürün Bilgileri", style = offerProductDetailFormSectionTitle)
                     Spacer(modifier = Modifier.height(8.dp))
+                    /*AppTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        txtvalue = txtName,
+                        isError = quantityError,
+                        singleLine = true,
+                        label = { AppDefaultStyleText("Adet") },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            autoCorrect = false
+                        )
+                    )*/
                     appTextField(
                         itms = appTextFieldItems(
                             Modifier,
