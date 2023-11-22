@@ -82,7 +82,8 @@ val listofEmployeePosition =
     )
 val listofCarousel = listOf<Int>(R.mipmap.caroussel1, R.mipmap.caroussel2, R.mipmap.caroussel3)
 
-data class BusinessTypeItem(
+
+class BusinessTypeItem(
     val id: Int,
     var isSelected: MutableState<Boolean> = mutableStateOf(true),
     val icon: Int,

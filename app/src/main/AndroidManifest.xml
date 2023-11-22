@@ -23,11 +23,6 @@
         android:theme="@style/Theme.ITP"
         tools:targetApi="31">
         <activity
-            android:name=".mediaworks.MediaWorksActivity"
-            android:exported="false"
-            android:label="@string/title_activity_media_works"
-            android:theme="@style/Theme.ITP" />
-        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

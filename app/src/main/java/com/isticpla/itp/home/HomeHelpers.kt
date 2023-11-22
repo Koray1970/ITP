@@ -59,8 +59,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.dummydata.BusinessTypeItem
 import com.isticpla.itp.dummydata.HomeCampaignItem
 import com.isticpla.itp.dummydata.HomeDesignItem
@@ -84,7 +86,7 @@ import java.util.Locale
 @Composable
 fun HomeSectionHeader() {
     val configuration = LocalConfiguration.current
-    val homeViewModel= hiltViewModel<HomeViewMode>()
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofShops =
         homeViewModel.shopList.collectAsState(initial = emptyList<Pair<Int, String>>())
 
@@ -133,7 +135,12 @@ fun HomeSectionHeader() {
 fun HomeSectionSectors(
     navController: NavController,
 ) {
-    val homeViewModel= hiltViewModel<HomeViewMode>()
+    val homeViewModel = hiltViewModel<HomeViewMode>()
+    val accountViewMode = hiltViewModel<AccountViewModel>()
+
+    val asectors = accountViewMode.getAccountSectors()
+        .collectAsStateWithLifecycle(initialValue = emptyList<BusinessTypeItem>())
+
     val sectorList =
         homeViewModel.sectorList.collectAsState(initial = emptyList<BusinessTypeItem>())
     Column() {
@@ -199,7 +206,7 @@ fun HomeSectionSectors(
 fun HomeSectionDesigns(
     navController: NavController,
 ) {
-    val homeViewModel= hiltViewModel<HomeViewMode>()
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofDesigns =
         homeViewModel.designsList.collectAsState(initial = emptyList<HomeDesignItem>())
     Column() {
@@ -211,7 +218,7 @@ fun HomeSectionDesigns(
             Text("Tasarımlar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
-                onClick = {navController.navigate("feed") },
+                onClick = { navController.navigate("feed") },
             ) {
                 Text("Hepsini Göster", style = homeSectorShowAll)
             }
@@ -261,7 +268,7 @@ fun HomeSectionDesigns(
 fun HomeSectionCampaigns(
     navController: NavController,
 ) {
-    val homeViewModel= hiltViewModel<HomeViewMode>()
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofCampaigns =
         homeViewModel.campaignList.collectAsState(initial = emptyList<HomeCampaignItem>())
     Column() {
@@ -273,7 +280,7 @@ fun HomeSectionCampaigns(
             Text("Kampanyalar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
             Spacer(modifier = Modifier.weight(1f))
             TextButton(
-                onClick = { navController.navigate("home/section/campaigns")},
+                onClick = { navController.navigate("home/section/campaigns") },
             ) {
                 Text("Hepsini Göster", style = homeSectorShowAll)
             }
@@ -404,7 +411,7 @@ fun HomeSectionCampaigns(
 fun HomeSectionInStockSales(
     navController: NavController,
 ) {
-    val homeViewModel= hiltViewModel<HomeViewMode>()
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofStockSales =
         homeViewModel.stokSaleList.collectAsState(initial = emptyList<HomeDesignItem>())
     Column() {
@@ -424,7 +431,7 @@ fun HomeSectionInStockSales(
         Spacer(modifier = Modifier.height(3.dp))
         Row(
             modifier = Modifier.horizontalScroll(rememberScrollState()),
-            verticalAlignment=Alignment.Top,
+            verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.spacedBy(10.dp),
         ) {
             listofStockSales.value.forEach { b ->
@@ -474,7 +481,7 @@ fun HomeSectionInStockSales(
 fun HomeSectionSectorNews(
     navController: NavController,
 ) {
-    val homeViewModel= hiltViewModel<HomeViewMode>()
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofSectorNews =
         homeViewModel.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
     Column() {
