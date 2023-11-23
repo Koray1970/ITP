@@ -108,7 +108,10 @@ fun CreateOfferRequestDetails(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("offer/create") }) {
+                    IconButton(onClick = {
+                        //.navigate("offer/create/productdetails")
+                        navController.popBackStack()
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null

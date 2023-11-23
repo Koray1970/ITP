@@ -57,7 +57,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val sectorNewsList = flowOf<List<SectorNewsItem>>(listofHomeSectorNews)
     val offerDrafts = flowOf<List<OfferDraftListItem>>(listOfOfferDraft)
     val orderStages = flowOf<List<OrderStages>>(listOfOrderStages)
-    val productDRPItems = flowOf<List<ProductFeatureItem>>(listofProductFeature)
+    val productDRPItems = flowOf<List<ProductFeatureItem>>(listofProductFeature.sortedBy { a->a.label })
 
     val requestQuantity = flowOf<List<Pair<Int, Int>>>(listOfQuantity)
     val requestPaymentType = flowOf<List<Pair<Int, String>>>(listOfPaymentType)

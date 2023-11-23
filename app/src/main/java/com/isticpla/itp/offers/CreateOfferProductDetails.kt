@@ -1,35 +1,60 @@
 package com.isticpla.itp.offers
 
+import android.widget.Toast
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SwipeToDismiss
+import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.rememberDismissState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,34 +68,112 @@ import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppDefaultStyleText
 import com.isticpla.itp.uimodules.AppTextField
+import kotlinx.coroutines.launch
+import java.util.UUID
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun CreateOfferProductDetails(
-    navController: NavController,
-    homeViewMode: HomeViewMode = hiltViewModel(),
+    navController: NavController
 ) {
+    val context= LocalContext.current.applicationContext
+    val scope = rememberCoroutineScope()
+    val homeViewMode = hiltViewModel<HomeViewMode>()
     val expendedMenuViewModel = hiltViewModel<ExpendedMenuViewModel>()
 
-    val txtName = rememberSaveable { mutableStateOf("") }
+    val txtPNameValue = rememberSaveable { mutableStateOf("") }
+    val txtPNameError = rememberSaveable { mutableStateOf(false) }
     val txtComment = rememberSaveable { mutableStateOf("") }
-    val productDRPMenuExpanded = remember { mutableStateOf(false) }
-    val productDRPMenuListdataState =
+    val listOfPrdFeaturesState =
         homeViewMode.productDRPItems.collectAsState(initial = emptyList<ProductFeatureItem>())
-    val prdDRPItems = remember { mutableListOf<Pair<String, String>>() }
-    //prdDRPItems = mutableListOf<Pair<String, String>>()
-    productDRPMenuListdataState.value.forEach { i ->
-        prdDRPItems.add(Pair(i.id.toString(), i.label))
-    }
-    val txtProductFieldValue = rememberSaveable { mutableStateOf("") }
 
-    /*val listofSelectedDataItems by expendedMenuViewModel.listOfSelectedCollections.collectAsStateWithLifecycle(
-        mutableListOf<ExpendedMenuSelectedCollectionItem>()
-    )*/
+    val pageSheetState = rememberModalBottomSheetState()
+    val additionalFeatures = remember { mutableStateListOf<ProductFeatureItem>() }
+
+    var pageShowBottomSheet by remember { mutableStateOf(false) }
+
+    val formState = remember { mutableStateMapOf<String, String>() }
     BottomSheetScaffold(
         containerColor = Color.White,
+        sheetPeekHeight = 0.dp,
         sheetContent = {
-
+            if (pageShowBottomSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        pageShowBottomSheet = false
+                    },
+                    sheetState = pageSheetState
+                ) {
+                    // Sheet content
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .fillMaxHeight(.5f),
+                        verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        //region sheet header
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Ürün Özellik Listesi",
+                                style = offerProductDetailFormSectionTitle,
+                                modifier = Modifier.weight(1f)
+                            )
+                            IconButton(
+                                onClick = {
+                                    scope.launch {
+                                        pageSheetState.hide()
+                                    }.invokeOnCompletion { pageShowBottomSheet = false }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_clear_24),
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                        //endregion
+                        //region features
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(2),
+                            verticalArrangement = Arrangement.spacedBy(
+                                10.dp,
+                                Alignment.CenterVertically
+                            ),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start)
+                        ) {
+                            items(listOfPrdFeaturesState.value) { item ->
+                                Button(
+                                    onClick = {
+                                        scope.launch {
+                                            additionalFeatures.add(item)
+                                        }
+                                    },
+                                    shape = RoundedCornerShape(10.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = AppColors.blue_0xFF0495f1,
+                                        contentColor = Color.White
+                                    )
+                                ) {
+                                    Text(
+                                        text = item.label,
+                                        style = TextStyle(
+                                            fontFamily = poppinFamily,
+                                            fontSize = 12.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        //endregion
+                    }
+                }
+            }
         },
         topBar = {
             TopAppBar(
@@ -99,119 +202,126 @@ fun CreateOfferProductDetails(
                 }
             )
         }) { innerpadding ->
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .padding(innerpadding)
                 .padding(horizontal = 10.dp)
-                .padding(top = 30.dp)
+                .padding(top = 30.dp, bottom = 40.dp)
                 .fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            item {
-                Column {
-                    ProposalWizardStage(1, "Ürün Detaylar")
-                    Spacer(modifier = Modifier.height(40.dp))
-                    Text(text = "Ürün Bilgileri", style = offerProductDetailFormSectionTitle)
-                    Spacer(modifier = Modifier.height(8.dp))
-                    /*AppTextField(
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.Start
+            ) {
+                ProposalWizardStage(1, "Ürün Detaylar")
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(text = "Ürün Bilgileri", style = offerProductDetailFormSectionTitle)
+                Spacer(modifier = Modifier.height(8.dp))
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    AppTextField(
                         modifier = Modifier.fillMaxWidth(),
-                        txtvalue = txtName,
-                        isError = quantityError,
+                        txtvalue = txtPNameValue,
+                        isError = txtPNameError,
                         singleLine = true,
                         label = { AppDefaultStyleText("Adet") },
                         keyboardOptions = KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             autoCorrect = false
                         )
-                    )*/
-                    appTextField(
-                        itms = appTextFieldItems(
-                            Modifier,
-                            Modifier
-                                .fillMaxWidth(),
-                            txtName,
-                            null,
-                            null,
-                            "Ürün adı",
-                            false,
-                            true,
-                            false,
-                            true,
-                            1,
-                            minLines = 1,
-                            txtFColors(),
-                            txtFKeyboardOptionsCapWord
-                        )
                     )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    appTextField(
-                        itms = appTextFieldItems(
-                            Modifier,
-                            Modifier
-                                .fillMaxWidth(),
-                            txtComment,
-                            null,
-                            null,
-                            "Açıklama",
-                            false,
-                            true,
-                            false,
-                            false,
-                            Int.MAX_VALUE,
-                            2,
-                            txtFColors(),
-                            txtFKeyboardOptionsCapSentence
-                        )
+                    AppTextField(
+                        modifier = Modifier.fillMaxWidth(),
+                        txtvalue = txtComment,
+                        label = { AppDefaultStyleText("Açıklama") },
+                        singleLine = false,
+                        minLines = 4,
+                        maxLines = Int.MAX_VALUE
                     )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    DropDownMenuWithAddButton(
-                        itms = DropdownMenuItems(
-                            txfItems = appTextFieldItems(
-                                Modifier,
-                                Modifier,
-                                txtProductFieldValue,
-                                {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.round_unfold_more_24),
-                                        contentDescription = null
-                                    )
-                                },
-                                null,
-                                "Özellikler Seçiniz",
-                                false,
-                                true,
-                                true,
-                                true,
-                                1,
-                                1,
-                                txtFColors(),
-                                txtFKeyboardOptionsCapSentence
-                            ),
-                            expanded = productDRPMenuExpanded,
-                            menuitems = prdDRPItems.toList(),
-                            buttonModifier = Modifier,
-                            buttonLabelText = "Ekle",
-                            buttonLabelTextStyle = TextStyle(
-                                fontFamily = poppinFamily,
-                                fontSize = 14.sp,
-                                color = Color.White
+
+                    Spacer(modifier = Modifier.height(22.dp))
+                    //region product features
+                    if (additionalFeatures.isNotEmpty()) {
+                        additionalFeatures.forEach { i ->
+                            val dismissFormState= rememberDismissState()
+                            val uuid = UUID.randomUUID().toString()
+                            /*SwipeToDismissBox(
+                                state = ,
+                                background = ,
+                                dismissContent = )*/
+                            AppTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                txtvalue = mutableStateOf(formState[uuid] ?: i.value),
+                                label = { AppDefaultStyleText(i.label) },
+                                isError = mutableStateOf((formState[uuid] ?: i.value).isNotEmpty()),
+                                singleLine = true,
                             )
-                        ),
-                        productDRPMenuListdataState.value,
-                        expendedMenuViewModel
-                    )
-                    Spacer(modifier = Modifier.height(40.dp))
-                    Button(
-                        onClick = { navController.navigate("offer/create/requestdetails") },
-                        shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = AppColors.grey_130,
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .requiredHeight(48.dp)
+                        }
+                    }
+                    //endregion
+                    Spacer(modifier = Modifier.height(80.dp))
+                }
+            }
+            //region Bottom Buttons
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
+            ) {
+                Button(
+                    onClick = {
+                        scope.launch {
+                            pageSheetState.show()
+                        }.invokeOnCompletion {
+                            pageShowBottomSheet = true
+                        }
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppColors.green_103,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth(.4f)
+                        .requiredHeight(58.dp)
+                ) {
+                    Text(text = "Ürün Özellik Ekle", style = offerStageAddProductFeatureButton)
+                    /*Icon(
+                        painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                        contentDescription = null,
+                        tint = Color.White
+                    )*/
+                }
+                Button(
+                    onClick = {
+                        if (formState.toMap().containsValue("")) {
+                            Toast.makeText(context,"Lütfen tüm form verilerini giriniz",Toast.LENGTH_LONG).show()
+                        } else
+                            navController.navigate("offer/create/requestdetails")
+                    },
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppColors.grey_130,
+                        contentColor = Color.White
+                    ),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .requiredHeight(58.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(text = "Devam", style = offerStagePublishButton)
+                        Text(
+                            text = "Devam",
+                            style = offerStagePublishButton,
+                            modifier = Modifier.weight(1f)
+                        )
                         Icon(
                             painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
                             contentDescription = null,
@@ -220,9 +330,7 @@ fun CreateOfferProductDetails(
                     }
                 }
             }
-            /*items(listofSelectedDataItems.size){i->
-                Text(listofSelectedDataItems[i].productFeatureItem.label)
-            }*/
+            //endregion
         }
     }
 }

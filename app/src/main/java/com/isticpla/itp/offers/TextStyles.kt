@@ -74,6 +74,14 @@ val offerStagePublishButton = TextStyle(
     fontWeight = FontWeight.SemiBold,
     color = Color.White
 )
+val offerStageAddProductFeatureButton = TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 16.sp,
+    fontWeight = FontWeight.SemiBold,
+    textAlign=TextAlign.Center,
+    color = Color.White
+)
+
 val offerStageDefaultButton = TextStyle(
     fontFamily = poppinFamily,
     fontSize = 16.sp,

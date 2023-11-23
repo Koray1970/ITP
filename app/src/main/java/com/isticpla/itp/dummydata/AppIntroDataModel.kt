@@ -396,18 +396,27 @@ enum class FormItemTypes(val type: Int) {
     TEXTFIELD(type = 1), MULTILINETEXTFIELD(type = 2), DROPDOWNMENU_WITH_ADD_BUTTON(type = 3)
 }
 
-data class ProductFeatureItem(val id: Int, val label: String, val formItemType: FormItemTypes)
+data class ProductFeatureItem(
+    val id: Int,
+    val label: String,
+    val value: String = "",
+    val formItemType: FormItemTypes
+)
 
 val listofProductFeature = listOf<ProductFeatureItem>(
-    ProductFeatureItem(1, "Açıklama", FormItemTypes.MULTILINETEXTFIELD),
-    ProductFeatureItem(2, "Örnek Ürün Linki", FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(3, "Hammadde", FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(4, "Renk", FormItemTypes.DROPDOWNMENU_WITH_ADD_BUTTON),
-    ProductFeatureItem(5, "Genişlik", FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(6, "Uzunluk", FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(7, "Yükseklik", FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(8, "Derinlik", FormItemTypes.TEXTFIELD),
-    ProductFeatureItem(9, "Setifika", FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(id = 1, label = "Açıklama", formItemType = FormItemTypes.MULTILINETEXTFIELD),
+    ProductFeatureItem(id = 2, label = "Örnek Ürün Linki", formItemType = FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(id = 3, label = "Hammadde", formItemType = FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(
+        id = 4,
+        label = "Renk",
+        formItemType = FormItemTypes.DROPDOWNMENU_WITH_ADD_BUTTON
+    ),
+    ProductFeatureItem(id = 5, label = "Genişlik", formItemType = FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(id = 6, label = "Uzunluk", formItemType = FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(id = 7, label = "Yükseklik", formItemType = FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(id = 8, label = "Derinlik", formItemType = FormItemTypes.TEXTFIELD),
+    ProductFeatureItem(id = 9, label = "Setifika", formItemType = FormItemTypes.TEXTFIELD),
 )
 val listOfQuantity = listOf<Pair<Int, Int>>(
     Pair(1, 1),
