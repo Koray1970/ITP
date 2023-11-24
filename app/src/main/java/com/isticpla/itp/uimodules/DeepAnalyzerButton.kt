@@ -40,6 +40,7 @@ fun DeepAnalyzerButton()= ListItem(
             SuggestionChip(
                 onClick = { },
                 border = SuggestionChipDefaults.suggestionChipBorder(
+                    enabled = false,
                     borderWidth = 0.dp,
                     borderColor = Color.Transparent,
                     disabledBorderColor = Color.Transparent

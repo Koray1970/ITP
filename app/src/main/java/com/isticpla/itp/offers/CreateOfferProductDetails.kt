@@ -1,12 +1,12 @@
 package com.isticpla.itp.offers
 
 import android.widget.Toast
-import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -26,12 +25,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DismissDirection
+import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SwipeToDismiss
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -59,15 +58,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.ExpendedMenuViewModel
 import com.isticpla.itp.dummydata.ProductFeatureItem
 import com.isticpla.itp.home.HomeViewMode
+import com.isticpla.itp.offerdetails.AdditionalProductDetails
+import com.isticpla.itp.offerdetails.OfferViewModel
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppDefaultStyleText
 import com.isticpla.itp.uimodules.AppTextField
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.UUID
 
@@ -76,9 +79,10 @@ import java.util.UUID
 fun CreateOfferProductDetails(
     navController: NavController
 ) {
-    val context= LocalContext.current.applicationContext
+    val context = LocalContext.current.applicationContext
     val scope = rememberCoroutineScope()
     val homeViewMode = hiltViewModel<HomeViewMode>()
+    val offerViewModel = hiltViewModel<OfferViewModel>()
     val expendedMenuViewModel = hiltViewModel<ExpendedMenuViewModel>()
 
     val txtPNameValue = rememberSaveable { mutableStateOf("") }
@@ -88,7 +92,8 @@ fun CreateOfferProductDetails(
         homeViewMode.productDRPItems.collectAsState(initial = emptyList<ProductFeatureItem>())
 
     val pageSheetState = rememberModalBottomSheetState()
-    val additionalFeatures = remember { mutableStateListOf<ProductFeatureItem>() }
+    val additionalFeatures =
+        offerViewModel.additionalProductDetails.collectAsStateWithLifecycle(initialValue = mutableStateListOf<AdditionalProductDetails>())
 
     var pageShowBottomSheet by remember { mutableStateOf(false) }
 
@@ -150,7 +155,8 @@ fun CreateOfferProductDetails(
                                 Button(
                                     onClick = {
                                         scope.launch {
-                                            additionalFeatures.add(item)
+                                            additionalFeatures.value.add(
+                                                AdditionalProductDetails(formitem = item))
                                         }
                                     },
                                     shape = RoundedCornerShape(10.dp),
@@ -247,21 +253,48 @@ fun CreateOfferProductDetails(
 
                     Spacer(modifier = Modifier.height(22.dp))
                     //region product features
-                    if (additionalFeatures.isNotEmpty()) {
-                        additionalFeatures.forEach { i ->
-                            val dismissFormState= rememberDismissState()
-                            val uuid = UUID.randomUUID().toString()
-                            /*SwipeToDismissBox(
-                                state = ,
-                                background = ,
-                                dismissContent = )*/
-                            AppTextField(
-                                modifier = Modifier.fillMaxWidth(),
-                                txtvalue = mutableStateOf(formState[uuid] ?: i.value),
-                                label = { AppDefaultStyleText(i.label) },
-                                isError = mutableStateOf((formState[uuid] ?: i.value).isNotEmpty()),
-                                singleLine = true,
+                    if (additionalFeatures.value.isNotEmpty()) {
+                        additionalFeatures.value.forEach { i ->
+                            val dismissFormState = rememberDismissState(
+                                confirmValueChange = {
+                                    if (it == DismissValue.DismissedToStart) {
+                                        scope.launch {
+                                            additionalFeatures.value.remove(i)
+                                            delay(200)
+                                        }
+                                    }
+                                    true
+                                }
                             )
+                            val uuid = UUID.randomUUID().toString()
+                            SwipeToDismissBox(
+                                state = dismissFormState,
+                                directions = setOf(DismissDirection.EndToStart),
+                                backgroundContent = {
+                                    val color by animateColorAsState(
+                                        when (dismissFormState.targetValue) {
+                                            DismissValue.Default -> Color.LightGray
+                                            DismissValue.DismissedToEnd -> Color.Green
+                                            DismissValue.DismissedToStart -> Color.Red
+                                        }, label = ""
+                                    )
+                                    Box(
+                                        Modifier
+                                            .fillMaxSize()
+                                            .background(color, RoundedCornerShape(10.dp))
+                                    )
+
+                                }) {
+                                AppTextField(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    txtvalue = mutableStateOf(formState[uuid] ?: i.value),
+                                    label = { AppDefaultStyleText(i.formitem.label) },
+                                    isError = mutableStateOf(
+                                        (formState[uuid] ?: i.value).isNotEmpty()
+                                    ),
+                                    singleLine = true,
+                                )
+                            }
                         }
                     }
                     //endregion
@@ -300,7 +333,11 @@ fun CreateOfferProductDetails(
                 Button(
                     onClick = {
                         if (formState.toMap().containsValue("")) {
-                            Toast.makeText(context,"Lütfen tüm form verilerini giriniz",Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                context,
+                                "Lütfen tüm form verilerini giriniz",
+                                Toast.LENGTH_LONG
+                            ).show()
                         } else
                             navController.navigate("offer/create/requestdetails")
                     },

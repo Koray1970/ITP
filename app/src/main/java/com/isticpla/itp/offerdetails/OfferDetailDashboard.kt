@@ -147,7 +147,9 @@ fun OfferDetailDashboard(
                 onClick = {},
                 border = InputChipDefaults.inputChipBorder(
                     borderWidth = 0.dp,
-                    borderColor = Color.Transparent
+                    borderColor = Color.Transparent,
+                    enabled = false,
+                    selected = false
                 ),
                 colors = InputChipDefaults.inputChipColors(
                     containerColor = AppColors.greyLight,
