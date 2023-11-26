@@ -292,11 +292,9 @@ fun CreateOfferProductDetails(
                                 }) {
                                 AppTextField(
                                     modifier = Modifier.fillMaxWidth(),
-                                    txtvalue = mutableStateOf(formState[uuid] ?: i.value),
+                                    txtvalue = i.txtvalue, //mutableStateOf(formState[uuid] ?: i.value),
                                     label = { AppDefaultStyleText(i.formitem.label) },
-                                    isError = mutableStateOf(
-                                        (formState[uuid] ?: i.value).isNotEmpty()
-                                    ),
+                                    isError = i.txtiserror,
                                     singleLine = true,
                                 )
                             }
@@ -337,7 +335,8 @@ fun CreateOfferProductDetails(
                 }
                 Button(
                     onClick = {
-                        if (formState.toMap().containsValue("")) {
+                        if (additionalFeatures.value.any { a->a.txtvalue.value.isEmpty() }) {
+                            additionalFeatures.value.filter { a->a.txtvalue.value.isEmpty() }.forEach { a->a.txtiserror.value=true }
                             Toast.makeText(
                                 context,
                                 "Lütfen tüm form verilerini giriniz",

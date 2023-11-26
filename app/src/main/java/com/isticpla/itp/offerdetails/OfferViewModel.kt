@@ -1,6 +1,9 @@
 package com.isticpla.itp.offerdetails
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.isticpla.itp.dummydata.ProductFeatureItem
@@ -13,7 +16,8 @@ import javax.inject.Inject
 data class AdditionalProductDetails(
     val id: UUID = UUID.randomUUID(),
     val formitem: ProductFeatureItem,
-    val value: String = ""
+    val txtvalue: MutableState<String> = mutableStateOf(""),
+    var txtiserror:MutableState<Boolean> = mutableStateOf(false)
 )
 
 @HiltViewModel
