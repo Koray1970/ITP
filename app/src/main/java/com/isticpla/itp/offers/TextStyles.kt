@@ -100,7 +100,13 @@ val offerWizardLevelCounter = TextStyle(
     fontWeight = FontWeight.Light,
     color = AppColors.grey_165
 )
-
+//region media button labels
+val offerMediaButtonLabels=TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 14.sp,
+    fontWeight = FontWeight.SemiBold
+)
+//endregion
 
 val offerFinalTitle = SpanStyle(
     fontSize = 24.sp,

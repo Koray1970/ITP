@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-cache-path name="my_images" path="/"/>
+    <external-files-path
+        name="my_taken_images"
+        path="Android/data/com.isticpla.itp/files/Pictures" />
+    <external-files-path
+        name="my_debug_images"
+        path="/storage/emulated/0/Android/data/com.isticpla.itp/files/Pictures/" />
+    <external-files-path
+        name="my_roor_images"
+        path="/" />
+</paths>
