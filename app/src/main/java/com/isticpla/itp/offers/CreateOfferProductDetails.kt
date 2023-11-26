@@ -1,5 +1,7 @@
 package com.isticpla.itp.offers
 
+import android.util.Log
+import android.view.KeyEvent.ACTION_UP
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -20,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
@@ -50,6 +53,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.KeyEventType
+import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -155,8 +161,9 @@ fun CreateOfferProductDetails(
                                 Button(
                                     onClick = {
                                         scope.launch {
-                                            additionalFeatures.value.add(
-                                                AdditionalProductDetails(formitem = item))
+                                            offerViewModel.AddItemToAdditionalProductDetails(
+                                                AdditionalProductDetails(formitem = item)
+                                            )
                                         }
                                     },
                                     shape = RoundedCornerShape(10.dp),
@@ -243,7 +250,8 @@ fun CreateOfferProductDetails(
                         )
                     )
                     AppTextField(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
                         txtvalue = txtComment,
                         label = { AppDefaultStyleText("Açıklama") },
                         singleLine = false,
@@ -255,18 +263,15 @@ fun CreateOfferProductDetails(
                     //region product features
                     if (additionalFeatures.value.isNotEmpty()) {
                         additionalFeatures.value.forEach { i ->
+                            val uuid = UUID.randomUUID().toString()
                             val dismissFormState = rememberDismissState(
                                 confirmValueChange = {
                                     if (it == DismissValue.DismissedToStart) {
-                                        scope.launch {
-                                            additionalFeatures.value.remove(i)
-                                            delay(200)
-                                        }
+                                        offerViewModel.removeItemFromAdditionalProductDetails(i)
                                     }
                                     true
                                 }
                             )
-                            val uuid = UUID.randomUUID().toString()
                             SwipeToDismissBox(
                                 state = dismissFormState,
                                 directions = setOf(DismissDirection.EndToStart),

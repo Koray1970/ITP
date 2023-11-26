@@ -186,6 +186,6 @@ fun AppTextField(
         keyboardActions = keyboardActions,
         singleLine = singleLine,
         maxLines = maxLines,
-        minLines = minLines
+        minLines = minLines,
     )
 }
