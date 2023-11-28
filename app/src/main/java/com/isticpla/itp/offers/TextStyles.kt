@@ -106,6 +106,11 @@ val offerMediaButtonLabels=TextStyle(
     fontSize = 14.sp,
     fontWeight = FontWeight.SemiBold
 )
+val offerGalleryPickerTitle=TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 16.sp,
+    fontWeight = FontWeight.Bold
+)
 //endregion
 
 val offerFinalTitle = SpanStyle(

@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -88,13 +89,6 @@ fun CreateOfferVisualDetails(
 
     val imagelist =
         offerViewModel.getFileFromLocalDir.collectAsStateWithLifecycle(initialValue = emptyList<String>().toMutableStateList())
-
-    val sharedGalleryImageList = offerViewModel.getFileFromSharedDir.collectAsStateWithLifecycle(
-        initialValue = emptyList<Uri>().toMutableStateList()
-    )
-
-
-
     BottomSheetScaffold(
         containerColor = Color.White,
         topBar = {
@@ -128,47 +122,49 @@ fun CreateOfferVisualDetails(
                     },
                     sheetState = gallerySheetState
                 ) {
-
-                    if (imagelist.value.isNotEmpty()) {
-                        FlowRow(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.Start,
-                            verticalArrangement = Arrangement.spacedBy(
-                                10.dp,
-                                Alignment.Top
-                            ),
-                            maxItemsInEachRow = 3
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            imagelist.value.filter { a -> a.contains(".jpg") }.forEach { img ->
-                                AsyncImage(
-                                    modifier = Modifier.size(140.dp),
-                                    model = "${context.filesDir}/${img}",
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Fit
+                            Text(
+                                "Görseller",
+                                style = offerGalleryPickerTitle,
+                                modifier = Modifier.weight(1f)
+                            )
+                            Button(
+                                onClick = {},
+                                shape = RoundedCornerShape(radius),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = AppColors.blue_0xFF0495f1, contentColor = Color.White
                                 )
+                                ) {
+                                Text(text = "Fotografları Aç", style = offerMediaButtonLabels)
                             }
                         }
-                    }
-                    HorizontalDivider(thickness = 1.dp, color = Color.Red)
-                    if (sharedGalleryImageList.value.isNotEmpty()) {
-                        FlowRow(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.Start,
-                            verticalArrangement = Arrangement.spacedBy(
-                                10.dp,
-                                Alignment.Top
-                            ),
-                            maxItemsInEachRow = 3
-                        ) {
-                            sharedGalleryImageList.value.forEach { img ->
-                                AsyncImage(
-                                    modifier = Modifier.size(140.dp),
-                                    model = img,
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Fit
-                                )
+                        if (imagelist.value.isNotEmpty()) {
+                            FlowRow(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalArrangement = Arrangement.Start,
+                                verticalArrangement = Arrangement.spacedBy(
+                                    10.dp,
+                                    Alignment.Top
+                                ),
+                                maxItemsInEachRow = 3
+                            ) {
+                                imagelist.value.filter { a -> a.contains(".jpg") }.forEach { img ->
+                                    AsyncImage(
+                                        modifier = Modifier.size(140.dp),
+                                        model = "${context.filesDir}/${img}",
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Fit
+                                    )
+                                }
                             }
                         }
+                        Spacer(modifier = Modifier.height(40.dp))
                     }
 
                     // Sheet content

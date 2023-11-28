@@ -1,6 +1,5 @@
 package com.isticpla.itp.offerdetails
 
-import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.Context
 import android.net.Uri
@@ -8,7 +7,6 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
@@ -44,7 +42,18 @@ class OfferViewModel @Inject constructor(@ApplicationContext private val context
             delay(1200L)
         }
     }
-    val getFileFromSharedDir: Flow<MutableList<Uri>> = flow{
+
+    fun AddItemToAdditionalProductDetails(itm: AdditionalProductDetails) = viewModelScope.launch {
+        listofAdditionalProductDetail.add(itm)
+    }
+
+    fun removeItemFromAdditionalProductDetails(itm: AdditionalProductDetails) =
+        viewModelScope.launch {
+            listofAdditionalProductDetail.remove(itm)
+        }
+}
+/*val getFileFromSharedDir: Flow<MutableList<Uri>> = flow{
+        val listofimage= mutableListOf<Uri>()
         while (true){
             val collection=
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -68,32 +77,25 @@ class OfferViewModel @Inject constructor(@ApplicationContext private val context
             val query = context.contentResolver.query(
                 collection,
                 projection,
-                selection,
-                selectionArgs,
+                null,
+                null,
                 sortOrder
             )
 
             query?.use{cursor->
-                val listofimage= mutableListOf<Uri>()
+
+                val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
                 while (cursor.moveToNext()){
-                    listofimage.add(ContentUris.withAppendedId(
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
-                    ))
+                    val id = cursor.getLong(idColumn)
+                    val contentUri: Uri = ContentUris.withAppendedId(
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                        id
+                    )
+                    listofimage.add(contentUri)
                 }
                 emit(listofimage)
             }
 
-            delay(1200L)
+            delay(2200L)
         }
-    }
-
-    fun AddItemToAdditionalProductDetails(itm: AdditionalProductDetails) = viewModelScope.launch {
-        listofAdditionalProductDetail.add(itm)
-    }
-
-    fun removeItemFromAdditionalProductDetails(itm: AdditionalProductDetails) =
-        viewModelScope.launch {
-            listofAdditionalProductDetail.remove(itm)
-        }
-
-}
+    }*/
