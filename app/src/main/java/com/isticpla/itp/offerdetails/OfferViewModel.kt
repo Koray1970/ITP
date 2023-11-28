@@ -32,12 +32,14 @@ data class AdditionalProductDetails(
 @HiltViewModel
 class OfferViewModel @Inject constructor(@ApplicationContext private val context: Context) :
     ViewModel() {
+    private var selectedMediaFiles = mutableStateListOf<Uri>()
+    val getSelectedMediaFiles = flowOf<MutableList<Uri>>(selectedMediaFiles)
     private var listofAdditionalProductDetail = mutableStateListOf<AdditionalProductDetails>()
     val additionalProductDetails =
         flowOf<MutableList<AdditionalProductDetails>>(listofAdditionalProductDetail)
-    private var listofMediaFiles= context.fileList().toMutableList().toMutableStateList()
-    val getFileFromLocalDir: Flow<MutableList<String>> = flow{
-        while (true){
+    private var listofMediaFiles = context.fileList().toMutableList().toMutableStateList()
+    val getFileFromLocalDir: Flow<MutableList<String>> = flow {
+        while (true) {
             emit(context.fileList().sortedDescending().toMutableStateList())
             delay(1200L)
         }
@@ -51,6 +53,10 @@ class OfferViewModel @Inject constructor(@ApplicationContext private val context
         viewModelScope.launch {
             listofAdditionalProductDetail.remove(itm)
         }
+
+    fun AddItemToSelectedMediaFiles(uri: Uri) = viewModelScope.launch {
+        selectedMediaFiles.add(uri)
+    }
 }
 /*val getFileFromSharedDir: Flow<MutableList<Uri>> = flow{
         val listofimage= mutableListOf<Uri>()

@@ -8,8 +8,10 @@ import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -86,6 +88,19 @@ fun CreateOfferVisualDetails(
     val scope = rememberCoroutineScope()
     val showGalleryBottomSheet = remember { mutableStateOf(false) }
     var gallerySheetState = rememberModalBottomSheetState()
+    val selectedfilelist=offerViewModel.getSelectedMediaFiles.collectAsStateWithLifecycle(initialValue = emptyList<Uri>().toMutableStateList())
+
+    val pickMedia =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
+            if (uri != null) {
+                scope.launch {
+                    showGalleryBottomSheet.value = false
+                    gallerySheetState.hide()
+                    offerViewModel.AddItemToSelectedMediaFiles(uri)
+                }
+            }
+        }
+
 
     val imagelist =
         offerViewModel.getFileFromLocalDir.collectAsStateWithLifecycle(initialValue = emptyList<String>().toMutableStateList())
@@ -124,10 +139,16 @@ fun CreateOfferVisualDetails(
                 ) {
                     Column(
                         modifier = Modifier
+                            .padding(horizontal = 20.dp)
+                            .fillMaxSize()
                             .verticalScroll(rememberScrollState())
                     ) {
                         Row(
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(bottom = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
                         ) {
                             Text(
                                 "Görseller",
@@ -135,12 +156,21 @@ fun CreateOfferVisualDetails(
                                 modifier = Modifier.weight(1f)
                             )
                             Button(
-                                onClick = {},
+                                onClick = {
+                                    scope.launch {
+                                        pickMedia.launch(
+                                            PickVisualMediaRequest(
+                                                ActivityResultContracts.PickVisualMedia.ImageAndVideo
+                                            )
+                                        )
+                                    }
+                                },
                                 shape = RoundedCornerShape(radius),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = AppColors.blue_0xFF0495f1, contentColor = Color.White
+                                    containerColor = AppColors.blue_0xFF0495f1,
+                                    contentColor = Color.White
                                 )
-                                ) {
+                            ) {
                                 Text(text = "Fotografları Aç", style = offerMediaButtonLabels)
                             }
                         }
@@ -150,13 +180,23 @@ fun CreateOfferVisualDetails(
                                 horizontalArrangement = Arrangement.Start,
                                 verticalArrangement = Arrangement.spacedBy(
                                     10.dp,
-                                    Alignment.Top
+                                    Alignment.CenterVertically
                                 ),
-                                maxItemsInEachRow = 3
+                                maxItemsInEachRow = 4
                             ) {
                                 imagelist.value.filter { a -> a.contains(".jpg") }.forEach { img ->
                                     AsyncImage(
-                                        modifier = Modifier.size(140.dp),
+                                        modifier = Modifier
+                                            .size(90.dp)
+                                            .clickable {
+                                                scope.launch {
+                                                    offerViewModel.AddItemToSelectedMediaFiles(
+                                                        Uri.parse(
+                                                            "${context.filesDir}/${img}"
+                                                        )
+                                                    )
+                                                }
+                                            },
                                         model = "${context.filesDir}/${img}",
                                         contentDescription = null,
                                         contentScale = ContentScale.Fit
@@ -218,6 +258,17 @@ fun CreateOfferVisualDetails(
                         contentDescription = null
                     )
                     Text(text = "Galeri", style = offerMediaButtonLabels)
+                }
+            }
+            FlowRow() {
+                selectedfilelist.value.forEach {uri->
+                    AsyncImage(
+                        modifier = Modifier
+                            .size(90.dp),
+                        model = "$uri",
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit
+                    )
                 }
             }
         }
