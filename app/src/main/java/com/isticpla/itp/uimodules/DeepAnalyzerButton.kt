@@ -4,15 +4,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ChipColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -22,18 +25,18 @@ import com.isticpla.itp.feed.btnFeedDetailDeepAnalyzerTitle
 
 @Composable
 fun DeepAnalyzerButton()= ListItem(
-    colors = ListItemColors(
-        containerColor = Color.Transparent,
+    colors = ListItemDefaults.colors(
+        containerColor = AppColors.blue_0xFF0493F0.copy(.1f),
         headlineColor = AppColors.blue_100,
         leadingIconColor = Color.Transparent,
         overlineColor = Color.Transparent,
-        supportingTextColor = Color.Transparent,
         trailingIconColor = AppColors.grey_dark,
         disabledHeadlineColor = Color.Transparent,
         disabledLeadingIconColor = Color.Transparent,
         disabledTrailingIconColor = Color.Transparent
     ),
     modifier = Modifier
+        .clip(RoundedCornerShape(10.dp))
         .clickable { },
     headlineContent = {
         Column() {

@@ -110,7 +110,7 @@ fun HomeSectionHeader(homeViewModel: HomeViewMode) {
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
             .requiredHeight(220.dp),
-        pager = CarouselPagerRequest(true, 18.dp, AppColors.blue_104, AppColors.blue_105)
+        pager = CarouselPagerRequest(true, 18.dp, AppColors.blue_104, AppColors.blue_0xFF0495f1)
     )
 
     Column {

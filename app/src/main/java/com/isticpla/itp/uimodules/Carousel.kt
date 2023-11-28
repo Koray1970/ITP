@@ -39,7 +39,7 @@ data class CarouselRequest(
 data class CarouselPagerRequest(
     val haspager: Boolean = true,
     val pagerlineheight: Dp = 18.dp,
-    val pagerdefaultcolor: Color = AppColors.blue_105,
+    val pagerdefaultcolor: Color = AppColors.greyLight,
     val pagerselectedcolor: Color = AppColors.blue_104
 )
 

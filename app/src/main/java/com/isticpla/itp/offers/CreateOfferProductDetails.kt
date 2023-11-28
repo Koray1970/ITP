@@ -4,7 +4,11 @@ import android.util.Log
 import android.view.KeyEvent.ACTION_UP
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -33,9 +38,12 @@ import androidx.compose.material3.DismissValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.rememberDismissState
@@ -52,15 +60,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.key.KeyEventType
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -221,8 +233,10 @@ fun CreateOfferProductDetails(
                 .padding(horizontal = 10.dp)
                 .padding(top = 30.dp, bottom = 40.dp)
                 .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+        )
+        {
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterVertically),
@@ -301,11 +315,100 @@ fun CreateOfferProductDetails(
                         }
                     }
                     //endregion
-                    Spacer(modifier = Modifier.height(80.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
+                    //region Product Parts
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(
+                            26.dp,
+                            Alignment.CenterVertically
+                        ),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start
+                        ) {
+                            Text(
+                                text = buildAnnotatedString {
+                                    append("Ürün Parçaları ")
+                                    withStyle(style = offerProductDetailFormSectionSubtitle) {
+                                        append(
+                                            "(Opsiyonel)"
+                                        )
+                                    }
+                                },
+                                style = offerProductDetailFormSectionTitle,
+                                modifier = Modifier.weight(1f)
+                            )
+                            TextButton(
+                                onClick = { },
+                                colors = ButtonDefaults.textButtonColors(contentColor = AppColors.red_0xffe23e3e)
+                            ) {
+                                Text(
+                                    text = "Yardım",
+                                    style = offerHelpButtonLabel,
+                                    modifier = Modifier.padding(end = 10.dp)
+                                )
+                                Icon(
+                                    painter = painterResource(id = R.drawable.arrow_right),
+                                    contentDescription = null
+                                )
+                            }
+                        }
+                        Column(
+
+                        ) {
+                            ProductParts(
+                                headline = "Efsane Hamburger",
+                                subheadline = "Bu hamburgeri orta pişmiş ve zeytin ezmesi sosu ile denemlisiniz.",
+                                image = R.mipmap.hamburger_01,
+                                uri = { navController.navigate("offer/create/productdetails/parts") }
+                            )
+                        }
+                        Button(
+                            onClick = {
+                                navController.navigate("offer/create/productdetails/parts")
+                            },
+                            shape = RoundedCornerShape(8.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = AppColors.primaryGrey,
+                                contentColor = Color.White
+                            ),
+                            modifier = Modifier
+                                .fillMaxWidth(.8f)
+                                .requiredHeight(48.dp)
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_add_circle_outline_24),
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 10.dp)
+                            )
+                            Text(
+                                text = "Yeni Ürün Parçası Ekle",
+                                style = offerStagePublishButton
+                            )
+                        }
+                        Text(
+                            text = "Eğer var ise ürün parçalarını ekleyebilirsiniz. Ürün parçalarını eklemeniz siparişinizin daha doğru anlaşılmasını sağlayacaktır.",
+                            style = offerProductPairsComment,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(50.dp))
+                    //endregion
                 }
+
+
             }
+
             //region Bottom Buttons
             Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(59.dp)
+                    .background(Color.White),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
             ) {
@@ -335,8 +438,9 @@ fun CreateOfferProductDetails(
                 }
                 Button(
                     onClick = {
-                        if (additionalFeatures.value.any { a->a.txtvalue.value.isEmpty() }) {
-                            additionalFeatures.value.filter { a->a.txtvalue.value.isEmpty() }.forEach { a->a.txtiserror.value=true }
+                        if (additionalFeatures.value.any { a -> a.txtvalue.value.isEmpty() }) {
+                            additionalFeatures.value.filter { a -> a.txtvalue.value.isEmpty() }
+                                .forEach { a -> a.txtiserror.value = true }
                             Toast.makeText(
                                 context,
                                 "Lütfen tüm form verilerini giriniz",
@@ -375,3 +479,49 @@ fun CreateOfferProductDetails(
         }
     }
 }
+
+@Composable
+fun ProductParts(
+    headline: String,
+    subheadline: String,
+    image: Int,
+    uri: () -> Unit = { }
+) = ListItem(
+    modifier = Modifier
+        .clickable { uri }
+        .clip(RoundedCornerShape(4.dp)),
+    colors = ListItemDefaults.colors(
+        containerColor = AppColors.gray_FFEEF1F4,
+        headlineColor = AppColors.gray_FF666666,
+        trailingIconColor = AppColors.gray_FF666666,
+    ),
+    leadingContent = {
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(6.dp))
+                .size(50.dp)
+                .border(BorderStroke(4.dp, Color.White), RoundedCornerShape(6.dp)),
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = image),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.size(46.dp)
+            )
+        }
+
+    },
+    headlineContent = {
+        Text(text = buildAnnotatedString {
+            append("${headline}\n")
+            withStyle(style = offerProductPairsSubHeadline) { append(subheadline) }
+        }, style = offerProductPairsHeadline)
+    },
+    trailingContent = {
+        Icon(
+            painter = painterResource(id = R.drawable.round_arrow_forward_ios_24),
+            contentDescription = null
+        )
+    }
+)

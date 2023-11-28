@@ -22,7 +22,7 @@ import com.isticpla.itp.views.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "offer/create/visualdetails") {
+    NavHost(navController = navController, startDestination = "offer/create/productdetails/parts") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }
@@ -57,6 +57,7 @@ fun AppNavigate() {
         composable("offer/create") { CreateOfferPage1(navController) }
         composable("offer/create/visualdetails") { CreateOfferVisualDetails(navController) }
         composable("offer/create/productdetails") { CreateOfferProductDetails(navController) }
+        composable("offer/create/productdetails/parts") { CreateOfferProductParts(navController) }
         composable("offer/create/requestdetails") { CreateOfferRequestDetails(navController) }
         composable("offer/create/preview") { CreateOfferPreview(navController) }
         composable("offer/create/publish") { CreateOfferPublish(navController) }

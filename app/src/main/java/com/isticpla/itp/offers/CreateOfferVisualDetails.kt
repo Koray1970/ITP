@@ -11,6 +11,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,9 +24,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
@@ -36,6 +42,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -47,10 +54,20 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -66,7 +83,12 @@ import coil.request.SuccessResult
 import com.isticpla.itp.BuildConfig
 import com.isticpla.itp.R
 import com.isticpla.itp.offerdetails.OfferViewModel
+import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppDefaultStyleText
+import com.isticpla.itp.uimodules.AppTextField
+import com.isticpla.itp.uimodules.DeepAnalyzerButton
+import com.isticpla.itp.uimodules.UseCamera
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
@@ -104,6 +126,8 @@ fun CreateOfferVisualDetails(
 
     val imagelist =
         offerViewModel.getFileFromLocalDir.collectAsStateWithLifecycle(initialValue = emptyList<String>().toMutableStateList())
+
+    val txtProdLinkValue = remember{ mutableStateOf("") }
     BottomSheetScaffold(
         containerColor = Color.White,
         topBar = {
@@ -227,9 +251,22 @@ fun CreateOfferVisualDetails(
         ) {
             ProposalWizardStage(0, "Görsel Detaylar")
             Spacer(modifier = Modifier.height(20.dp))
-            Text(text = "Fotoğraf & Video", style = offerProductDetailFormSectionTitle)
+            Row(
+                modifier=Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(text = "Fotoğraf & Video", style = offerProductDetailFormSectionTitle,modifier=Modifier.weight(1f))
+                TextButton(
+                    onClick = { },
+                    colors=ButtonDefaults.textButtonColors( contentColor = AppColors.red_0xffe23e3e)) {
+                    Text(text="Yardım", style= offerHelpButtonLabel,modifier=Modifier.padding(end=10.dp))
+                    Icon(painter= painterResource(id = R.drawable.arrow_right), contentDescription = null)
+                }
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
+                modifier=Modifier.padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start)
             ) {
@@ -260,7 +297,22 @@ fun CreateOfferVisualDetails(
                     Text(text = "Galeri", style = offerMediaButtonLabels)
                 }
             }
-            FlowRow() {
+            FlowRow(
+                modifier=Modifier
+                    .drawBehind {
+                        val stroke = Stroke(width = 2f,
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
+                        drawRoundRect(
+                            size= Size(size.width,size.height),
+                            color = AppColors.blue_0xFF0495f1,
+                            style = stroke,
+                            cornerRadius = CornerRadius(10f,10f))
+                    }
+                    .fillMaxWidth()
+                    .requiredHeightIn(min=90.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp,Alignment.Top),
+                horizontalArrangement = Arrangement.spacedBy(10.dp,Alignment.Start)
+            ) {
                 selectedfilelist.value.forEach {uri->
                     AsyncImage(
                         modifier = Modifier
@@ -271,92 +323,55 @@ fun CreateOfferVisualDetails(
                     )
                 }
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
-@Composable
-fun UseCamera(
-    radius: Dp,
-    offerViewModel: OfferViewModel,
-    showGalleryBottomSheet: MutableState<Boolean> = mutableStateOf(false),
-    sheetState: MutableState<SheetState>
-) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var file = context.createImageFile()
-    var uri = FileProvider.getUriForFile(
-        Objects.requireNonNull(context), BuildConfig.APPLICATION_ID + ".provider", file
-    )
-
-    val cameraLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) {
-            if (it != null) {
-
-                //captureImageUri.value = uri
-                var bitmap: Bitmap?
-
-                val loadBitmap = scope.launch(Dispatchers.IO) {
-                    val loader = ImageLoader(context)
-                    val request =
-                        ImageRequest.Builder(context).data(uri).allowHardware(false).build()
-                    val result = loader.execute(request)
-                    if (result is SuccessResult) {
-                        bitmap = (result.drawable as BitmapDrawable).bitmap
-                        bitmap?.compress(
-                            Bitmap.CompressFormat.JPEG,
-                            100,
-                            context.createImageFileToLocalDirectory().outputStream()
-                        )
-                        //offerViewModel.ReloadMediaFiles()
-                        delay(250L)
-                        showGalleryBottomSheet.value = true
-                        sheetState.value.show()
-                    } else if (result is ErrorResult) {
-                        cancel(result.throwable.localizedMessage ?: "ErrorResult", result.throwable)
-                    }
+            Spacer(modifier = Modifier.height(60.dp))
+            Row(
+                modifier=Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(text = buildAnnotatedString {
+                    append("Ürün Linki ")
+                    withStyle(style=offerProductDetailFormSectionSubtitle){append("(Opsiyonel)")}
+                } , style = offerProductDetailFormSectionTitle,modifier=Modifier.weight(1f))
+                TextButton(
+                    onClick = { },
+                    colors=ButtonDefaults.textButtonColors( contentColor = AppColors.red_0xffe23e3e)) {
+                    Text(text="Yardım", style= offerHelpButtonLabel,modifier=Modifier.padding(end=10.dp))
+                    Icon(painter= painterResource(id = R.drawable.arrow_right), contentDescription = null)
                 }
             }
-        }
-    val permissionLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) {
-            if (it) {
-                cameraLauncher.launch(uri)
-            } else {
-                Toast.makeText(context, "Permission Denied", Toast.LENGTH_SHORT).show()
+            AppTextField(
+                modifier = Modifier.fillMaxWidth(),
+                txtvalue = txtProdLinkValue,
+                singleLine = true,
+                label = { AppDefaultStyleText("Ürün Linki") },
+            )
+            Spacer(modifier = Modifier.height(60.dp))
+            DeepAnalyzerButton()
+            Spacer(modifier = Modifier.height(60.dp))
+            Button(
+                onClick = {},
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = AppColors.grey_130,
+                    contentColor = Color.White
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .requiredHeight(48.dp)
+            ) {
+                Text(text = "Devam", style = offerStagePublishButton)
+                Icon(
+                    painter = painterResource(id = R.drawable.round_arrow_right_alt_24),
+                    contentDescription = null,
+                    tint = Color.White
+                )
             }
+            Spacer(modifier = Modifier.height(30.dp))
         }
-    Button(
-        onClick = {
-            val permissionCheckResult =
-                ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
-            if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
-                cameraLauncher.launch(uri)
-            } else {
-                // Request a permission
-                permissionLauncher.launch(android.Manifest.permission.CAMERA)
-            }
-        }, shape = RoundedCornerShape(radius), colors = ButtonDefaults.buttonColors(
-            containerColor = AppColors.blue_0xFF0495f1, contentColor = Color.White
-        )
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.outline_camera_alt_24),
-            contentDescription = null
-        )
-        Text(text = "Kamera", style = offerMediaButtonLabels)
     }
 }
 
 
-fun Context.createImageFile(): File {
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-    return File.createTempFile(timeStamp, ".jpg", externalCacheDir)
-}
 
-fun Context.createImageFileToLocalDirectory(): File {
-    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-    return File.createTempFile(timeStamp, ".jpg", filesDir)
-}
+

@@ -66,7 +66,7 @@ fun OfferDetailDashboard(
         visualitemmodifier = Modifier
             .fillMaxWidth()
             .requiredHeight(220.dp),
-        pager = CarouselPagerRequest(true, 0.dp, AppColors.blue_104, AppColors.blue_105)
+        pager = CarouselPagerRequest(true, 0.dp, AppColors.greyLight, AppColors.blue_0xFF0495f1)
     )
     var offerDetailTabState = remember { mutableStateOf(0) }
     val offerDetailTabDbState by homeviewModel.offerDetailsTabs.collectAsStateWithLifecycle(

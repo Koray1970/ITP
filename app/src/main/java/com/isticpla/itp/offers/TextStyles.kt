@@ -106,12 +106,24 @@ val offerMediaButtonLabels=TextStyle(
     fontSize = 14.sp,
     fontWeight = FontWeight.SemiBold
 )
+val offerMediaProductPartsButtonLabels=TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 14.sp,
+    lineHeight=13.sp,
+    fontWeight = FontWeight.SemiBold
+)
 val offerGalleryPickerTitle=TextStyle(
     fontFamily = poppinFamily,
     fontSize = 16.sp,
     fontWeight = FontWeight.Bold
 )
 //endregion
+val offerHelpButtonLabel=TextStyle(
+    fontFamily = poppinFamily,
+    fontSize = 12.sp,
+    fontWeight = FontWeight.SemiBold
+)
+
 
 val offerFinalTitle = SpanStyle(
     fontSize = 24.sp,
@@ -145,6 +157,11 @@ val offerProductDetailFormSectionTitle=TextStyle(
     lineHeight=10.em,
     fontWeight = FontWeight.SemiBold,
     color=AppColors.primaryGrey
+)
+val offerProductDetailFormSectionSubtitle=SpanStyle(
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal,
+    color=AppColors.grey_ff999999
 )
 val previewAccordionHeader=TextStyle(
     fontFamily = poppinFamily,
@@ -183,4 +200,21 @@ val previewCardItemContent=SpanStyle(
     fontSize = 10.sp,
     fontWeight = FontWeight.Normal,
     color=AppColors.grey_171
+)
+val offerProductPairsHeadline=TextStyle(
+    fontFamily = poppinFamily,
+    fontSize =14.sp,
+    fontWeight = FontWeight.SemiBold,
+    textAlign = TextAlign.Left
+)
+val offerProductPairsSubHeadline=SpanStyle(
+    fontSize =12.sp,
+    fontWeight = FontWeight.Normal,
+)
+val offerProductPairsComment=TextStyle(
+    fontFamily = poppinFamily,
+    fontSize =12.sp,
+    fontWeight = FontWeight.Normal,
+    textAlign = TextAlign.Center,
+    color=AppColors.primaryGrey
 )
