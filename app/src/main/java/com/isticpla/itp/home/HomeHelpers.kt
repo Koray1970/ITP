@@ -140,14 +140,19 @@ fun HomeSectionSectors(
 ) {
     val account = accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
     var sectorList = remember { mutableListOf<BusinessTypeItem>() }
-
-    if (!account.value.sectors.isNullOrEmpty())
+    LaunchedEffect(Unit) {
+        delay(680L)
+        if (account.value.id <= 0)
+            navController.navigate("startselectculture")
+    }
+    if (!account.value.sectors.isNullOrEmpty()) {
         account.value.sectors?.let {
             val cc = accountViewModel.getSectorList(it)
                 .collectAsStateWithLifecycle(initialValue = emptyList<BusinessTypeItem>())
             if (cc.value.isNotEmpty())
                 sectorList = cc.value.toMutableList()
         }
+    }
 
 
     Column() {

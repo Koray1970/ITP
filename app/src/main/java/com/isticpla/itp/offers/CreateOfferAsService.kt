@@ -48,6 +48,7 @@ import com.isticpla.itp.uimodules.AppDropdown
 import com.isticpla.itp.uimodules.AppExposedDropdownMenuBox
 import com.isticpla.itp.uimodules.AppSwitch
 import com.isticpla.itp.uimodules.AppTextField
+import com.isticpla.itp.uimodules.AppTextFieldDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -59,7 +60,7 @@ fun CreateOfferAsService(
 ) {
     val gson = Gson()
     val scope = rememberCoroutineScope()
-    val homeViewModel = hiltViewModel<HomeViewMode>()
+
     val offerViewModel = hiltViewModel<OfferViewModel>()
     val servicelist =
         offerViewModel.getServiceTypes.collectAsStateWithLifecycle(initialValue = emptyList<Pair<String, String>>())
@@ -84,7 +85,7 @@ fun CreateOfferAsService(
             listofServiceContentType = it
         }
     }
-
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val buyerExpendedState = remember { mutableStateOf(false) }
     val buyerError = remember { mutableStateOf(false) }
     val buyers by homeViewModel.shopList.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
@@ -231,6 +232,7 @@ fun CreateOfferAsService(
             Spacer(modifier = Modifier.height(30.dp))
             AppTextField(
                 modifier = Modifier.fillMaxWidth(),
+                shape= AppTextFieldDefaults.RoundCornderShape(3),
                 txtvalue = additianalrequestTxtValue,
                 singleLine = false,
                 minLines = 5,
