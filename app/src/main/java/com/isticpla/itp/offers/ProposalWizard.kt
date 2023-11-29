@@ -17,21 +17,21 @@ import androidx.compose.ui.unit.dp
 import com.isticpla.itp.uimodules.AppColors
 
 @Composable
-fun ProposalWizardStage(level: Int,label:String) = Column(
-    modifier= Modifier
+fun ProposalWizardStage(level: Int, label: String) = Column(
+    modifier = Modifier
         .fillMaxWidth()
 ) {
-    val wizardlevel=4
+    val wizardlevel = 4
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
         Text(text = label, style = offerWizardPageTitle)
-        Spacer(modifier=Modifier.weight(1f))
-        Text(text = "${level+1}/$wizardlevel", style = offerWizardLevelCounter)
+        Spacer(modifier = Modifier.weight(1f))
+        Text(text = "${level + 1}/$wizardlevel", style = offerWizardLevelCounter)
     }
-    Spacer(modifier=Modifier.height(3.dp))
+    Spacer(modifier = Modifier.height(3.dp))
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -51,5 +51,34 @@ fun ProposalWizardStage(level: Int,label:String) = Column(
             )
         }
     }
-    Spacer(modifier=Modifier.height(26.dp))
+    Spacer(modifier = Modifier.height(26.dp))
+}
+
+@Composable
+fun ProposalStraightStage(label: String) = Column(
+    modifier = Modifier
+        .fillMaxWidth()
+) {
+    val wizardlevel = 4
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Text(text = label, style = offerWizardPageTitle)
+    }
+    Spacer(modifier = Modifier.height(3.dp))
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.Start)
+    ) {
+        Box(
+            modifier = Modifier
+                .background(AppColors.yellow_103)
+                .fillMaxWidth()
+                .requiredHeight(8.dp)
+        )
+    }
+    Spacer(modifier = Modifier.height(26.dp))
 }

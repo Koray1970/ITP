@@ -466,6 +466,27 @@ val listofOfferDetailTrackings = listOf<OfferDetailTrackingItem>(
     OfferDetailTrackingItem(true, "Sender is preparing to ship your order", "12 May 10:01"),
 )
 
+val listOfServiceType=listOf<Pair<String,String>>(
+    Pair("1","Web Sitesi Tasarım ve Yazılım"),
+    Pair("2","İçerik geliştirme ve editorial"),
+    Pair("3","Hukuksal Danışmanlık"),
+    Pair("4","Psikolojik Danışmanlık"),
+)
+data class ServiceContentType(val id:String,val typeid:String,val value:String)
+val listOfServiceContentType=listOf<ServiceContentType>(
+    ServiceContentType("1","1","Site Tasarımı"),
+    ServiceContentType("2","1","PHP ile Backend"),
+    ServiceContentType("3","1",".Net ile Backend"),
+    ServiceContentType("4","2","Siyasi içerik üretimi"),
+    ServiceContentType("5","2","Super Model Fenomen"),
+    ServiceContentType("6","2","Kurumsal Editorial"),
+    ServiceContentType("7","3","Boşanma Konuları"),
+    ServiceContentType("8","3","Ticari Sözleşme ve Anlaşma"),
+    ServiceContentType("9","3","Arabulucuk"),
+    ServiceContentType("10","4","Çocuk Gelişimi"),
+    ServiceContentType("11","4","Ergen Davranışı Gözlemleme"),
+    ServiceContentType("12","4","Evlilik Tarapi"),
+)
 enum class TypeOfPerson(value: Int) {
     ADMIN(1), CLIENT(2)
 }

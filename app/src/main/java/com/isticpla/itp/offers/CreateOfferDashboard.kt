@@ -141,7 +141,7 @@ fun CreateOfferDashboard(
                     }
                 }
                 Button(
-                    onClick = { },
+                    onClick = {  navController.navigate("offer/create/asservice") },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppColors.green_100,
                         contentColor = Color.White,

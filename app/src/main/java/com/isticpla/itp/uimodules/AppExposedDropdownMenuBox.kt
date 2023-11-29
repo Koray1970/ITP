@@ -10,62 +10,22 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.isticpla.itp.R
-
-class AppDropdownDefaults {
-    companion object {
-        @Composable
-        fun ExposedDropdownMenuBoxModifier(
-            maxwidth: Float = 1f,
-            borderWidth: Dp = 1.dp,
-            strokeColor: Color = AppColors.secondaryGrey
-        ) = Modifier
-            .fillMaxWidth(maxwidth)
-            .border(width = borderWidth, color = strokeColor, shape = RoundedCornerShape(10))
-
-        @Composable
-        fun ClearTextIcon(
-            text: MutableState<String>,
-            isenabled: Boolean = true,
-            onClickEvent: (() -> Unit)? = null
-        ) {
-            if (isenabled)
-                if (text.value.length > 0) {
-                    IconButton(
-                        onClick = {
-                            text.value = ""
-                            if (onClickEvent != null)
-                                onClickEvent()
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_clear_24),
-                            contentDescription = null
-                        )
-                    }
-                }
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun <K, V> AppDropdown(
+fun <K, V> AppExposedDropdownMenuBox(
     dropdownmodifier: Modifier = Modifier,
     expended: MutableState<Boolean> = mutableStateOf(false),
     selectedOptionText: MutableState<String> = mutableStateOf(""),
@@ -73,10 +33,10 @@ fun <K, V> AppDropdown(
     isError: MutableState<Boolean> = mutableStateOf(false),
     enabled: MutableState<Boolean> = mutableStateOf(true),
     dropdownlabel: @Composable (() -> Unit)? = null,
-    onChangeSubEvent: (() -> Unit)? = null,
+    onChangeSubEvent:(() -> Unit)? = null,
     onClearIconClickEvent:(()->Unit)?=null,
-    onMenuItemClickEvent: (() -> Unit)? = null,
-    listdata: List<Pair<K, V>>,
+    onMenuItemClickEvent:(() -> Unit)? = null,
+    listdata:MutableList<Pair<K, V>>,
     hascleartext: MutableState<Boolean> = mutableStateOf(true),
     colors: TextFieldColors = AppTextFieldDefaults.TextFieldDefaultsColors()
 ) = ExposedDropdownMenuBox(
@@ -114,6 +74,7 @@ fun <K, V> AppDropdown(
         },
         enabled = enabled.value,
         isError = isError.value,
+        readOnly = true,
         singleLine = true,
         label = dropdownlabel,
         trailingIcon = {
@@ -134,10 +95,8 @@ fun <K, V> AppDropdown(
 
         )
     // filter options based on text field value
-    val filteringOptions = listdata.filter {
-        it.second.toString().contains(selectedOptionText.value, ignoreCase = true)
-    }
-    if (filteringOptions.isNotEmpty()) {
+
+    if (listdata.isNotEmpty()) {
         ExposedDropdownMenu(
             modifier = Modifier.background(Color.White),
             expanded = if (!enabled.value) {
@@ -147,7 +106,7 @@ fun <K, V> AppDropdown(
             },
             onDismissRequest = { expended.value = false },
         ) {
-            filteringOptions.forEach { selectionOption ->
+            listdata.forEach { selectionOption ->
                 DropdownMenuItem(
                     modifier = Modifier.background(Color.White),
                     text = {
@@ -159,7 +118,6 @@ fun <K, V> AppDropdown(
                     onClick = {
                         selectedOptionText.value = selectionOption.second.toString()
                         selectedOptionKey.value = selectionOption.first.toString()
-
                         if (onMenuItemClickEvent != null) {
                             onMenuItemClickEvent()
                         }
@@ -175,29 +133,3 @@ fun <K, V> AppDropdown(
         }
     }
 }
-
-@Composable
-fun AppDefaultStyleText(value: String) = Text(
-    text = value,
-    style = AppTextFieldDefaults.TextFieldTextStyle
-)
-/*
-usage model
-val listOfAppCulture =
-        homeViewModel.areacodeList.collectAsStateWithLifecycle(initialValue = mutableListOf<Pair<String, String>>())
-var cultureDropdownExpandState = remember { mutableStateOf(false) }
-var dropdownisenabled = remember { mutableStateOf(true) }
-var dropdowndummy = remember { mutableStateOf("") }
-var dummy = remember { mutableStateOf("") }
-
-AppDropdown(
-    expended = cultureDropdownExpandState,
-    selectedOptionText = dropdowndummy,
-    listdata = listOfAppCulture.value,
-    enabled = dropdownisenabled,
-    dropdownlabel = {
-    Text(text = "Telefon numaranız", style = AppTextFieldDefaults.TextFieldTextStyle)},
-    colors = AppTextFieldDefaults.TextFieldDefaultsColors()
-)
-
- */

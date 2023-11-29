@@ -11,14 +11,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.isticpla.itp.dummydata.ProductFeatureItem
+import com.isticpla.itp.dummydata.ServiceContentType
+import com.isticpla.itp.dummydata.listOfServiceContentType
+import com.isticpla.itp.dummydata.listOfServiceType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
 
@@ -32,6 +44,7 @@ data class AdditionalProductDetails(
 @HiltViewModel
 class OfferViewModel @Inject constructor(@ApplicationContext private val context: Context) :
     ViewModel() {
+    val gson = Gson()
     private var selectedMediaFiles = mutableStateListOf<Uri>()
     val getSelectedMediaFiles = flowOf<MutableList<Uri>>(selectedMediaFiles)
     private var listofAdditionalProductDetail = mutableStateListOf<AdditionalProductDetails>()
@@ -57,6 +70,55 @@ class OfferViewModel @Inject constructor(@ApplicationContext private val context
     fun AddItemToSelectedMediaFiles(uri: Uri) = viewModelScope.launch {
         selectedMediaFiles.add(uri)
     }
+
+    val getServiceTypes = flowOf<List<Pair<String, String>>>(listOfServiceType)
+    private val firstFilter = listOfServiceType.first().first
+
+
+    private val _serviceContentTypes = MutableStateFlow(listOf<ServiceContentType>())
+    val serviceContentTypes: StateFlow<List<ServiceContentType>> get() = _serviceContentTypes
+
+    private val _expendedServiceContents = MutableStateFlow(mutableListOf<Pair<String, String>>())
+    val expendedServiceContents: StateFlow<MutableList<Pair<String, String>>> get() = _expendedServiceContents
+
+    init {
+        getFakeServiceContents()
+    }
+
+    private fun getFakeServiceContents() {
+        viewModelScope.launch {
+            withContext(Dispatchers.Default) {
+                _expendedServiceContents.emit(mutableListOf<Pair<String, String>>())
+            }
+        }
+    }
+
+    fun onServiceSelected(filt: String) {
+        expendedServiceContents.value.clear()
+        listOfServiceContentType.filter { a -> a.typeid == filt }.forEach { a ->
+            _expendedServiceContents.value.add(Pair<String, String>(a.id, a.value))
+        }
+    }
+
+
+    /*val serviceContentDB = flowOf<List<ServiceContentType>>(listOfServiceContentType)
+    private var _serviceContentList = mutableStateListOf<Pair<String, String>>()
+    val getServiceContentList =
+        flowOf<MutableList<Pair<String, String>>>(_serviceContentList)
+
+    fun setServiceContents(filt: MutableState<String>): Flow<MutableList<Pair<String, String>>> =
+        flow {
+            while (true) {
+                _serviceContentList = mutableStateListOf<Pair<String, String>>()
+                if (!filt.value.isNullOrEmpty())
+                    listOfServiceContentType.filter { a -> a.typeid == filt.value }
+                        .forEach { a ->
+                            _serviceContentList.add(Pair(a.id, a.value))
+                        }
+                emit(_serviceContentList)
+                delay(1200L)
+            }
+        }*/
 }
 /*val getFileFromSharedDir: Flow<MutableList<Uri>> = flow{
         val listofimage= mutableListOf<Uri>()
