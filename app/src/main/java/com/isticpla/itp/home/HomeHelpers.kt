@@ -1,18 +1,15 @@
 package com.isticpla.itp.home
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,11 +20,8 @@ import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,12 +40,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -71,27 +63,19 @@ import com.isticpla.itp.dummydata.BusinessTypeItem
 import com.isticpla.itp.dummydata.HomeCampaignItem
 import com.isticpla.itp.dummydata.HomeDesignItem
 import com.isticpla.itp.dummydata.SectorNewsItem
-import com.isticpla.itp.dummydata.listofDesigns
-import com.isticpla.itp.dummydata.listofHomeCampaigns
-import com.isticpla.itp.dummydata.listofHomeSectorNews
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppDropdown
 import com.isticpla.itp.uimodules.AppTextFieldDefaults
 import com.isticpla.itp.uimodules.Carousel
-import com.isticpla.itp.uimodules.CarouselItem
 import com.isticpla.itp.uimodules.CarouselPagerRequest
 import com.isticpla.itp.uimodules.CarouselRequest
-import com.isticpla.itp.uimodules.DropDownTextField
-import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
-import com.isticpla.itp.uimodules.dropdownMenuItemColors
-import com.isticpla.itp.uimodules.dropdownTextFieldColors
 import kotlinx.coroutines.delay
 import java.util.Locale
 
 @RequiresApi(Build.VERSION_CODES.R)
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeSectionHeader(homeViewModel: HomeViewMode) {
+fun HomeSectionHeader() {
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val configuration = LocalConfiguration.current
     val listofShops =
         homeViewModel.shopList.collectAsState(initial = emptyList<Pair<Int, String>>())
@@ -114,7 +98,7 @@ fun HomeSectionHeader(homeViewModel: HomeViewMode) {
     )
 
     Column {
-        AppDropdown(
+        AppDropdown<Int,String>(
             expended = shopExpend,
             selectedOptionText = shopselectedOptionText,
             selectedOptionKey = shopselectedOptionKey,
@@ -136,8 +120,8 @@ fun HomeSectionHeader(homeViewModel: HomeViewMode) {
 @Composable
 fun HomeSectionSectors(
     navController: NavController,
-    accountViewModel: AccountViewModel
 ) {
+    val accountViewModel= hiltViewModel<AccountViewModel>()
     val account = accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
     var sectorList = remember { mutableListOf<BusinessTypeItem>() }
     LaunchedEffect(Unit) {
@@ -218,10 +202,9 @@ fun HomeSectionSectors(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeSectionDesigns(
-    navController: NavController,
-    homeViewModel: HomeViewMode
+    navController: NavController
 ) {
-
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofDesigns =
         homeViewModel.designsList.collectAsState(initial = emptyList<HomeDesignItem>())
     Column() {
@@ -281,26 +264,27 @@ fun HomeSectionDesigns(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeSectionCampaigns(
-    navController: NavController,
-    homeViewModel: HomeViewMode = hiltViewModel()
+    navController: NavController
 ) {
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofCampaigns =
         homeViewModel.campaignList.collectAsState(initial = emptyList<HomeCampaignItem>())
     Column() {
-        Spacer(modifier = Modifier.height(40.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text("Kampanyalar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
-            Spacer(modifier = Modifier.weight(1f))
-            TextButton(
-                onClick = { navController.navigate("home/section/campaigns") },
+
+            Spacer(modifier = Modifier.height(40.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text("Hepsini Göster", style = homeSectorShowAll)
+                Text("Kampanyalar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
+                Spacer(modifier = Modifier.weight(1f))
+                TextButton(
+                    onClick = { navController.navigate("campaigns") },
+                ) {
+                    Text("Hepsini Göster", style = homeSectorShowAll)
+                }
             }
-        }
-        Spacer(modifier = Modifier.height(3.dp))
+            Spacer(modifier = Modifier.height(3.dp))
         Column(
             modifier = Modifier.wrapContentSize(),
             verticalArrangement = Arrangement.Center,
@@ -486,9 +470,8 @@ fun HomeSectionCampaigns(
 @Composable
 fun HomeSectionInStockSales(
     navController: NavController,
-    homeViewModel: HomeViewMode
 ) {
-
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofStockSales =
         homeViewModel.stokSaleList.collectAsState(initial = emptyList<HomeDesignItem>())
     Column() {
@@ -557,8 +540,8 @@ fun HomeSectionInStockSales(
 @Composable
 fun HomeSectionSectorNews(
     navController: NavController,
-    homeViewModel: HomeViewMode
 ) {
+    val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofSectorNews =
         homeViewModel.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
     Column() {

@@ -1,16 +1,19 @@
 package com.isticpla.itp.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,6 +49,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
@@ -52,24 +57,29 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.dummydata.BusinessTypeItem
 import com.isticpla.itp.dummydata.SectorNewsItem
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppTextFilterComponent
 import com.isticpla.itp.uimodules.Bg
 import com.isticpla.itp.uimodules.SearchbarWithChips
 import com.isticpla.itp.uimodules.defaultmenuItemState
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun NewsListDashboard(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
-    val context = LocalContext.current.applicationContext
+    val lifecycleOwner= LocalLifecycleOwner.current
+    val homeViewMode = hiltViewModel<HomeViewMode>()
+    val accountViewModel = hiltViewModel<AccountViewModel>()
     var sectorlist = remember { mutableListOf<BusinessTypeItem>() }
     var (selectedOption, onOptionSelected) = remember {
         mutableStateOf(
@@ -80,15 +90,11 @@ fun NewsListDashboard(
             )
         )
     }
-    var sectorListState =
-        homeViewMode.sectorList.collectAsState(initial = mutableListOf<BusinessTypeItem>())
 
+    val sectorList = accountViewModel.getSectorList2()
+        .collectAsStateWithLifecycle(initialValue =listOf<BusinessTypeItem>())
 
-    LaunchedEffect(Unit) {
-        sectorlist = sectorListState.value
-        selectedOption = sectorlist.first()
-        onOptionSelected(sectorlist.first())
-    }
+    var listOfChip = remember { mutableStateListOf<String>() }
     val listofSectorNews =
         homeViewMode.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
     Scaffold(
@@ -112,7 +118,7 @@ fun NewsListDashboard(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.navigate("home") }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.arrow_left),
                             contentDescription = null
@@ -124,8 +130,7 @@ fun NewsListDashboard(
         Column(
             modifier = Modifier
                 .padding(innerpadding)
-                .padding(horizontal = 10.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = 10.dp),
         ) {
             Row(
                 modifier = Modifier
@@ -134,7 +139,7 @@ fun NewsListDashboard(
                     .selectableGroup()
                     .horizontalScroll(rememberScrollState())
             ) {
-                sectorListState.value.forEach { b ->
+                sectorList.value.forEach { b ->
                     var toggleButtonState by remember { mutableStateOf(b.isSelected) }
                     val cColor = if ((b != selectedOption))
                         CardColors(
@@ -193,9 +198,57 @@ fun NewsListDashboard(
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            SearchbarWithChips()
+            //region Search bar
+            Row(
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
+            ) {
+                AppTextFilterComponent(
+                    cardmodifier = Modifier
+                        .fillMaxWidth(.8f)
+                        .heightIn(min = 80.dp, max = 140.dp)
+                        .weight(1f),
+                    listOfChip = listOfChip
+                )
+                Card(
+                    onClick = {},
+                    colors = CardColors(
+                        containerColor = AppColors.grey_133,
+                        contentColor = Color.Black,
+                        disabledContainerColor = AppColors.grey_133,
+                        disabledContentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .fillMaxWidth(.15f)
+                        .height(80.dp)
+                        .padding(0.dp)
+                        .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp))
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_favorite_border_24),
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+            //endregion
             Spacer(modifier = Modifier.height(20.dp))
-            listofSectorNews.value.forEach { b ->
+
+            val expendedList = listofSectorNews.value.filter { f ->
+                if (listOfChip.isNotEmpty()) {
+                    listOfChip.any { a -> (f.title.contains(a, true) || f.content.contains(a, true))  }
+
+                } else
+                    true
+            }
+
+            expendedList.forEach { b ->
                 ListItem(
                     modifier = Modifier.clickable {
                         navController.navigate("newslist/detail")

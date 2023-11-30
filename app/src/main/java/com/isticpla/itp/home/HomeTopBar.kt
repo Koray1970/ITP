@@ -23,16 +23,16 @@ fun HomeTopBar(navController: NavController) =
             tint = AppColors.grey_138
         )
     }, actions = {
-        IconButton(onClick = { navController.navigate("home/messages") }) {
+        IconButton(onClick = { navController.navigate("hmessages") }) {
             Icon(
                 painter = painterResource(id = R.drawable.ico_messages),
                 contentDescription = null
             )
         }
-        IconButton(onClick = { navController.navigate("home/jobs") }) {
+        IconButton(onClick = { navController.navigate("hjobs") }) {
             Icon(painter = painterResource(id = R.drawable.ico_task), contentDescription = null)
         }
-        IconButton(onClick = { navController.navigate("home/notifications") }) {
+        IconButton(onClick = { navController.navigate("hnotifications") }) {
             Icon(
                 painter = painterResource(id = R.drawable.ico_notifications),
                 contentDescription = null

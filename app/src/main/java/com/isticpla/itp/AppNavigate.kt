@@ -22,7 +22,7 @@ import com.isticpla.itp.views.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "stocksales") {
+    NavHost(navController = navController, startDestination = "home") {
         composable("splash") { Splash(navController) }
         composable("startselectculture") { StartSelectCulture(navController) }
         composable("appintro") { AppIntro(navController) }
@@ -33,11 +33,11 @@ fun AppNavigate() {
         composable("choosebusinesssalesareas") { ChooseBusinessSalesAreas(navController) }
 
         composable("home") { Home(navController) }
-        composable("home/notifications") { Notifications(navController) }
-        composable("home/jobs") { Jobs(navController) }
-        composable("home/messages") { Messages(navController) }
+        composable("hnotifications") { Notifications(navController) }
+        composable("hjobs") { Jobs(navController) }
+        composable("hmessages") { Messages(navController) }
 
-        composable("home/section/campaigns") { HomeSectionCampaigns(navController) }
+        composable("campaigns") { CampaignsDashboards(navController) }
 
         composable("feed") { FeedDashboard(navController) }
         composable("feed/productdetail") { FeedProductDetail(navController) }

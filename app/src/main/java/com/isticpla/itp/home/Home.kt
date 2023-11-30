@@ -13,9 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.uimodules.Bg
 import com.isticpla.itp.uimodules.BottomBarMenuItem
 import com.isticpla.itp.uimodules.BottomBarMenuItemType
@@ -25,8 +23,6 @@ import com.isticpla.itp.uimodules.BottomBarMenuItemType
 fun Home(
     navController: NavController,
 ) {
-    val homeViewModel = hiltViewModel<HomeViewMode>()
-    val accountViewModel = hiltViewModel<AccountViewModel>()
     val menuItemState = mutableListOf<BottomBarMenuItem>(
         BottomBarMenuItem(BottomBarMenuItemType.HOME, true),
         BottomBarMenuItem(BottomBarMenuItemType.BOOKMARK),
@@ -46,12 +42,12 @@ fun Home(
                 .padding(horizontal = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            HomeSectionHeader(homeViewModel)
-            HomeSectionSectors(navController, accountViewModel)
-            HomeSectionDesigns(navController, homeViewModel)
+            HomeSectionHeader()
+            HomeSectionSectors(navController)
+            HomeSectionDesigns(navController)
             HomeSectionCampaigns(navController)
-            HomeSectionInStockSales(navController, homeViewModel)
-            HomeSectionSectorNews(navController, homeViewModel)
+            HomeSectionInStockSales(navController)
+            HomeSectionSectorNews(navController)
         }
     }
 }

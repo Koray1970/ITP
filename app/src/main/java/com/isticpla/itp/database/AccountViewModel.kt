@@ -50,8 +50,7 @@ class AccountViewModel @Inject constructor(
             accountDAO.getAccountSectors().collect {
                 dbsectors = it
                 delay(1000L)
-                if (!dbsectors.isNullOrEmpty())
-                    state.isFinished=true
+
             }
         }
     }
@@ -85,39 +84,36 @@ class AccountViewModel @Inject constructor(
         return flowOf(lstbussiness.toList())
     }
 
-    fun getSectorList2(): Flow<List<BusinessTypeItem>> = flow {
-        val gson = Gson()
+    fun getSectorList2(): Flow<List<BusinessTypeItem>> =
+        flow<List<BusinessTypeItem>> {
+            val gson = Gson()
 
-        var lstibus = emptyArray<IBusinessTypeItem>()
-        val lstbussiness = ArrayList<BusinessTypeItem>()
-        viewModelScope.launch {
+            var lstibus = emptyArray<IBusinessTypeItem>()
+            val lstbussiness = ArrayList<BusinessTypeItem>()
             while (true) {
-                if (state.isFinished) {
-                    if (!dbsectors.isNullOrEmpty()) {
-                        lstibus =
-                            gson.fromJson(dbsectors, Array<IBusinessTypeItem>::class.java)
-                        if (lstibus.isNotEmpty()) {
-                            lstibus.forEach { b ->
-                                lstbussiness.add(
-                                    BusinessTypeItem(
-                                        id = b.id,
-                                        icon = b.icon,
-                                        label = b.label,
-                                        except = b.except
-                                    )
+                if (!dbsectors.isNullOrEmpty()) {
+                    lstibus =
+                        gson.fromJson(dbsectors, Array<IBusinessTypeItem>::class.java)
+                    if (lstibus.isNotEmpty()) {
+                        lstibus.forEach { b ->
+                            lstbussiness.add(
+                                BusinessTypeItem(
+                                    id = b.id,
+                                    icon = b.icon,
+                                    label = b.label,
+                                    except = b.except
                                 )
-                            }
+                            )
                         }
                     }
-                    break
+                    lstbussiness.add(listofBusiness.first { a -> a.except })
                 }
-                delay(1200L)
+
+                emit(lstbussiness.toList())
+                if(lstbussiness.size>1) break
+                delay(1000L)
             }
         }
-        lstbussiness.add(listofBusiness.first { a -> a.except })
-        emit(lstbussiness)
-    }
-
 
     fun UpsertAccount(account: Account) {
         viewModelScope.launch {

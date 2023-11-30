@@ -3,6 +3,7 @@ package com.isticpla.itp.offerdetails
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -28,6 +29,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRowDefaults
@@ -68,9 +70,10 @@ import com.isticpla.itp.uimodules.DeepAnalyzerButton
 fun OfferDetailTabRow(
     offerDetailTabState: MutableState<Int>,
     offerDetailTabDbState: List<OfferDetailTabItem>
-) = SecondaryTabRow(
+) = ScrollableTabRow(
     selectedTabIndex = offerDetailTabState.value,
-    modifier = Modifier.fillMaxWidth(),
+    modifier = Modifier
+        .fillMaxWidth(),
     containerColor = Color.White,
     indicator = { it ->
         if (offerDetailTabState.value < it.size) {
@@ -298,7 +301,7 @@ internal fun OFMessages() {
     //chat messages
     Column(
         modifier = Modifier
-            .heightIn(60.dp,2000.dp)
+            .heightIn(60.dp, 2000.dp)
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(18.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally

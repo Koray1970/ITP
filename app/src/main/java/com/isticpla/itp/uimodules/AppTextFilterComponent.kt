@@ -37,12 +37,21 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.isticpla.itp.R
 import com.isticpla.itp.poppinFamily
 
@@ -55,21 +64,35 @@ fun AppTextFilterComponent(
     var aTextFieldState by remember { mutableStateOf(false) }
     var txtInitialValue = remember { mutableStateOf("") }
     //var listOfChip = remember { mutableStateListOf<String>() }
+    val textMeasurer = rememberTextMeasurer()
+    val textLayoutResult: TextLayoutResult =
+        textMeasurer.measure(text = AnnotatedString("Kelime Giriniz"))
+    val textSize = textLayoutResult.size
     Card(
-        modifier = Modifier
+        modifier = cardmodifier.then(Modifier
             .clickable {
                 if (listOfChip.size <= 3)
                     aTextFieldState = !aTextFieldState
                 else
                     aTextFieldState = false
             }
-            .then(cardmodifier),
+            .drawBehind {
+                drawText(
+                    textLayoutResult,
+                    topLeft = Offset(
+                        10f,
+                        10f
+                    ),
+                    color=AppColors.primaryGrey.copy(.3f)
+                )
+            }),
         shape = RoundedCornerShape(5.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White,
+            containerColor = Color.Transparent,
         ),
         border = BorderStroke(1.dp, AppColors.secondaryGrey)
     ) {
+
         if (aTextFieldState) {
             Box(
                 modifier = Modifier
