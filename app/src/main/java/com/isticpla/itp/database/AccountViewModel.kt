@@ -1,7 +1,11 @@
 package com.isticpla.itp.database
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +14,7 @@ import com.isticpla.itp.dummydata.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asFlow
@@ -21,6 +26,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -31,29 +37,85 @@ import javax.inject.Inject
 class AccountViewModel @Inject constructor(
     private val accountDAO: AccountDAO
 ) : ViewModel() {
+    var state by mutableStateOf(AccountListenerState())
+        private set
+
     val getAccount = accountDAO.getAccount()
+    private var _dbsectors: String = ""
+    var dbsectors by mutableStateOf(_dbsectors)
+        private set
+
+    init {
+        viewModelScope.launch {
+            accountDAO.getAccountSectors().collect {
+                dbsectors = it
+                delay(1000L)
+                if (!dbsectors.isNullOrEmpty())
+                    state.isFinished=true
+            }
+        }
+    }
 
 
     fun getSectorList(dbsectors: String): Flow<List<BusinessTypeItem>> {
         val gson = Gson()
         var lstibus = emptyArray<IBusinessTypeItem>()
         val lstbussiness = ArrayList<BusinessTypeItem>()
-        lstibus = gson.fromJson(dbsectors, Array<IBusinessTypeItem>::class.java)
-        if (lstibus.isNotEmpty()) {
-            lstibus.forEach { b ->
-                lstbussiness.add(
-                    BusinessTypeItem(
-                        id = b.id,
-                        icon = b.icon,
-                        label = b.label,
-                        except = b.except
-                    )
-                )
+        viewModelScope.launch {
+            while (true) {
+                if (!dbsectors.isNullOrEmpty()) {
+                    lstibus = gson.fromJson(dbsectors, Array<IBusinessTypeItem>::class.java)
+                    if (lstibus.isNotEmpty()) {
+                        lstibus.forEach { b ->
+                            lstbussiness.add(
+                                BusinessTypeItem(
+                                    id = b.id,
+                                    icon = b.icon,
+                                    label = b.label,
+                                    except = b.except
+                                )
+                            )
+                        }
+                    }
+                }
+                delay(1220L)
             }
         }
-
-        lstbussiness.add(listofBusiness.first { a->a.except })
+        lstbussiness.add(listofBusiness.first { a -> a.except })
         return flowOf(lstbussiness.toList())
+    }
+
+    fun getSectorList2(): Flow<List<BusinessTypeItem>> = flow {
+        val gson = Gson()
+
+        var lstibus = emptyArray<IBusinessTypeItem>()
+        val lstbussiness = ArrayList<BusinessTypeItem>()
+        viewModelScope.launch {
+            while (true) {
+                if (state.isFinished) {
+                    if (!dbsectors.isNullOrEmpty()) {
+                        lstibus =
+                            gson.fromJson(dbsectors, Array<IBusinessTypeItem>::class.java)
+                        if (lstibus.isNotEmpty()) {
+                            lstibus.forEach { b ->
+                                lstbussiness.add(
+                                    BusinessTypeItem(
+                                        id = b.id,
+                                        icon = b.icon,
+                                        label = b.label,
+                                        except = b.except
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    break
+                }
+                delay(1200L)
+            }
+        }
+        lstbussiness.add(listofBusiness.first { a -> a.except })
+        emit(lstbussiness)
     }
 
 
@@ -63,3 +125,8 @@ class AccountViewModel @Inject constructor(
         }
     }
 }
+
+data class AccountListenerState(
+    var isLoading: Boolean = false,
+    var isFinished: Boolean = false
+)

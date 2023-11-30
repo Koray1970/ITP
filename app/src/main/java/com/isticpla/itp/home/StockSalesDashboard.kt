@@ -1,6 +1,7 @@
 package com.isticpla.itp.home
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -12,8 +13,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredHeightIn
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,12 +57,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.dummydata.BusinessTypeItem
 import com.isticpla.itp.dummydata.HomeDesignItem
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppTextFilterComponent
 import com.isticpla.itp.uimodules.SearchbarWithChips
 import java.util.Locale
 
@@ -66,9 +73,11 @@ import java.util.Locale
 @Composable
 fun StockSalesDashboard(
     navController: NavController,
-    homeViewMode: HomeViewMode = hiltViewModel(),
-) {
+
+    ) {
     val context = LocalContext.current.applicationContext
+    val homeViewMode = hiltViewModel<HomeViewMode>()
+    val accountViewModel = hiltViewModel<AccountViewModel>()
     var sectorlist = remember { mutableListOf<BusinessTypeItem>() }
     var (selectedOption, onOptionSelected) = remember {
         mutableStateOf(
@@ -79,14 +88,18 @@ fun StockSalesDashboard(
             )
         )
     }
-    var sectorListState =
-        homeViewMode.sectorList.collectAsState(initial = mutableListOf<BusinessTypeItem>())
+    var sectorListState = accountViewModel.getSectorList2()
+        .collectAsStateWithLifecycle(initialValue = mutableStateListOf<BusinessTypeItem>())
+
+    var listOfChip = remember { mutableStateListOf<String>() }
 
 
     LaunchedEffect(Unit) {
-        sectorlist = sectorListState.value
-        selectedOption = sectorlist.first()
-        onOptionSelected(sectorlist.first())
+        //sectorlist = sectorListState.value
+        if (sectorListState.value.isNotEmpty()) {
+            selectedOption = sectorListState.value.first()
+            onOptionSelected(sectorListState.value.first())
+        }
     }
     val listofStockSales =
         homeViewMode.stokSaleList.collectAsState(initial = emptyList<HomeDesignItem>())
@@ -122,8 +135,7 @@ fun StockSalesDashboard(
         Column(
             modifier = Modifier
                 .padding(innerpadding)
-                .padding(horizontal = 10.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(horizontal = 10.dp),
         ) {
             Row(
                 modifier = Modifier
@@ -132,69 +144,116 @@ fun StockSalesDashboard(
                     .selectableGroup()
                     .horizontalScroll(rememberScrollState())
             ) {
-                sectorListState.value.forEach { b ->
-                    var toggleButtonState by remember { mutableStateOf(b.isSelected) }
-                    val cColor = if ((b != selectedOption))
-                        CardColors(
-                            containerColor = AppColors.grey_133,
-                            contentColor = Color.Black,
-                            disabledContainerColor = AppColors.primaryGrey,
-                            disabledContentColor = Color.White
-                        )
-                    else
-                        CardColors(
-                            containerColor = AppColors.primaryGrey,
-                            contentColor = Color.White,
-                            disabledContainerColor = AppColors.primaryGrey,
-                            disabledContentColor = Color.White
-                        )
-                    Card(
-                        shape = RoundedCornerShape(5.dp),
-                        colors = cColor,
-                        //enabled = b.isSelected,
-                        modifier = Modifier
-                            .size(100.dp, 44.dp)
-                            .padding(0.dp)
-                            .selectable(
-                                selected = (b == selectedOption),
-                                onClick = {
-                                    homeViewMode.UpdateSectorListSelection(b.id)
-                                    onOptionSelected(b)
-                                },
-                                role = Role.Button
-                            ),
-                    ) {
-                        Row(
-                            modifier = Modifier.fillMaxSize(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = b.icon!!),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(28.dp)
-                                    .padding(0.dp)
-                            )
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = b.label!!.uppercase(Locale.ROOT),
-                                style = TextStyle(
-                                    fontFamily = poppinFamily,
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Normal
+                when (accountViewModel.state.isFinished) {
+                    null -> {}
+                    else -> {
+                        sectorListState.value.forEach { b ->
+                            var toggleButtonState by remember { mutableStateOf(b.isSelected) }
+                            val cColor = if ((b != selectedOption))
+                                CardColors(
+                                    containerColor = AppColors.grey_133,
+                                    contentColor = Color.Black,
+                                    disabledContainerColor = AppColors.primaryGrey,
+                                    disabledContentColor = Color.White
                                 )
-                            )
+                            else
+                                CardColors(
+                                    containerColor = AppColors.primaryGrey,
+                                    contentColor = Color.White,
+                                    disabledContainerColor = AppColors.primaryGrey,
+                                    disabledContentColor = Color.White
+                                )
+                            Card(
+                                shape = RoundedCornerShape(5.dp),
+                                colors = cColor,
+                                //enabled = b.isSelected,
+                                modifier = Modifier
+                                    .size(100.dp, 44.dp)
+                                    .padding(0.dp)
+                                    .selectable(
+                                        selected = (b == selectedOption),
+                                        onClick = {
+                                            homeViewMode.UpdateSectorListSelection(b.id)
+                                            onOptionSelected(b)
+                                        },
+                                        role = Role.Button
+                                    ),
+                            ) {
+                                Row(
+                                    modifier = Modifier.fillMaxSize(),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = b.icon!!),
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .size(28.dp)
+                                            .padding(0.dp)
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = b.label!!.uppercase(Locale.ROOT),
+                                        style = TextStyle(
+                                            fontFamily = poppinFamily,
+                                            fontSize = 11.sp,
+                                            fontWeight = FontWeight.Normal
+                                        )
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
                         }
                     }
-                    Spacer(modifier = Modifier.width(10.dp))
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            SearchbarWithChips()
+            //SearchbarWithChips()
+            //region Search bar
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
+            ) {
+                AppTextFilterComponent(
+                    cardmodifier = Modifier
+                        .fillMaxWidth(.8f)
+                        .heightIn(min = 80.dp, max = 140.dp)
+                        .weight(1f),
+                    listOfChip = listOfChip
+                )
+                Card(
+                    onClick = {},
+                    colors = CardColors(
+                        containerColor = AppColors.grey_133,
+                        contentColor = Color.Black,
+                        disabledContainerColor = AppColors.grey_133,
+                        disabledContentColor = Color.Black
+                    ),
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .fillMaxSize(.15f)
+                        .height(80.dp)
+                        .padding(0.dp)
+                        .border(1.dp, AppColors.grey_130, RoundedCornerShape(5.dp))
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_favorite_border_24),
+                            contentDescription = null,
+                        )
+                    }
+                }
+            }
+            //endregion
             Spacer(modifier = Modifier.height(20.dp))
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -203,7 +262,16 @@ fun StockSalesDashboard(
                     horizontalArrangement = Arrangement.spacedBy(30.dp),
                     maxItemsInEachRow = 2
                 ) {
-                    listofStockSales.value.forEach { b ->
+
+                    val expendedList = listofStockSales.value.filter { f ->
+                        if (listOfChip.isNotEmpty()) {
+                            listOfChip.any{a-> f.title.contains(a,true)}
+
+                        }
+                        else
+                            true
+                    }
+                    expendedList.forEach { b ->
                         Column(
                             modifier = Modifier
                                 .clickable { }
