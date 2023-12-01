@@ -88,7 +88,7 @@ fun CreateOfferAsService(
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val buyerExpendedState = remember { mutableStateOf(false) }
     val buyerError = remember { mutableStateOf(false) }
-    val buyers by homeViewModel.shopList.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    val buyers by homeViewModel.shopListAsPairs().collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
     val buyerTxtValue = rememberSaveable { mutableStateOf("") }
 
     val paymentTypeExpendedState = remember { mutableStateOf(false) }

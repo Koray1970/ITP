@@ -46,7 +46,17 @@ class HomeViewMode @Inject constructor() : ViewModel() {
 
 
     //@RequiresApi(Build.VERSION_CODES.R)
-    val shopList = flowOf<List<Pair<Int, String>>>(listofShops)
+    val shopList = flowOf<List<ShopItem>>(listofShops)
+
+    fun shopListAsPairs() = flow<List<Pair<Int, String>>> {
+
+        val listofShop = mutableListOf<Pair<Int, String>>()
+        listofShops.forEach {
+            listofShop.add(Pair(it.id, it.name))
+        }
+        emit(listofShop.toList())
+    }
+
     var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.filter { a -> !a.except }
         .toMutableList())
     var sectorOthers = flowOf<BusinessTypeItem>(listofBusiness.first { a -> a.except })
@@ -57,7 +67,8 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val sectorNewsList = flowOf<List<SectorNewsItem>>(listofHomeSectorNews)
     val offerDrafts = flowOf<List<OfferDraftListItem>>(listOfOfferDraft)
     val orderStages = flowOf<List<OrderStages>>(listOfOrderStages)
-    val productDRPItems = flowOf<List<ProductFeatureItem>>(listofProductFeature.sortedBy { a->a.label })
+    val productDRPItems =
+        flowOf<List<ProductFeatureItem>>(listofProductFeature.sortedBy { a -> a.label })
 
     val requestQuantity = flowOf<List<Pair<Int, Int>>>(listOfQuantity)
     val requestPaymentType = flowOf<List<Pair<Int, String>>>(listOfPaymentType)

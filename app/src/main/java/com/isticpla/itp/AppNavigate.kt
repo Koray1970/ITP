@@ -3,6 +3,7 @@ package com.isticpla.itp
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,56 +24,99 @@ fun AppNavigate() {
 
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "home") {
-        composable("splash") { Splash(navController) }
-        composable("startselectculture") { StartSelectCulture(navController) }
-        composable("appintro") { AppIntro(navController) }
-        composable("signup") { SignUp(navController) }
-        composable("verifyphonenumber") { VerifyPhoneNumber(navController) }
-        composable("createuseraccount") { CreateUserAccount(navController) }
-        composable("addyourbusiness") { AddYourBusiness(navController) }
-        composable("choosebusinesssalesareas") { ChooseBusinessSalesAreas(navController) }
+        /*composable("splash") { Splash(navController) }*/
+        composable(Screen.StartSelectCulture.route) { StartSelectCulture(navController) }
+        composable(Screen.AppIntro.route) { AppIntro(navController) }
+        composable(Screen.SignUp.route) { SignUp(navController) }
+        composable(Screen.VerifyPhoneNumber.route) { VerifyPhoneNumber(navController) }
+        composable(Screen.CreateUserAccount.route) { CreateUserAccount(navController) }
+        composable(Screen.AddYourBusiness.route) { AddYourBusiness(navController) }
+        composable(Screen.ChooseBusinessSalesAreas.route) { ChooseBusinessSalesAreas(navController) }
 
-        composable("home") { Home(navController) }
-        composable("hnotifications") { Notifications(navController) }
-        composable("hjobs") { Jobs(navController) }
-        composable("hmessages") { Messages(navController) }
+        composable(Screen.Home.route) { Home(navController) }
+        composable(Screen.Notifications.route) { Notifications(navController) }
+        composable(Screen.Jobs.route) { Jobs(navController) }
+        composable(Screen.Messages.route) { Messages(navController) }
 
-        composable("campaigns") { CampaignsDashboards(navController) }
+        composable(Screen.CampaignsDashboards.route) { CampaignsDashboards(navController) }
 
-        composable("feed") { FeedDashboard(navController) }
-        composable("feed/productdetail") { FeedProductDetail(navController) }
+        composable(Screen.FeedDashboard.route) { FeedDashboard(navController) }
+        composable(Screen.FeedProductDetail.route) { FeedProductDetail(navController) }
+
+        composable(Screen.MyPanel.route) { MyPanel(navController) }
+        composable(Screen.MyPanelActiveOffers.route) { MyPanelActiveOffers(navController) }
+        composable(Screen.MyPanelCollections.route) { MyPanelCollections(navController) }
+        composable(Screen.MyPanelCollectionSub.route) { MyPanelCollectionSub(navController) }
+
+        composable(Screen.NewsListDashboard.route) { NewsListDashboard(navController) }
+        composable(Screen.NewsListDetail.route) { NewsListDetail(navController) }
+
+        composable(Screen.StockSalesDashboard.route) { StockSalesDashboard(navController) }
+
+        composable(Screen.CreateOfferDashboard.route) { CreateOfferDashboard(navController) }
+        composable(Screen.CreateOfferPage1.route) { CreateOfferPage1(navController) }
+        composable(Screen.CreateOfferVisualDetails.route) { CreateOfferVisualDetails(navController) }
+        composable(Screen.CreateOfferProductDetails.route) { CreateOfferProductDetails(navController) }
+        composable(Screen.CreateOfferProductParts.route) { CreateOfferProductParts(navController) }
+        composable(Screen.CreateOfferRequestDetails.route) { CreateOfferRequestDetails(navController) }
+        composable(Screen.CreateOfferPreview.route) { CreateOfferPreview(navController) }
+        composable(Screen.CreateOfferPublish.route) { CreateOfferPublish(navController) }
+        composable(Screen.CreateOfferAsService.route) { CreateOfferAsService(navController) }
 
 
-        composable("mypanel") { MyPanel(navController) }
-        composable("mypanel/activeoffers") { MyPanelActiveOffers(navController) }
-        composable("mypanel/collections") { MyPanelCollections(navController) }
-        composable("mypanel/collections/sub") { MyPanelCollectionSub(navController) }
+        composable(Screen.OfferDetailDashboard.route) { OfferDetailDashboard(navController) }
 
-        composable("newlist") { NewsListDashboard(navController) }
-        composable("newslist/detail") { NewsListDetail(navController) }
-
-        composable("stocksales") { StockSalesDashboard(navController) }
-
-        composable("offer/dashboard") { CreateOfferDashboard(navController) }
-        composable("offer/create") { CreateOfferPage1(navController) }
-        composable("offer/create/visualdetails") { CreateOfferVisualDetails(navController) }
-        composable("offer/create/productdetails") { CreateOfferProductDetails(navController) }
-        composable("offer/create/productdetails/parts") { CreateOfferProductParts(navController) }
-        composable("offer/create/requestdetails") { CreateOfferRequestDetails(navController) }
-        composable("offer/create/preview") { CreateOfferPreview(navController) }
-        composable("offer/create/publish") { CreateOfferPublish(navController) }
-        composable("offer/create/asservice") { CreateOfferAsService(navController) }
-
-
-        composable("offer/detail/dashboard") { OfferDetailDashboard(navController) }
-
-        composable("profile/dashboard") { ProfileDashboard(navController) }
-        composable("profile/edit") { com.isticpla.itp.profile.Edit(navController) }
-        composable("profile/settings") { com.isticpla.itp.profile.ProfileSettings(navController) }
-        composable("profile/mystores") { com.isticpla.itp.profile.MyStores(navController) }
-        composable("profile/mystores/edit") { com.isticpla.itp.profile.MyStoreAddEdit(navController) }
-        composable("profile/contractedSuppliers") { com.isticpla.itp.profile.ContractedSuppliers(navController) }
-        composable("profile/collectionsandtags") { com.isticpla.itp.profile.CollectionsAndTags(navController) }
-        composable("profile/helpandsupport") { com.isticpla.itp.profile.HelpAndSupport(navController) }
+        composable(Screen.ProfileDashboard.route) { ProfileDashboard(navController) }
+        composable(Screen.Edit.route) { Edit(navController) }
+        composable(Screen.ProfileSettings.route) { ProfileSettings(navController) }
+        composable(Screen.MyStores.route) { MyStores(navController) }
+        composable(Screen.MyStoreAddEdit.route) { MyStoreAddEdit(navController) }
+        composable(Screen.ContractedSuppliers.route) { ContractedSuppliers(navController) }
+        composable(Screen.CollectionsAndTags.route) { CollectionsAndTags(navController) }
+        composable(Screen.HelpAndSupport.route) { HelpAndSupport(navController) }
     }
+}
+
+sealed class Screen(val route: String, @StringRes val resourceId: Int? = null) {
+    object StartSelectCulture : Screen(route = "startselectculture")
+    object AppIntro : Screen(route = "appintro")
+    object SignUp : Screen(route = "signup")
+    object VerifyPhoneNumber : Screen(route = "verifyphonenumber")
+    object CreateUserAccount : Screen(route = "createuseraccount")
+    object AddYourBusiness : Screen(route = "addyourbusiness")
+    object ChooseBusinessSalesAreas : Screen(route = "choosebusinesssalesareas")
+    object Home : Screen(route = "home")
+    object Notifications : Screen(route = "hnotifications")
+    object Jobs : Screen(route = "hjobs")
+    object Messages : Screen(route = "hmessages")
+    object CampaignsDashboards : Screen(route = "campaigns")
+    object FeedDashboard : Screen(route = "feed")
+    object FeedProductDetail : Screen(route = "feed/productdetail")
+    object MyPanel : Screen(route = "mypanel")
+    object MyPanelActiveOffers : Screen(route = "mypanel/activeoffers")
+    object MyPanelCollections : Screen(route = "mypanel/collections")
+    object MyPanelCollectionSub : Screen(route = "mypanel/collections/sub")
+    object NewsListDashboard : Screen(route = "newlist")
+    object NewsListDetail : Screen(route = "newslist/detail")
+    object StockSalesDashboard : Screen(route = "stocksales")
+    object CreateOfferDashboard : Screen(route = "offer/dashboard")
+    object CreateOfferPage1 : Screen(route = "offer/create")
+    object CreateOfferVisualDetails : Screen(route = "offer/create/visualdetails")
+    object CreateOfferProductDetails : Screen(route = "offer/create/productdetails")
+    object CreateOfferProductParts : Screen(route = "offer/create/productdetails/parts")
+    object CreateOfferRequestDetails : Screen(route = "offer/create/requestdetails")
+    object CreateOfferPreview : Screen(route = "offer/create/preview")
+    object CreateOfferPublish : Screen(route = "offer/create/publish")
+    object CreateOfferAsService : Screen(route = "offer/create/asservice")
+    object OfferDetailDashboard : Screen(route = "offer/detail/dashboard")
+    object ProfileDashboard : Screen(route = "profile/dashboard")
+    object Edit : Screen(route = "profile/edit")
+    object ProfileSettings : Screen(route = "profile/settings")
+    object MyStores : Screen(route = "profile/mystores")
+    object MyStoreAddEdit : Screen(route = "profile/mystores/edit")
+    object ContractedSuppliers : Screen(route = "profile/contractedSuppliers")
+    object CollectionsAndTags : Screen(route = "profile/collectionsandtags")
+    object HelpAndSupport : Screen(route = "profile/helpandsupport")
+
+
 }

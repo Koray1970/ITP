@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.isticpla.itp.R
+import com.isticpla.itp.Screen
 
 enum class BottomBarMenuItemType(value: Int) {
     HOME(0),
@@ -72,7 +73,7 @@ fun Bg(navController: NavController, activeMenuList: MutableList<BottomBarMenuIt
             IconButton(
                 onClick = {
                     if (!navController.currentDestination?.route?.contains("home")!!)
-                        navController.navigate("home")
+                        navController.navigate(Screen.Home.route)
                 }
             ) {
                 Image(
@@ -96,7 +97,7 @@ fun Bg(navController: NavController, activeMenuList: MutableList<BottomBarMenuIt
             IconButton(
                 onClick = {
                     if (navController.currentDestination?.route != "mypanel")
-                        navController.navigate("mypanel")
+                        navController.navigate(Screen.MyPanel.route)
                 }
             ) {
                 Image(
@@ -128,7 +129,7 @@ fun Bg(navController: NavController, activeMenuList: MutableList<BottomBarMenuIt
                     .requiredSize(67.dp)
                     .clickable {
                         if (!navController.currentDestination?.route?.contains("offer/dashboard")!!)
-                            navController.navigate("offer/dashboard")
+                            navController.navigate(Screen.CreateOfferDashboard.route)
                     },
                 contentDescription = null
             )
@@ -146,7 +147,7 @@ fun Bg(navController: NavController, activeMenuList: MutableList<BottomBarMenuIt
             IconButton(
                 onClick = {
                     if (!navController.currentDestination?.route?.contains("home/notifications")!!)
-                        navController.navigate("home/notifications")
+                        navController.navigate(Screen.Notifications.route)
                 }
             ) {
                 Image(
@@ -167,7 +168,7 @@ fun Bg(navController: NavController, activeMenuList: MutableList<BottomBarMenuIt
             val profileState =
                 activeMenuList.first { a -> a.type == BottomBarMenuItemType.PROFILE }
             IconButton(
-                onClick = { navController.navigate("profile/dashboard") }
+                onClick = { navController.navigate(Screen.ProfileDashboard.route) }
             ) {
                 Image(
                     painter = painterResource(id = if (navController.currentDestination?.route.contentEquals("profile/dashboard")) R.drawable.menu_a_profile else R.drawable.menu_i_profile),

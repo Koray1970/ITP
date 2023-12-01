@@ -38,6 +38,9 @@ interface AccountDAO {
     @Query("SELECT * FROM accounts LIMIT 1")
     fun getAccount(): Flow<Account>
 
+    @Query("SELECT COUNT(*) FROM accounts ")
+    fun getNumberofAccount(): Flow<Int>
+
     @Query("SELECT sectors FROM accounts LIMIT 1")
     fun getAccountSectors(): Flow<String>
 

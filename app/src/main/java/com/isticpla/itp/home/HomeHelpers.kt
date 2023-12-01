@@ -2,7 +2,6 @@ package com.isticpla.itp.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -63,8 +62,10 @@ import com.isticpla.itp.dummydata.BusinessTypeItem
 import com.isticpla.itp.dummydata.HomeCampaignItem
 import com.isticpla.itp.dummydata.HomeDesignItem
 import com.isticpla.itp.dummydata.SectorNewsItem
+import com.isticpla.itp.dummydata.ShopItem
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppDropdown
+import com.isticpla.itp.uimodules.AppShopDropdown
 import com.isticpla.itp.uimodules.AppTextFieldDefaults
 import com.isticpla.itp.uimodules.Carousel
 import com.isticpla.itp.uimodules.CarouselPagerRequest
@@ -78,7 +79,7 @@ fun HomeSectionHeader() {
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val configuration = LocalConfiguration.current
     val listofShops =
-        homeViewModel.shopList.collectAsState(initial = emptyList<Pair<Int, String>>())
+        homeViewModel.shopList.collectAsState(initial = emptyList<ShopItem>())
 
     val carouselImageWidth = configuration.screenWidthDp - 50
     val shopselectedOptionText = rememberSaveable { mutableStateOf("") }
@@ -94,22 +95,14 @@ fun HomeSectionHeader() {
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
             .requiredHeight(220.dp),
-        pager = CarouselPagerRequest(true, 18.dp, AppColors.blue_104, AppColors.blue_0xFF0495f1)
+        pager = CarouselPagerRequest(true, 18.dp,  AppColors.blue_0xFF0495f1,AppColors.greyLight)
     )
 
     Column {
-        AppDropdown<Int,String>(
-            expended = shopExpend,
-            selectedOptionText = shopselectedOptionText,
-            selectedOptionKey = shopselectedOptionKey,
-            listdata = listofShops.value,
-            dropdownlabel = {
-                Text(
-                    text = "Mağazalarım",
-                    style = AppTextFieldDefaults.TextFieldTextStyle
-                )
-            }
+        AppShopDropdown(
+            listofShop=listofShops.value
         )
+
         Spacer(modifier = Modifier.height(20.dp))
         Carousel(requests = carouselRequest)
     }

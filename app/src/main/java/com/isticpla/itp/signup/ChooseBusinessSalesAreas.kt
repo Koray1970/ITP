@@ -97,7 +97,8 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
         Column(
             modifier = Modifier
                 .padding(innerpadding)
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(

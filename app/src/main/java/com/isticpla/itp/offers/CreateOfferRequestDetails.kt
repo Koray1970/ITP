@@ -60,7 +60,7 @@ fun CreateOfferRequestDetails(
 
     val buyerExpendedState = remember { mutableStateOf(false) }
     val buyerError = remember { mutableStateOf(false) }
-    val buyers by homeViewModel.shopList.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    val buyers by homeViewModel.shopListAsPairs().collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
     val buyerTxtValue = rememberSaveable { mutableStateOf("") }
 
     val deliveryExpendedState = remember { mutableStateOf(false) }
@@ -70,7 +70,7 @@ fun CreateOfferRequestDetails(
 
     val placeOfDeliveryExpendedState = remember { mutableStateOf(false) }
     val placeOfDeliveryError = remember { mutableStateOf(false) }
-    val placeOfDelivery by homeViewModel.shopList.collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    val placeOfDelivery by homeViewModel.shopListAsPairs().collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
     val placeOfDeliveryTxtValue = rememberSaveable { mutableStateOf("") }
 
     val paymentTypeExpendedState = remember { mutableStateOf(false) }

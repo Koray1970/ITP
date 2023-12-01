@@ -346,7 +346,7 @@ fun AddYourBusiness(
                     contentDescription = null
                 )
             }
-
+            Spacer(modifier = Modifier.height(40.dp))
         }
     }
 }
