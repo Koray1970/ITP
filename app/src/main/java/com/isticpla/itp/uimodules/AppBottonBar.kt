@@ -1,6 +1,5 @@
 package com.isticpla.itp.uimodules
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,9 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -49,12 +49,20 @@ val defaultmenuItemState = mutableListOf<BottomBarMenuItem>(
 @Composable
 fun Bg(navController: NavController, activeMenuList: MutableList<BottomBarMenuItem>) = Column(
     modifier = Modifier
+        .offset(0.dp,30.dp)
         .fillMaxWidth()
         .height(150.dp)
         .paint(
             painterResource(id = R.mipmap.beyazbg),
             contentScale = ContentScale.Crop
         )
+        .drawBehind {
+            drawRect(
+                color=Color.White,
+                size= Size(size.width,10f),
+                topLeft = Offset(0f,size.height-10)
+            )
+        }
 ) {
     Row(
         modifier = Modifier

@@ -132,7 +132,10 @@ fun HomeSectionSectors(
     }
 
 
-    Column() {
+    Column(
+        modifier=Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start
+    ) {
         Spacer(modifier = Modifier.height(40.dp))
         Text("Sektörler", style = homeSectionTitle)
         Spacer(modifier = Modifier.height(16.dp))
@@ -538,7 +541,7 @@ fun HomeSectionSectorNews(
     val listofSectorNews =
         homeViewModel.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
     Column() {
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,

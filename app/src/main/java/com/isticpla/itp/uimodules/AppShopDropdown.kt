@@ -1,5 +1,6 @@
 package com.isticpla.itp.uimodules
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,7 +63,8 @@ fun AppShopDropdown(
             colors = CardDefaults.outlinedCardColors(
                 containerColor = Color.Transparent,
                 contentColor = AppColors.secondaryGrey
-            )
+            ),
+            border= BorderStroke(1.dp,AppColors.secondaryGrey)
         ) {
             if (showDropdownState) {
                 Box() {
@@ -79,11 +81,13 @@ fun AppShopDropdown(
                                 focusedContainerColor = Color.Transparent,
                                 unfocusedContainerColor = Color.Transparent,
                                 focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedTextColor = AppColors.secondaryGrey,
+                                unfocusedTextColor = AppColors.blue_0xFF0495f1,
                             ),
                             value = shopDummySelectedOptionText.value,
                             onValueChange = { shopDummySelectedOptionText.value = it },
-                            label = { Text("Mağazalarım") },
+                            label = { Text("Mağazalarım", style=TextStyle(fontFamily = poppinFamily, fontSize = 12.sp, fontWeight = FontWeight.Normal, color=AppColors.secondaryGrey)) },
                             trailingIcon = {
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically,
@@ -122,7 +126,7 @@ fun AppShopDropdown(
                                 filteringOptions.forEach { selectionOption ->
                                     DropdownMenuItem(
                                         modifier=Modifier.fillMaxWidth(),
-                                        colors = MenuDefaults.itemColors(textColor = AppColors.secondaryGrey),
+
                                         onClick = {
                                             shopDummySelectedOptionText.value = selectionOption.name
                                             shopSelectedOptionText = selectionOption
@@ -133,7 +137,13 @@ fun AppShopDropdown(
                                         text = {
                                             Text(
                                                 text = buildAnnotatedString {
-                                                    withStyle(style = SpanStyle()) { append("${selectionOption.name}\n") }
+                                                    withStyle(
+                                                        style = SpanStyle(
+                                                            fontSize = 16.sp,
+                                                            fontWeight = FontWeight.SemiBold,
+                                                            color = AppColors.blue_0xFF0495f1
+                                                        )
+                                                    ) { append("${selectionOption.name}\n") }
                                                     append(selectionOption.address)
                                                 },
                                                 style = TextStyle(

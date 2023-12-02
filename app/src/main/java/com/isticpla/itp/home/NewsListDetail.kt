@@ -9,12 +9,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeightIn
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -26,12 +33,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -95,7 +104,7 @@ fun NewsListDetail(
     val offsetX: Dp = 0.dp
     val spread: Dp = 7f.dp
 
-    Row(
+    /*Row(
         modifier = Modifier
             .fillMaxSize(),
         verticalAlignment = Alignment.Top
@@ -105,12 +114,12 @@ fun NewsListDetail(
             contentDescription = null,
             contentScale = ContentScale.Crop
         )
-    }
+    }*/
 
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = { Bg(navController, defaultmenuItemState) },
-        topBar = {
+        /*topBar = {
             TopAppBar(
                 colors = TopAppBarColors(
                     containerColor = Color.Transparent, scrolledContainerColor = Color.Transparent,
@@ -144,166 +153,242 @@ fun NewsListDetail(
                         )
                     }
                 }
-            )
-        }) { innerpadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(innerpadding)
-                .padding(horizontal = 10.dp)
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            )}*/
+    ) { innerpadding ->
+        Box(
+            modifier = Modifier.fillMaxWidth(),
         ) {
-            Spacer(modifier = Modifier.requiredHeightIn(min = 180.dp, max = 220.dp))
-            Card(
-                colors = CardColors(
-                    containerColor = Color.White,
-                    contentColor = AppColors.grey_dark,
-                    disabledContainerColor = Color.White,
-                    disabledContentColor = AppColors.grey_dark
-                ),
-                shape = roundShape,
+
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth(.9f)
-                    .drawBehind {
-                        this.drawIntoCanvas {
-                            val paint = Paint()
-                            val frameworkPaint = paint.asFrameworkPaint()
-                            val spreadPixel = spread.toPx()
-                            val leftPixel = (0f - spreadPixel) + offsetX.toPx()
-                            val topPixel = (0f - spreadPixel) + offsetY.toPx()
-                            val rightPixel = (this.size.width + spreadPixel)
-                            val bottomPixel =
-                                (this.size.height - 26f)//(this.size.height + spreadPixel)
-
-                            if (blurRadius != 0.dp) {
-                                frameworkPaint.maskFilter =
-                                    (BlurMaskFilter(blurRadius.toPx(), BlurMaskFilter.Blur.NORMAL))
-                            }
-
-                            frameworkPaint.color = color.toArgb()
-                            it.drawRoundRect(
-                                left = leftPixel,
-                                top = topPixel,
-                                right = rightPixel,
-                                bottom = bottomPixel,
-                                radiusX = borderRadius.toPx(),
-                                radiusY = borderRadius.toPx(),
-                                paint
-                            )
-                        }
-                    }
+                    .verticalScroll(rememberScrollState())
+                    .padding(innerpadding)
             ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
+                ) {
+                    Image(
+                        painter = painterResource(id = R.mipmap.fm02),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                Spacer(modifier = Modifier.heightIn(min = 60.dp, max = 220.dp))
                 Column(
                     modifier = Modifier
-                        .padding(20.dp)
+                        .offset(0.dp, 280.dp)
+                        .padding(horizontal = 10.dp)
                         .fillMaxWidth(),
-                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = title, style = feedDetailTitle, modifier = Modifier.fillMaxWidth())
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        text = content,
-                        style = feedDetailContent,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(text = date, style = feedDetailDate, modifier = Modifier.fillMaxWidth())
-                    Spacer(modifier = Modifier.height(26.dp))
-                    Row(
-                        modifier= Modifier.fillMaxWidth(),
-                        verticalAlignment= Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start
+                    Card(
+                        colors = CardColors(
+                            containerColor = Color.White,
+                            contentColor = AppColors.grey_dark,
+                            disabledContainerColor = Color.White,
+                            disabledContentColor = AppColors.grey_dark
+                        ),
+                        shape = roundShape,
+                        modifier = Modifier
+                            .fillMaxWidth(.9f)
+                            .drawBehind {
+                                this.drawIntoCanvas {
+                                    val paint = Paint()
+                                    val frameworkPaint = paint.asFrameworkPaint()
+                                    val spreadPixel = spread.toPx()
+                                    val leftPixel = (0f - spreadPixel) + offsetX.toPx()
+                                    val topPixel = (0f - spreadPixel) + offsetY.toPx()
+                                    val rightPixel = (this.size.width + spreadPixel)
+                                    val bottomPixel =
+                                        (this.size.height - 26f)//(this.size.height + spreadPixel)
+
+                                    if (blurRadius != 0.dp) {
+                                        frameworkPaint.maskFilter =
+                                            (BlurMaskFilter(
+                                                blurRadius.toPx(),
+                                                BlurMaskFilter.Blur.NORMAL
+                                            ))
+                                    }
+
+                                    frameworkPaint.color = color.toArgb()
+                                    it.drawRoundRect(
+                                        left = leftPixel,
+                                        top = topPixel,
+                                        right = rightPixel,
+                                        bottom = bottomPixel,
+                                        radiusX = borderRadius.toPx(),
+                                        radiusY = borderRadius.toPx(),
+                                        paint
+                                    )
+                                }
+                            }
                     ) {
-                        IconButton(onClick = { }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.outline_favorite_border_24),
-                                contentDescription = null
+                        Column(
+                            modifier = Modifier
+                                .padding(20.dp)
+                                .fillMaxWidth(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = title,
+                                style = feedDetailTitle,
+                                modifier = Modifier.fillMaxWidth()
                             )
-                        }
-                        Spacer(modifier = Modifier.width(3.dp))
-                        IconButton(onClick = { }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.outline_share_24),
-                                contentDescription = null
+                            Spacer(modifier = Modifier.height(24.dp))
+                            Text(
+                                text = content,
+                                style = feedDetailContent,
+                                modifier = Modifier.fillMaxWidth()
                             )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(
+                                text = date,
+                                style = feedDetailDate,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+                            Spacer(modifier = Modifier.height(26.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Start
+                            ) {
+                                IconButton(onClick = { }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.outline_favorite_border_24),
+                                        contentDescription = null
+                                    )
+                                }
+                                Spacer(modifier = Modifier.width(3.dp))
+                                IconButton(onClick = { }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.outline_share_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
                         }
+                    }
+                    Spacer(modifier = Modifier.height(50.dp))
+                    Text(
+                        text = "Benzer Haberler",
+                        style = TextStyle(
+                            fontFamily = poppinFamily,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = AppColors.primaryGrey
+                        ), modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    listofSectorNews.value.forEach { b ->
+                        ListItem(
+                            modifier = Modifier.clickable {
+                                navController.navigate("newslist/detail")
+                            },
+                            colors = ListItemColors(
+                                containerColor = Color.Transparent,
+                                headlineColor = AppColors.primaryGrey,
+                                leadingIconColor = Color.Transparent,
+                                overlineColor = Color.Transparent,
+                                supportingTextColor = AppColors.primaryGrey,
+                                trailingIconColor = AppColors.primaryGrey,
+                                disabledHeadlineColor = AppColors.primaryGrey,
+                                disabledLeadingIconColor = Color.Transparent,
+                                disabledTrailingIconColor = AppColors.primaryGrey,
+                            ),
+                            headlineContent = {
+                                Text(
+                                    b.title,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    style = homeSectorNewsTitle
+                                )
+                            },
+                            supportingContent = {
+                                Column(
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        b.content,
+                                        modifier = Modifier.fillMaxWidth(),
+                                        style = homeSectorNewsContent
+                                    )
+                                    Text(b.date, style = homeSectorNewsDate)
+                                }
+                            },
+                            leadingContent = {
+                                Box(
+                                    modifier = Modifier
+                                        .size(64.dp)
+                                        .clip(RoundedCornerShape(6.dp)),
+                                ) {
+                                    Image(
+                                        painter = painterResource(id = b.icon),
+                                        contentDescription = null,
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                            },
+                            trailingContent = {
+                                IconButton(onClick = {}) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.baseline_keyboard_arrow_right_24),
+                                        contentDescription = null,
+
+                                        )
+                                }
+                            }
+                        )
+                        HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
+                    }
+                    Spacer(modifier = Modifier.height(320.dp))
+                }
+            }
+            Box(modifier = Modifier
+                .offset(0.dp, 40.dp)
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth(),
+                contentAlignment = Alignment.TopCenter
+                ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    IconButton(
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = AppColors.primaryGrey,
+                            disabledContainerColor = Color.Transparent,
+                            disabledContentColor = AppColors.primaryGrey
+                        ),
+                        modifier = Modifier
+                            .background(Color.White.copy(.6f), RoundedCornerShape(4.dp)),
+                        onClick = { navController.navigate("newlist") }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.arrow_left),
+                            contentDescription = null
+                        )
+                    }
+                    IconButton(
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.Transparent,
+                            contentColor = AppColors.primaryGrey,
+                            disabledContainerColor = Color.Transparent,
+                            disabledContentColor = AppColors.primaryGrey
+                        ),
+                        modifier = Modifier
+                            .background(Color.White.copy(.6f), RoundedCornerShape(4.dp)),
+                        onClick = { navController.navigate("home") },
+                        ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_home_24),
+                            contentDescription = null
+                        )
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(50.dp))
-            Text(
-                text = "Benzer Haberler",
-                style = TextStyle(
-                    fontFamily = poppinFamily,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AppColors.primaryGrey
-                ), modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            listofSectorNews.value.forEach { b ->
-                ListItem(
-                    modifier = Modifier.clickable {
-                        navController.navigate("newslist/detail")
-                    },
-                    colors = ListItemColors(
-                        containerColor = Color.Transparent,
-                        headlineColor = AppColors.primaryGrey,
-                        leadingIconColor = Color.Transparent,
-                        overlineColor = Color.Transparent,
-                        supportingTextColor = AppColors.primaryGrey,
-                        trailingIconColor = AppColors.primaryGrey,
-                        disabledHeadlineColor = AppColors.primaryGrey,
-                        disabledLeadingIconColor = Color.Transparent,
-                        disabledTrailingIconColor = AppColors.primaryGrey,
-                    ),
-                    headlineContent = {
-                        Text(
-                            b.title,
-                            modifier = Modifier.fillMaxWidth(),
-                            style = homeSectorNewsTitle
-                        )
-                    },
-                    supportingContent = {
-                        Column(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text(
-                                b.content,
-                                modifier = Modifier.fillMaxWidth(),
-                                style = homeSectorNewsContent
-                            )
-                            Text(b.date, style = homeSectorNewsDate)
-                        }
-                    },
-                    leadingContent = {
-                        Box(
-                            modifier = Modifier
-                                .size(64.dp)
-                                .clip(RoundedCornerShape(6.dp)),
-                        ) {
-                            Image(
-                                painter = painterResource(id = b.icon),
-                                contentDescription = null,
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                    },
-                    trailingContent = {
-                        IconButton(onClick = {}) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.baseline_keyboard_arrow_right_24),
-                                contentDescription = null,
-
-                                )
-                        }
-                    }
-                )
-                HorizontalDivider(thickness = 1.dp, color = AppColors.primaryGreyDisabled)
-            }
-
         }
     }
 }
