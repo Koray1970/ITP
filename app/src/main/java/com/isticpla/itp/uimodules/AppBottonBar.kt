@@ -39,7 +39,7 @@ data class BottomBarMenuItem(
     val hasbadge: Boolean = false,
 )
 
-val defaultmenuItemState = mutableListOf<BottomBarMenuItem>(
+val defaultmenuItemState = mutableListOf(
     BottomBarMenuItem(BottomBarMenuItemType.HOME),
     BottomBarMenuItem(BottomBarMenuItemType.BOOKMARK),
     BottomBarMenuItem(BottomBarMenuItemType.NOTIFICATION, hasbadge = true),

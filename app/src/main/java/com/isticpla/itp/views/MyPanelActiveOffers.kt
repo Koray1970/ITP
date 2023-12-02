@@ -62,9 +62,7 @@ import com.isticpla.itp.views.helpers.TopBarActionItem
 fun MyPanelActiveOffers(
     navController: NavController,
 ) {
-    val roundcornerRectangel = RoundedCornerShape(10.dp)
-
-    val menuItemState = mutableListOf<BottomBarMenuItem>(
+    val menuItemState = mutableListOf(
         BottomBarMenuItem(BottomBarMenuItemType.HOME, true),
         BottomBarMenuItem(BottomBarMenuItemType.BOOKMARK),
         BottomBarMenuItem(BottomBarMenuItemType.NOTIFICATION, hasbadge = true),
@@ -147,7 +145,7 @@ fun MyPanelActiveOffers(
                     },
                     leadingContent = {
                         Image(
-                            painter = painterResource(id = o.image!!),
+                            painter = painterResource(id = o.image),
                             contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

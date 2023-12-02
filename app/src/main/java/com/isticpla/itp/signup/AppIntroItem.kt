@@ -1,4 +1,4 @@
-package com.isticpla.itp.splash
+package com.isticpla.itp.signup
 
 import android.content.Context
 import androidx.compose.foundation.Image
@@ -42,13 +42,13 @@ internal fun AppIntroItem(
         Spacer(modifier = Modifier.height(20.dp))
         Text(
             text = title,
-            style = defaultTextTitle(context = context),
+            style = defaultTextTitle,
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = content,
-            style = defaultText(context = context), textAlign = TextAlign.Center
+            style = defaultText, textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(20.dp))
 

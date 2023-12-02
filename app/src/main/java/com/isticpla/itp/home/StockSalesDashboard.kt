@@ -83,7 +83,6 @@ fun StockSalesDashboard(
     val lifecycleOwner= LocalLifecycleOwner.current
     val homeViewMode = hiltViewModel<HomeViewMode>()
     val accountViewModel = hiltViewModel<AccountViewModel>()
-    var sectorlist = remember { mutableListOf<BusinessTypeItem>() }
     var (selectedOption, onOptionSelected) = remember {
         mutableStateOf(
             BusinessTypeItem(
@@ -153,7 +152,6 @@ fun StockSalesDashboard(
                     .horizontalScroll(rememberScrollState())
             ) {
                 sectorList.value.forEach { b ->
-                    var toggleButtonState by remember { mutableStateOf(b.isSelected) }
                     val cColor = if ((b != selectedOption))
                         CardColors(
                             containerColor = AppColors.grey_133,
@@ -190,7 +188,7 @@ fun StockSalesDashboard(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Icon(
-                                painter = painterResource(id = b.icon!!),
+                                painter = painterResource(id = b.icon),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(28.dp)
@@ -198,7 +196,7 @@ fun StockSalesDashboard(
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = b.label!!.uppercase(Locale.ROOT),
+                                text = b.label.uppercase(Locale.ROOT),
                                 style = TextStyle(
                                     fontFamily = poppinFamily,
                                     fontSize = 11.sp,

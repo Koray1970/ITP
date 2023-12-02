@@ -105,7 +105,7 @@ fun OfferDetailTabRow(
                                 containerColor = AppColors.green_103,
                                 contentColor = Color.White
                             ) {
-                                val badgeNumber = item.badgeval!!.toString()
+                                val badgeNumber = item.badgeval.toString()
                                 Text(
                                     badgeNumber,
                                     modifier = Modifier.semantics {
@@ -306,7 +306,7 @@ internal fun OFMessages() {
         verticalArrangement = Arrangement.spacedBy(18.dp, Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        chatState.forEachIndexed { index, itm ->
+        chatState.forEachIndexed { _, itm ->
             when (itm.typeofperson) {
                 TypeOfPerson.ADMIN -> {
                     Column() {

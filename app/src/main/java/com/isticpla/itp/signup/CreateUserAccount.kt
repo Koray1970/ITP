@@ -68,14 +68,14 @@ fun CreateUserAccount(navController: NavController) {
 
     var nameValue = rememberSaveable { mutableStateOf("") }
     var nameError = remember { mutableStateOf(false) }
-    val nameMaxLength = 60
+    //val nameMaxLength = 60
     var lastNameValue = rememberSaveable { mutableStateOf("") }
     var lastNameError = remember { mutableStateOf(false) }
-    val lastNameMaxLength = 60
+    //val lastNameMaxLength = 60
 
     var emailValue = rememberSaveable { mutableStateOf("") }
     var emailError = remember { mutableStateOf(false) }
-    val emailMaxLength = 360
+    //val emailMaxLength = 360
 
     val birthdateValue = rememberSaveable { mutableStateOf("") }
     var birthdateError = remember { mutableStateOf(false) }
@@ -90,8 +90,8 @@ fun CreateUserAccount(navController: NavController) {
     var countryError = remember { mutableStateOf(false) }
 
     var referanceCodeValue = rememberSaveable { mutableStateOf("") }
-    var referanceCodeError = remember { mutableStateOf(false) }
-    val referanceCodeMaxLength = 16
+    /*var referanceCodeError = remember { mutableStateOf(false) }
+    val referanceCodeMaxLength = 16*/
 
     LaunchedEffect(Unit) {
         delay(400)

@@ -15,11 +15,7 @@ import androidx.compose.runtime.remember
 fun AppMediaGallery(
     showSheetState: MutableState<Boolean> = mutableStateOf(false)
 ) {
-
-    var fileList = remember { mutableStateListOf<InternalStoragePhoto>() }
-    LaunchedEffect(Unit) {
-
-    }
+    
     val sheetState = rememberModalBottomSheetState()
     if (showSheetState.value) {
         ModalBottomSheet(

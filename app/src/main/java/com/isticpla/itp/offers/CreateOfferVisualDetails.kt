@@ -272,7 +272,6 @@ fun CreateOfferVisualDetails(
             ) {
                 UseCamera(
                     radius = radius,
-                    offerViewModel,
                     showGalleryBottomSheet,
                     mutableStateOf(gallerySheetState)
                 )

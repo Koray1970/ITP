@@ -9,44 +9,32 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeightIn
-import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
-import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,7 +53,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.isticpla.itp.R
-import com.isticpla.itp.dummydata.SectorNewsItem
 import com.isticpla.itp.feed.feedDetailContent
 import com.isticpla.itp.feed.feedDetailDate
 import com.isticpla.itp.feed.feedDetailTitle
@@ -74,16 +61,15 @@ import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.Bg
 import com.isticpla.itp.uimodules.defaultmenuItemState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewsListDetail(
     navController: NavController,
     homeViewMode: HomeViewMode = hiltViewModel(),
 ) {
     val listofSectorNews =
-        homeViewMode.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
-    var title by remember { mutableStateOf("Türkiye - Çin Ticaret Köprüsü Başlıyor") }
-    var content by remember {
+        homeViewMode.sectorNewsList.collectAsState(initial = emptyList())
+    val title by remember { mutableStateOf("Türkiye - Çin Ticaret Köprüsü Başlıyor") }
+    val content by remember {
         mutableStateOf(
             "Ticaret Bakanlığından paylaşılan bir açıklama da, Pekin Büyükelçiliği Ticaret Müşavirliği tarafından Türkiye plastik üreticileri ile karşılıklı bir anlaşma imzalanmıştır.\n" +
                     "\n" +
@@ -92,9 +78,9 @@ fun NewsListDetail(
                     "Aynı zamanda tedarik süreçlerinin de kolaylaştırılması hedefi ile karşılıklı gümrük birliği benzeri bir anlaşma çalışmaları da başlatılmıştır."
         )
     }
-    var date by remember { mutableStateOf("27.04.2023") }
+    val date by remember { mutableStateOf("27.04.2023") }
 
-    var roundShape =
+    val roundShape =
         RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp, bottomStart = 0.dp, bottomEnd = 0.dp)
 
     val color: Color = AppColors.grey_dark.copy(.2f)

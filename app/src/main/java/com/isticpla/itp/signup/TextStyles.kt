@@ -1,7 +1,5 @@
 package com.isticpla.itp.signup
 
-import android.content.Context
-import androidx.compose.material3.CheckboxColors
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -14,10 +12,21 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import com.isticpla.itp.R
 import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 
+val defaultTextTitle = TextStyle(
+    fontFamily = poppinFamily,
+    fontWeight = FontWeight.Bold,
+    fontSize = 26.sp,
+    color = AppColors.primaryGrey//Color(context.getColor(R.color.grayprimary))
+)
+val defaultText = TextStyle(
+    fontFamily = poppinFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 16.sp,
+    color = AppColors.primaryGrey//Color(context.getColor(R.color.grayprimary))
+)
 val signupHeader = TextStyle(
     fontFamily = poppinFamily,
     fontStyle = FontStyle.Normal,

@@ -58,7 +58,6 @@ import kotlinx.coroutines.launch
 fun CreateOfferAsService(
     navController: NavController
 ) {
-    val gson = Gson()
     val scope = rememberCoroutineScope()
 
     val offerViewModel = hiltViewModel<OfferViewModel>()
@@ -97,7 +96,6 @@ fun CreateOfferAsService(
     val paymentTypeTxtValue = rememberSaveable { mutableStateOf("") }
 
     val contractedSupplierChecked = remember { mutableStateOf(false) }
-    val contractedSupplierCodeTxtValue = rememberSaveable { mutableStateOf("") }
     val contractedSupplierCodeValue = remember { mutableStateOf("") }
 
     val recieveOfferFromITPChecked = remember { mutableStateOf(false) }

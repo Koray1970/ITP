@@ -26,7 +26,7 @@ class MediaWorksEvents( private val context: Context) {
     suspend fun loadPhotosFromInternalStorage(): List<InternalStoragePhoto> {
         return withContext(Dispatchers.IO) {
             val files = context.filesDir.listFiles()
-            files.filter { it.canRead() && it.isFile && it.name.endsWith(".jpg") }?.map {
+            files?.filter { it.canRead() && it.isFile && it.name.endsWith(".jpg") }?.map {
                 val bytes = it.readBytes()
                 val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                 InternalStoragePhoto(it.name, bmp)

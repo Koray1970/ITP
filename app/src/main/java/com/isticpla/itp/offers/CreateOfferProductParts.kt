@@ -296,7 +296,6 @@ fun CreateOfferProductParts(
                 ) {
                     UseCamera(
                         radius = radius,
-                        offerViewModel,
                         showGalleryBottomSheet,
                         mutableStateOf(gallerySheetState)
                     )

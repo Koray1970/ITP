@@ -45,7 +45,7 @@ fun AppMediumTopBar(topBarItem: AppMediumTopBarItem) = @Composable {
             if (topBarItem.actions.isNotEmpty()) {
                 topBarItem.actions.forEach { t ->
                     if (t.url != null) {
-                        IconButton(onClick = t.url!!) {
+                        IconButton(onClick = t.url) {
                             Icon(
                                 painter = painterResource(id = t.icon),
                                 contentDescription = null, tint = t.tint

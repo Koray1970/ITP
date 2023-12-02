@@ -26,7 +26,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,15 +40,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,14 +55,8 @@ import com.isticpla.itp.R
 import com.isticpla.itp.database.Account
 import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.dummydata.BusinessTypeItem
-import com.isticpla.itp.dummydata.HomeCampaignItem
-import com.isticpla.itp.dummydata.HomeDesignItem
-import com.isticpla.itp.dummydata.SectorNewsItem
-import com.isticpla.itp.dummydata.ShopItem
 import com.isticpla.itp.uimodules.AppColors
-import com.isticpla.itp.uimodules.AppDropdown
 import com.isticpla.itp.uimodules.AppShopDropdown
-import com.isticpla.itp.uimodules.AppTextFieldDefaults
 import com.isticpla.itp.uimodules.Carousel
 import com.isticpla.itp.uimodules.CarouselPagerRequest
 import com.isticpla.itp.uimodules.CarouselRequest
@@ -77,16 +67,11 @@ import java.util.Locale
 @Composable
 fun HomeSectionHeader() {
     val homeViewModel = hiltViewModel<HomeViewMode>()
-    val configuration = LocalConfiguration.current
     val listofShops =
-        homeViewModel.shopList.collectAsState(initial = emptyList<ShopItem>())
+        homeViewModel.shopList.collectAsState(initial = emptyList())
 
-    val carouselImageWidth = configuration.screenWidthDp - 50
-    val shopselectedOptionText = rememberSaveable { mutableStateOf("") }
-    val shopselectedOptionKey = rememberSaveable { mutableStateOf("") }
-    val shopExpend = remember { mutableStateOf(false) }
 
-    val carouselListState = homeViewModel.carouselList.collectAsState(initial = emptyList<Int>())
+    val carouselListState = homeViewModel.carouselList.collectAsState(initial = emptyList())
     val carouselRequest = CarouselRequest(
         visuals = carouselListState.value,
         carouselmodifier = Modifier,
@@ -109,7 +94,6 @@ fun HomeSectionHeader() {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeSectionSectors(
     navController: NavController,
@@ -125,7 +109,7 @@ fun HomeSectionSectors(
     if (!account.value.sectors.isNullOrEmpty()) {
         account.value.sectors?.let {
             val cc = accountViewModel.getSectorList(it)
-                .collectAsStateWithLifecycle(initialValue = emptyList<BusinessTypeItem>())
+                .collectAsStateWithLifecycle(initialValue = emptyList())
             if (cc.value.isNotEmpty())
                 sectorList = cc.value.toMutableList()
         }
@@ -144,7 +128,7 @@ fun HomeSectionSectors(
             horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start)
         ) {
             sectorList.forEach { b ->
-                var isSectorSelected by remember { mutableStateOf(true) }
+                val isSectorSelected by remember { mutableStateOf(true) }
                 Card(
                     shape = RoundedCornerShape(8.dp),
                     modifier = Modifier
@@ -184,9 +168,9 @@ fun HomeSectionSectors(
                         verticalArrangement = Arrangement.Bottom,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(painter = painterResource(id = b.icon!!), contentDescription = null)
+                        Icon(painter = painterResource(id = b.icon), contentDescription = null)
                         Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = b.label!!.uppercase(Locale.ROOT), style = homeSectorLabel)
+                        Text(text = b.label.uppercase(Locale.ROOT), style = homeSectorLabel)
                         Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
@@ -195,15 +179,14 @@ fun HomeSectionSectors(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeSectionDesigns(
     navController: NavController
 ) {
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofDesigns =
-        homeViewModel.designsList.collectAsState(initial = emptyList<HomeDesignItem>())
-    Column() {
+        homeViewModel.designsList.collectAsState(initial = emptyList())
+    Column {
         Spacer(modifier = Modifier.height(40.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -257,15 +240,14 @@ fun HomeSectionDesigns(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeSectionCampaigns(
     navController: NavController
 ) {
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofCampaigns =
-        homeViewModel.campaignList.collectAsState(initial = emptyList<HomeCampaignItem>())
-    Column() {
+        homeViewModel.campaignList.collectAsState(initial = emptyList())
+    Column {
 
             Spacer(modifier = Modifier.height(40.dp))
             Row(
@@ -462,15 +444,14 @@ fun HomeSectionCampaigns(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeSectionInStockSales(
     navController: NavController,
 ) {
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofStockSales =
-        homeViewModel.stokSaleList.collectAsState(initial = emptyList<HomeDesignItem>())
-    Column() {
+        homeViewModel.stokSaleList.collectAsState(initial = emptyList())
+    Column {
         Spacer(modifier = Modifier.height(40.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -539,8 +520,8 @@ fun HomeSectionSectorNews(
 ) {
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val listofSectorNews =
-        homeViewModel.sectorNewsList.collectAsState(initial = emptyList<SectorNewsItem>())
-    Column() {
+        homeViewModel.sectorNewsList.collectAsState(initial = emptyList())
+    Column {
         Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),

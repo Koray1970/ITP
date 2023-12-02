@@ -34,6 +34,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val carouselList = flowOf<List<Int>>(listofCarousel)
 
     val employeePositions = flowOf<List<Pair<String, String>>>(listofEmployeePosition)
+    @OptIn(ExperimentalCoroutinesApi::class)
     fun getEmployeePositionResul(id: String) =
         employeePositions.mapLatest { i -> i.filter { it.first == id } }
 
@@ -104,7 +105,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     }.flowOn(Dispatchers.IO)
 
     fun updateSectorButtonIsEnabled(id: Int): Boolean {
-        return listofBusiness.first { i -> i.id == id }.isSelected!!.value
+        return listofBusiness.first { i -> i.id == id }.isSelected.value
     }
 
     fun UpdateSectorListSelection(id: Int) = viewModelScope.launch {

@@ -8,12 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -21,8 +18,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.InputChip
 import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.Text
@@ -31,16 +26,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
@@ -51,7 +42,6 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter.State.Empty.painter
 import com.isticpla.itp.R
 import com.isticpla.itp.poppinFamily
 
@@ -59,22 +49,21 @@ import com.isticpla.itp.poppinFamily
 @Composable
 fun AppTextFilterComponent(
     cardmodifier: Modifier = Modifier,
-    listOfChip: SnapshotStateList<String> = mutableStateListOf<String>()
+    listOfChip: SnapshotStateList<String> = mutableStateListOf()
 ) {
     var aTextFieldState by remember { mutableStateOf(false) }
-    var txtInitialValue = remember { mutableStateOf("") }
+    val txtInitialValue = remember { mutableStateOf("") }
     //var listOfChip = remember { mutableStateListOf<String>() }
     val textMeasurer = rememberTextMeasurer()
     val textLayoutResult: TextLayoutResult =
         textMeasurer.measure(text = AnnotatedString("Kelime Giriniz"))
-    val textSize = textLayoutResult.size
     Card(
         modifier = cardmodifier.then(Modifier
             .clickable {
-                if (listOfChip.size <= 3)
-                    aTextFieldState = !aTextFieldState
+                aTextFieldState = if (listOfChip.size <= 3)
+                    !aTextFieldState
                 else
-                    aTextFieldState = false
+                    false
             }
             .drawBehind {
                 drawText(
@@ -99,7 +88,7 @@ fun AppTextFilterComponent(
                     .background(AppColors.primaryGreyDisabled)
                     .fillMaxWidth()
             ) {
-                Row() {
+                Row {
                     AppTextField(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -142,7 +131,7 @@ fun AppTextFilterComponent(
             maxItemsInEachRow = 3,
             horizontalArrangement = Arrangement.spacedBy(5.dp, Alignment.Start)
         ) {
-            if (!listOfChip.isNullOrEmpty()) {
+            if (!listOfChip.isEmpty()) {
                 listOfChip.forEach { c ->
                     var enabled by remember { mutableStateOf(true) }
                     InputChip(

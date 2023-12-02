@@ -1,14 +1,11 @@
 package com.isticpla.itp.uimodules
 
 import android.Manifest.permission.CAMERA
-import android.content.ContentResolver
 import android.content.ContentValues
 import android.content.Context
-import android.content.Context.MODE_PRIVATE
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
-import android.icu.text.SimpleDateFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -21,8 +18,6 @@ import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.ImageProxy
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.CameraController
 import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
@@ -30,7 +25,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,7 +39,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Button
@@ -56,14 +49,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -87,13 +77,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getString
-import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
-import com.isticpla.itp.BuildConfig
 import com.isticpla.itp.R
 import com.isticpla.itp.poppinFamily
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -104,15 +90,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
 import java.io.OutputStream
-import java.util.Date
-import java.util.Locale
-import java.util.Objects
-import java.util.concurrent.Executor
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 @Composable
 fun CameraPreview(
@@ -164,7 +143,7 @@ fun PhotoBottomSheetContent(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
+@OptIn( ExperimentalMaterial3Api::class)
 @Composable
 fun AppMediaUploader() {
     val context = LocalContext.current.applicationContext
@@ -172,7 +151,7 @@ fun AppMediaUploader() {
     //val cameraViewModel = viewModel<CameraViewModel>()
     val cameraViewModel = hiltViewModel<CameraViewModel>()
 
-    var cameraViewerState = rememberBottomSheetScaffoldState()
+    val cameraViewerState = rememberBottomSheetScaffoldState()
     val bitmaps by cameraViewModel.bitmaps.collectAsState()
     val controller = remember {
         LifecycleCameraController(context).apply {
@@ -186,12 +165,12 @@ fun AppMediaUploader() {
     /*if (controller.cameraSelector == CameraSelector.DEFAULT_BACK_CAMERA) {
             CameraSelector.DEFAULT_FRONT_CAMERA
         } else CameraSelector.DEFAULT_BACK_CAMERA*/
-    var capturedImageUri = remember { mutableStateListOf<Uri?>(null) }
+    val capturedImageUri = remember { mutableStateListOf<Uri?>(null) }
 
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetMultipleContents()) {
-            it.forEach {
-                capturedImageUri.add(it)
+            it.forEach {c->
+                capturedImageUri.add(c)
             }
         }
 
@@ -310,7 +289,7 @@ fun AppMediaUploader() {
                     Image(
                         modifier = Modifier
                             .size(70.dp),
-                        painter = rememberAsyncImagePainter(capturedImageUri.get(index)),
+                        painter = rememberAsyncImagePainter(capturedImageUri[index]),
                         contentDescription = null
                     )
                 }
@@ -445,7 +424,7 @@ private fun takePhoto(
 /**Save Bitmap To Gallery
  * @param bitmap The bitmap to be saved in Storage/Gallery*/
 private fun saveBitmapImage(context:Context,bitmap: Bitmap) {
-    val TAG="saveBitmapImage"
+    val tAG="saveBitmapImage"
     val timestamp = System.currentTimeMillis()
 
     //Tell the media scanner about the new file so that it is immediately available to the user.
@@ -466,7 +445,7 @@ private fun saveBitmapImage(context:Context,bitmap: Bitmap) {
                         bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                         outputStream.close()
                     } catch (e: Exception) {
-                        Log.e(TAG, "saveBitmapImage: ", e)
+                        Log.e(tAG, "saveBitmapImage: ", e)
                     }
                 }
                 values.put(MediaStore.Images.Media.IS_PENDING, false)
@@ -474,7 +453,7 @@ private fun saveBitmapImage(context:Context,bitmap: Bitmap) {
 
                 Toast.makeText(context, "Saved...", Toast.LENGTH_SHORT).show()
             } catch (e: Exception) {
-                Log.e(TAG, "saveBitmapImage: ", e)
+                Log.e(tAG, "saveBitmapImage: ", e)
             }
         }
     } else {
@@ -490,14 +469,14 @@ private fun saveBitmapImage(context:Context,bitmap: Bitmap) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
                 outputStream.close()
             } catch (e: Exception) {
-                Log.e(TAG, "saveBitmapImage: ", e)
+                Log.e(tAG, "saveBitmapImage: ", e)
             }
             values.put(MediaStore.Images.Media.DATA, imageFile.absolutePath)
             contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
 
             Toast.makeText(context, "Saved...", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
-            Log.e(TAG, "saveBitmapImage: ", e)
+            Log.e(tAG, "saveBitmapImage: ", e)
         }
     }
 }

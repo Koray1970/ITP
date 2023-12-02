@@ -1,7 +1,5 @@
 package com.isticpla.itp.offers
 
-import android.util.Log
-import android.view.KeyEvent.ACTION_UP
 import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.BorderStroke
@@ -12,7 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -27,7 +24,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
@@ -52,7 +48,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -62,9 +57,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -79,8 +71,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
-import com.isticpla.itp.dummydata.ExpendedMenuViewModel
-import com.isticpla.itp.dummydata.ProductFeatureItem
 import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.offerdetails.AdditionalProductDetails
 import com.isticpla.itp.offerdetails.OfferViewModel
@@ -88,11 +78,9 @@ import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppDefaultStyleText
 import com.isticpla.itp.uimodules.AppTextField
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.UUID
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateOfferProductDetails(
     navController: NavController
@@ -101,21 +89,19 @@ fun CreateOfferProductDetails(
     val scope = rememberCoroutineScope()
     val homeViewMode = hiltViewModel<HomeViewMode>()
     val offerViewModel = hiltViewModel<OfferViewModel>()
-    val expendedMenuViewModel = hiltViewModel<ExpendedMenuViewModel>()
 
     val txtPNameValue = rememberSaveable { mutableStateOf("") }
     val txtPNameError = rememberSaveable { mutableStateOf(false) }
     val txtComment = rememberSaveable { mutableStateOf("") }
     val listOfPrdFeaturesState =
-        homeViewMode.productDRPItems.collectAsState(initial = emptyList<ProductFeatureItem>())
+        homeViewMode.productDRPItems.collectAsState(initial = emptyList())
 
     val pageSheetState = rememberModalBottomSheetState()
     val additionalFeatures =
-        offerViewModel.additionalProductDetails.collectAsStateWithLifecycle(initialValue = mutableStateListOf<AdditionalProductDetails>())
+        offerViewModel.additionalProductDetails.collectAsStateWithLifecycle(initialValue = mutableStateListOf())
 
     var pageShowBottomSheet by remember { mutableStateOf(false) }
 
-    val formState = remember { mutableStateMapOf<String, String>() }
     BottomSheetScaffold(
         containerColor = Color.White,
         sheetPeekHeight = 0.dp,
@@ -277,7 +263,6 @@ fun CreateOfferProductDetails(
                     //region product features
                     if (additionalFeatures.value.isNotEmpty()) {
                         additionalFeatures.value.forEach { i ->
-                            val uuid = UUID.randomUUID().toString()
                             val dismissFormState = rememberDismissState(
                                 confirmValueChange = {
                                     if (it == DismissValue.DismissedToStart) {
@@ -357,9 +342,7 @@ fun CreateOfferProductDetails(
                                 )
                             }
                         }
-                        Column(
-
-                        ) {
+                        Column {
                             ProductParts(
                                 headline = "Efsane Hamburger",
                                 subheadline = "Bu hamburgeri orta pişmiş ve zeytin ezmesi sosu ile denemlisiniz.",
@@ -485,10 +468,14 @@ fun ProductParts(
     headline: String,
     subheadline: String,
     image: Int,
-    uri: () -> Unit = { }
+    uri: (() -> Unit)? = null
 ) = ListItem(
     modifier = Modifier
-        .clickable { uri }
+        .clickable {
+            if (uri != null) {
+                uri()
+            }
+        }
         .clip(RoundedCornerShape(4.dp)),
     colors = ListItemDefaults.colors(
         containerColor = AppColors.gray_FFEEF1F4,

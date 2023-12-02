@@ -1,4 +1,4 @@
-package com.isticpla.itp.splash
+package com.isticpla.itp.signup
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,7 +40,6 @@ import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.dummydata.AppCultureDataModel
 import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.poppinFamily
-import com.isticpla.itp.signup.signupSubmitButton
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppCultureDropdown
 import com.isticpla.itp.uimodules.AppTextFieldDefaults

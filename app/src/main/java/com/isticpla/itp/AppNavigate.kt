@@ -14,7 +14,6 @@ import com.isticpla.itp.offerdetails.*
 import com.isticpla.itp.offers.*
 import com.isticpla.itp.profile.*
 import com.isticpla.itp.signup.*
-import com.isticpla.itp.splash.*
 import com.isticpla.itp.views.*
 
 @SuppressLint("NewApi")
@@ -23,7 +22,7 @@ import com.isticpla.itp.views.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.NewsListDetail.route) {
+    NavHost(navController = navController, startDestination = Screen.CreateOfferRequestDetails.route) {
         /*composable("splash") { Splash(navController) }*/
         composable(Screen.StartSelectCulture.route) { StartSelectCulture(navController) }
         composable(Screen.AppIntro.route) { AppIntro(navController) }

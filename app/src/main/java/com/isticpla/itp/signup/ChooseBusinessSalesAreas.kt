@@ -73,13 +73,10 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
     val homeViewModel = hiltViewModel<HomeViewMode>()
     val accountViewModel = hiltViewModel<AccountViewModel>()
 
-    var listofSector = remember { mutableStateListOf<BusinessTypeItem>() }
+
     val getSectorList =
         homeViewModel.sectorList.collectAsStateWithLifecycle(initialValue = mutableListOf<BusinessTypeItem>())
-    LaunchedEffect(Unit) {
-        delay(300)
-        listofSector = getSectorList.value.toMutableStateList()
-    }
+
 
     var selectedBusinessTypes = remember { mutableStateListOf<BusinessTypeItem>() }
 
@@ -175,14 +172,14 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Icon(
-                                    painter = painterResource(id = b.icon!!),
+                                    painter = painterResource(id = b.icon),
                                     contentDescription = null,
                                     tint = AppColors.primaryGrey
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
                                     text = buildAnnotatedString {
-                                        append(b.label!!)
+                                        append(b.label)
                                     }, style = TextStyle(
                                         fontFamily = poppinFamily,
                                         fontSize = 12.sp,
@@ -235,12 +232,12 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Icon(
-                                    painter = painterResource(id = b.icon!!),
+                                    painter = painterResource(id = b.icon),
                                     contentDescription = null,
                                 )
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Text(
-                                    text = b.label!!, style = TextStyle(
+                                    text = b.label, style = TextStyle(
                                         fontFamily = poppinFamily,
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight.Bold,
