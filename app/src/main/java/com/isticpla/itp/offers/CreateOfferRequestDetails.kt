@@ -43,6 +43,7 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppDefaultStyleText
 import com.isticpla.itp.uimodules.AppDropdown
+import com.isticpla.itp.uimodules.AppSupplierDropdown
 import com.isticpla.itp.uimodules.AppSwitch
 import com.isticpla.itp.uimodules.AppTextField
 import com.isticpla.itp.uimodules.AppTextFieldDefaults
@@ -60,7 +61,8 @@ fun CreateOfferRequestDetails(
 
     val buyerExpendedState = remember { mutableStateOf(false) }
     val buyerError = remember { mutableStateOf(false) }
-    val buyers by homeViewModel.shopListAsPairs().collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    val buyers by homeViewModel.shopListAsPairs()
+        .collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
     val buyerTxtValue = rememberSaveable { mutableStateOf("") }
 
     val deliveryExpendedState = remember { mutableStateOf(false) }
@@ -70,7 +72,8 @@ fun CreateOfferRequestDetails(
 
     val placeOfDeliveryExpendedState = remember { mutableStateOf(false) }
     val placeOfDeliveryError = remember { mutableStateOf(false) }
-    val placeOfDelivery by homeViewModel.shopListAsPairs().collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
+    val placeOfDelivery by homeViewModel.shopListAsPairs()
+        .collectAsStateWithLifecycle(initialValue = listOf<Pair<Int, String>>())
     val placeOfDeliveryTxtValue = rememberSaveable { mutableStateOf("") }
 
     val paymentTypeExpendedState = remember { mutableStateOf(false) }
@@ -185,13 +188,19 @@ fun CreateOfferRequestDetails(
                 )
                 AppSwitch(contractedSupplierChecked)
             }
-            AppTextField(
+            AppSupplierDropdown(
+                label = { AppDefaultStyleText("Tedarikçi Kodu") },
+                txtvalue = contractedSupplierCodeValue,
+                enabled = contractedSupplierChecked,
+                modifier = Modifier.fillMaxWidth()
+            )
+            /*AppTextField(
                 modifier = Modifier.fillMaxWidth(),
                 txtvalue = contractedSupplierCodeValue,
                 singleLine = true,
                 enabled = contractedSupplierChecked,
                 label = { AppDefaultStyleText("Tedarikçi Kodu") },
-            )
+            )*/
 
             Spacer(modifier = Modifier.height(60.dp))
             Column() {

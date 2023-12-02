@@ -89,7 +89,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val panelDrafts = flowOf<List<PanelOfferDraftItem>>(listofPanelOfferDraft)
     val panelCompletedOffers = flowOf<List<PanelOfferCompletedItem>>(listofPanelOfferCompleted)
 
-
+    val appIntroList= flowOf<List<AppIntroDataModel>>(AppIntroData)
     fun mystores(isfiltered: Boolean) = flow<List<MyStoreItem>> {
         if (isfiltered)
             this.emit(listofMyStore.filter { a -> a.isactive })

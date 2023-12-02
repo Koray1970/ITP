@@ -16,6 +16,8 @@ import com.isticpla.itp.dummydata.ProductFeatureItem
 import com.isticpla.itp.dummydata.ServiceContentType
 import com.isticpla.itp.dummydata.listOfServiceContentType
 import com.isticpla.itp.dummydata.listOfServiceType
+import com.isticpla.itp.dummydata.listofMyStore
+import com.isticpla.itp.dummydata.listofShops
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -100,6 +102,13 @@ class OfferViewModel @Inject constructor(@ApplicationContext private val context
         }
     }
 
+    val getSupplierList = flow<List<String>> {
+        val list = mutableListOf<String>()
+        listofMyStore.forEach { s ->
+            list.add(s.title)
+        }
+        emit(list.toList())
+    }
 
     /*val serviceContentDB = flowOf<List<ServiceContentType>>(listOfServiceContentType)
     private var _serviceContentList = mutableStateListOf<Pair<String, String>>()

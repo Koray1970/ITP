@@ -26,6 +26,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,11 +38,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.Screen
 import com.isticpla.itp.dummydata.AppIntroData
 import com.isticpla.itp.helpers.GetScreenSize
+import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppProgress
 import kotlinx.coroutines.delay
@@ -50,29 +54,31 @@ import kotlinx.coroutines.launch
 @Composable
 fun AppIntro(navController: NavController) {
     val context = LocalContext.current.applicationContext
+    val homeviewmodel = hiltViewModel<HomeViewMode>()
     val progressState = remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     val screenSize = GetScreenSize()
-    val listofIntro = AppIntroData()
-    val pagerState = rememberPagerState(pageCount = { listofIntro.size })
+    val listofIntro = homeviewmodel.appIntroList.collectAsState(initial = emptyList())
+    val sizeofAppIntro by remember{ mutableStateOf(listofIntro.value.size) }
+    val pagerState = rememberPagerState(pageCount = { sizeofAppIntro })
 
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
             .padding(0.dp)
             .background(Color.White),
-       /* floatingActionButton = {
-            FloatingActionButton(onClick = { navController.navigate("signup") }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_skip_next_24),
-                    contentDescription = null
-                )
-            }
-        },
-        floatingActionButtonPosition = FabPosition.EndOverlay*/
+        /* floatingActionButton = {
+             FloatingActionButton(onClick = { navController.navigate("signup") }) {
+                 Icon(
+                     painter = painterResource(id = R.drawable.baseline_skip_next_24),
+                     contentDescription = null
+                 )
+             }
+         },
+         floatingActionButtonPosition = FabPosition.EndOverlay*/
     ) { innerpadding ->
         SideEffect {
-            progressState.value=false
+            progressState.value = false
         }
         Box() {
             Column(
@@ -83,7 +89,7 @@ fun AppIntro(navController: NavController) {
                 HorizontalPager(
                     state = pagerState,
                 ) { ix ->
-                    val appIntro = listofIntro[ix]
+                    val appIntro = listofIntro.value[ix]
                     AppIntroItem(
                         context,
                         appIntro.img,
@@ -102,11 +108,11 @@ fun AppIntro(navController: NavController) {
                     var wsize = 20.dp
                     var hsize = 20.dp
                     var _shape = CircleShape
-                    var color =AppColors.greyLight
-                    repeat(listofIntro.size) { iteration ->
+                    var color = AppColors.greyLight
+                    repeat(sizeofAppIntro) { iteration ->
 
                         if (pagerState.currentPage == iteration) {
-                            color =AppColors.blue_104
+                            color = AppColors.blue_104
                             _shape = RoundedCornerShape(24.dp)
                             wsize = 44.dp
                         } else {
@@ -165,13 +171,12 @@ fun AppIntro(navController: NavController) {
                 Button(
                     onClick = {
                         scope.launch {
-                            if (pagerState.currentPage <= listofIntro.size)
-                                if (pagerState.currentPage == listofIntro.size-1) {
-                                    progressState.value=true
+                            if (pagerState.currentPage <= sizeofAppIntro)
+                                if (pagerState.currentPage == sizeofAppIntro - 1) {
+                                    progressState.value = true
                                     delay(300L)
                                     navController.navigate(Screen.SignUp.route)
-                                }
-                                else
+                                } else
                                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                     },

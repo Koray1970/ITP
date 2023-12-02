@@ -21,45 +21,33 @@ val listOfAppCulture = listOf<AppCultureDataModel>(
 
 data class AppIntroDataModel(val img: Int, val title: String, val content: String)
 
-fun AppIntroData(): ArrayList<AppIntroDataModel> {
-    var listofAppIntroData = arrayListOf<AppIntroDataModel>()
-    listofAppIntroData.add(
-        AppIntroDataModel(
-            R.drawable.symb_derinurunanalizi,
-            "Derin Ürün Analizi",
-            "Ürünlerin kapsamlı bir şekilde incelenmesini sağlayan bir analiz hizmetidir. Bu analiz, ürünün özellikleri, rekabet avantajları, müşteri talepleri ve pazar potansiyeli gibi faktörleri ayrıntılı olarak değerlendirir."
-        )
+val AppIntroData = listOf<AppIntroDataModel>(
+    AppIntroDataModel(
+        R.drawable.symb_derinurunanalizi,
+        "Derin Ürün Analizi",
+        "Ürünlerin kapsamlı bir şekilde incelenmesini sağlayan bir analiz hizmetidir. Bu analiz, ürünün özellikleri, rekabet avantajları, müşteri talepleri ve pazar potansiyeli gibi faktörleri ayrıntılı olarak değerlendirir."
+    ),
+    AppIntroDataModel(
+        R.drawable.symb_coklutaslakyontemi,
+        "Çoklu Taslak Yönetimi",
+        "Ürün araştırma sürecinde birden fazla taslağı etkili bir şekilde yönetme imkanı sunar ve araştırmalarınızı silmek zorunda kalmazsınız."
+    ),
+    AppIntroDataModel(
+        R.drawable.symb_urunteklifvetedarik,
+        "Ürün Teklif ve Tedarik",
+        "Tedarik ihtiyaçlarınızın üreticiler arasında araştırılması, size fiyat teklifleri sunulması ve ardından üretilip mağazanıza teslim edilmesi süreçlerini içerir."
+    ),
+    AppIntroDataModel(
+        R.drawable.symb_coklumagazayonetimi,
+        "Çoklu Mağaza Yönetimi",
+        "Sahip olduğunuz diğer mağazalarınız için ürün tedariklerini ayrı ayrı yönetme imkanı sunar. Mağaza değişikliği yaparak, uygulama içeriğini mağazanıza özgün hale getirebilirsiniz."
+    ),
+    AppIntroDataModel(
+        R.drawable.symb_ekhizmetler,
+        "Ek Hizmetler",
+        "Web tasarım, SEO, sosyal medya yönetimi, içerik üretimi, dijital reklam, e-posta pazarlama, analiz ve raporlama gibi çeşitli dijital pazarlama hizmetleri sunar."
     )
-    listofAppIntroData.add(
-        AppIntroDataModel(
-            R.drawable.symb_coklutaslakyontemi,
-            "Çoklu Taslak Yönetimi",
-            "Ürün araştırma sürecinde birden fazla taslağı etkili bir şekilde yönetme imkanı sunar ve araştırmalarınızı silmek zorunda kalmazsınız."
-        )
-    )
-    listofAppIntroData.add(
-        AppIntroDataModel(
-            R.drawable.symb_urunteklifvetedarik,
-            "Ürün Teklif ve Tedarik",
-            "Tedarik ihtiyaçlarınızın üreticiler arasında araştırılması, size fiyat teklifleri sunulması ve ardından üretilip mağazanıza teslim edilmesi süreçlerini içerir."
-        )
-    )
-    listofAppIntroData.add(
-        AppIntroDataModel(
-            R.drawable.symb_coklumagazayonetimi,
-            "Çoklu Mağaza Yönetimi",
-            "Sahip olduğunuz diğer mağazalarınız için ürün tedariklerini ayrı ayrı yönetme imkanı sunar. Mağaza değişikliği yaparak, uygulama içeriğini mağazanıza özgün hale getirebilirsiniz."
-        )
-    )
-    listofAppIntroData.add(
-        AppIntroDataModel(
-            R.drawable.symb_ekhizmetler,
-            "Ek Hizmetler",
-            "Web tasarım, SEO, sosyal medya yönetimi, içerik üretimi, dijital reklam, e-posta pazarlama, analiz ve raporlama gibi çeşitli dijital pazarlama hizmetleri sunar."
-        )
-    )
-    return listofAppIntroData
-}
+)
 
 val listofAraeCodes =
     listOf<Pair<String, String>>(
@@ -566,7 +554,7 @@ val listofMyStore = listOf<MyStoreItem>(
     MyStoreItem(
         id = 2,
         image = R.mipmap.profilephoto,
-        title = "Indonesian chicken burger company",
+        title = "Kaufingertor Passage",
         address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
         content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
         webaddress = "www.itpturkey.com",
@@ -576,7 +564,29 @@ val listofMyStore = listOf<MyStoreItem>(
     MyStoreItem(
         id = 3,
         image = R.mipmap.profilephoto,
-        title = "Indonesian chicken burger company",
+        title = "Olympia Shopping Mall",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
+    ),
+
+    MyStoreItem(
+        id = 4,
+        image = R.mipmap.profilephoto,
+        title = "Neuhauserstrasse",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
+        isactive = false
+    ),
+    MyStoreItem(
+        id = 5,
+        image = R.mipmap.profilephoto,
+        title = "Heatinerstrasse",
         address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
         content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
         webaddress = "www.itpturkey.com",
@@ -584,15 +594,34 @@ val listofMyStore = listOf<MyStoreItem>(
         taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
     ),
     MyStoreItem(
-        id = 4,
+        id = 6,
         image = R.mipmap.profilephoto,
-        title = "Indonesian chicken burger company",
+        title = "Reim Arcaden",
         address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
         content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
         webaddress = "www.itpturkey.com",
         email = "info@itpturkey.com",
         taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
-        isactive = false
+    ),
+    MyStoreItem(
+        id = 7,
+        image = R.mipmap.profilephoto,
+        title = "CityQuartier Fünf Höfe",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
+    ),
+    MyStoreItem(
+        id = 8,
+        image = R.mipmap.profilephoto,
+        title = "Hofstatt",
+        address = "Bostancı mah. nur sokak, no 44, daire 3, Kadıköy, İstanbul, Türkiye",
+        content = "<b>6856897584</b> Vergi Numarası\n<b>Brandenburg</b> Vergi Dairesi",
+        webaddress = "www.itpturkey.com",
+        email = "info@itpturkey.com",
+        taglist = listOf<String>("Ahşap", "Cam", "Plastik"),
     ),
 )
 
