@@ -15,6 +15,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.foundation.layout.requiredHeightIn
@@ -32,15 +34,20 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -48,6 +55,7 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -66,10 +74,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -110,7 +121,8 @@ fun CreateOfferVisualDetails(
     val scope = rememberCoroutineScope()
     val showGalleryBottomSheet = remember { mutableStateOf(false) }
     var gallerySheetState = rememberModalBottomSheetState()
-    val selectedfilelist=offerViewModel.getSelectedMediaFiles.collectAsStateWithLifecycle(initialValue = emptyList<Uri>().toMutableStateList())
+    val selectedfilelist =
+        offerViewModel.getSelectedMediaFiles.collectAsStateWithLifecycle(initialValue = emptyList<Uri>().toMutableStateList())
 
     val pickMedia =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -127,7 +139,10 @@ fun CreateOfferVisualDetails(
     val imagelist =
         offerViewModel.getFileFromLocalDir.collectAsStateWithLifecycle(initialValue = emptyList<String>().toMutableStateList())
 
-    val txtProdLinkValue = remember{ mutableStateOf("") }
+    val txtProdLinkValue = remember { mutableStateOf("") }
+
+    var openImageDialog = remember { mutableStateOf(false) }
+    var selectedUri = remember { mutableStateOf(Uri.EMPTY) }
     BottomSheetScaffold(
         containerColor = Color.White,
         topBar = {
@@ -252,21 +267,33 @@ fun CreateOfferVisualDetails(
             ProposalWizardStage(0, "Görsel Detaylar")
             Spacer(modifier = Modifier.height(20.dp))
             Row(
-                modifier=Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                Text(text = "Fotoğraf & Video", style = offerProductDetailFormSectionTitle,modifier=Modifier.weight(1f))
+                Text(
+                    text = "Fotoğraf & Video",
+                    style = offerProductDetailFormSectionTitle,
+                    modifier = Modifier.weight(1f)
+                )
                 TextButton(
                     onClick = { },
-                    colors=ButtonDefaults.textButtonColors( contentColor = AppColors.red_0xffe23e3e)) {
-                    Text(text="Yardım", style= offerHelpButtonLabel,modifier=Modifier.padding(end=10.dp))
-                    Icon(painter= painterResource(id = R.drawable.arrow_right), contentDescription = null)
+                    colors = ButtonDefaults.textButtonColors(contentColor = AppColors.red_0xffe23e3e)
+                ) {
+                    Text(
+                        text = "Yardım",
+                        style = offerHelpButtonLabel,
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_right),
+                        contentDescription = null
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
             Row(
-                modifier=Modifier.padding(bottom = 10.dp),
+                modifier = Modifier.padding(bottom = 10.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start)
             ) {
@@ -284,6 +311,7 @@ fun CreateOfferVisualDetails(
                             gallerySheetState.show()
                         }
                     },
+                    modifier = Modifier.size(140.dp, 48.dp),
                     shape = RoundedCornerShape(radius),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = AppColors.blue_0xFF0495f1, contentColor = Color.White
@@ -297,46 +325,93 @@ fun CreateOfferVisualDetails(
                 }
             }
             FlowRow(
-                modifier=Modifier
+                modifier = Modifier
                     .drawBehind {
-                        val stroke = Stroke(width = 2f,
-                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f))
+                        val stroke = Stroke(
+                            width = 2f,
+                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f)
+                        )
                         drawRoundRect(
-                            size= Size(size.width,size.height),
+                            size = Size(size.width, size.height),
                             color = AppColors.blue_0xFF0495f1,
                             style = stroke,
-                            cornerRadius = CornerRadius(10f,10f))
+                            cornerRadius = CornerRadius(10f, 10f)
+                        )
                     }
                     .fillMaxWidth()
-                    .requiredHeightIn(min=90.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp,Alignment.Top),
-                horizontalArrangement = Arrangement.spacedBy(10.dp,Alignment.Start)
+                    .requiredHeightIn(min = 90.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp, Alignment.Top),
+                horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.Start)
             ) {
-                selectedfilelist.value.forEach {uri->
-                    AsyncImage(
+                selectedfilelist.value.forEach { uri ->
+                    OutlinedCard(
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.White,
+                        ),
+                        border = BorderStroke(2.dp, AppColors.greyLight),
                         modifier = Modifier
-                            .size(90.dp),
-                        model = "$uri",
-                        contentDescription = null,
-                        contentScale = ContentScale.Fit
-                    )
+                        //.size(width = 240.dp, height = 100.dp)
+                    ) {
+                        Box(
+                        ) {
+                            Box() {
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .size(130.dp),
+                                    model = "$uri",
+                                    contentDescription = null,
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                            Box(
+                                modifier = Modifier.offset(86.dp, -5.dp)
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        scope.launch {
+                                            selectedUri.value = uri
+                                            openImageDialog.value = true
+                                        }
+                                    },
+                                    colors = IconButtonDefaults.iconButtonColors(
+                                        contentColor = AppColors.red_0xffe23e3e
+                                    )
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.round_clear_24),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+
+                        }
+                    }
+
                 }
             }
             Spacer(modifier = Modifier.height(60.dp))
             Row(
-                modifier=Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(text = buildAnnotatedString {
                     append("Ürün Linki ")
-                    withStyle(style=offerProductDetailFormSectionSubtitle){append("(Opsiyonel)")}
-                } , style = offerProductDetailFormSectionTitle,modifier=Modifier.weight(1f))
+                    withStyle(style = offerProductDetailFormSectionSubtitle) { append("(Opsiyonel)") }
+                }, style = offerProductDetailFormSectionTitle, modifier = Modifier.weight(1f))
                 TextButton(
                     onClick = { },
-                    colors=ButtonDefaults.textButtonColors( contentColor = AppColors.red_0xffe23e3e)) {
-                    Text(text="Yardım", style= offerHelpButtonLabel,modifier=Modifier.padding(end=10.dp))
-                    Icon(painter= painterResource(id = R.drawable.arrow_right), contentDescription = null)
+                    colors = ButtonDefaults.textButtonColors(contentColor = AppColors.red_0xffe23e3e)
+                ) {
+                    Text(
+                        text = "Yardım",
+                        style = offerHelpButtonLabel,
+                        modifier = Modifier.padding(end = 10.dp)
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.arrow_right),
+                        contentDescription = null
+                    )
                 }
             }
             AppTextField(
@@ -366,7 +441,78 @@ fun CreateOfferVisualDetails(
                     tint = Color.White
                 )
             }
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(90.dp))
+        }
+    }
+    if (openImageDialog.value) {
+        BasicAlertDialog(
+            modifier=Modifier.fillMaxSize(),
+            properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
+            onDismissRequest = {
+                selectedUri.value = Uri.EMPTY
+                openImageDialog.value = false
+            }
+        ) {
+            Surface(
+                modifier = Modifier
+                    .fillMaxSize()
+
+            ) {
+                //selectedUri.value
+                Column(
+                    modifier= Modifier
+                        .padding(horizontal = 10.dp)
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(20.dp,Alignment.CenterVertically),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text="Görsel Sil", style= TextStyle(
+                        fontFamily = poppinFamily,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                        color=AppColors.green_103))
+                    AsyncImage(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        model = selectedUri.value,
+                        contentDescription = null,
+                        contentScale = ContentScale.Fit
+                    )
+                    Row(
+                        modifier=Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp,Alignment.End)
+                    ) {
+                        Button(
+                            shape = RoundedCornerShape(7.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = AppColors.greyLight,
+                                contentColor = Color.DarkGray
+                            ),
+                            onClick = {
+                                selectedUri.value = Uri.EMPTY
+                                openImageDialog.value = false
+                            },
+                        ) {
+                            Text("Vazgeç")
+                        }
+                        Button(
+                            shape = RoundedCornerShape(7.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = AppColors.green_103,
+                                contentColor = Color.White
+                            ),
+                            onClick = {
+                                selectedfilelist.value.remove(selectedUri.value)
+                                selectedUri.value = Uri.EMPTY
+                                openImageDialog.value = false
+                            },
+                        ) {
+                            Text("Sil")
+                        }
+                    }
+                }
+            }
         }
     }
 }

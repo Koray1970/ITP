@@ -28,6 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,10 +40,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.isticpla.itp.R
 import com.isticpla.itp.Screen
 import com.isticpla.itp.dummydata.AppIntroData
+import com.isticpla.itp.dummydata.AppIntroDataModel
 import com.isticpla.itp.helpers.GetScreenSize
 import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.uimodules.AppColors
@@ -58,9 +61,10 @@ fun AppIntro(navController: NavController) {
     val progressState = remember { mutableStateOf(true) }
     val scope = rememberCoroutineScope()
     val screenSize = GetScreenSize()
-    val listofIntro = homeviewmodel.appIntroList.collectAsState(initial = emptyList())
-    val sizeofAppIntro by remember{ mutableStateOf(listofIntro.value.size) }
-    val pagerState = rememberPagerState(pageCount = { sizeofAppIntro })
+    val listofIntro =
+        homeviewmodel.appIntroList.collectAsStateWithLifecycle(initialValue = emptyList())
+    val sizeofAppIntro = remember { mutableStateOf(AppIntroData.size) }
+    var pagerState = rememberPagerState(pageCount = { AppIntroData.size })
 
     Scaffold(
         modifier = Modifier
@@ -77,60 +81,59 @@ fun AppIntro(navController: NavController) {
          },
          floatingActionButtonPosition = FabPosition.EndOverlay*/
     ) { innerpadding ->
-        SideEffect {
-            progressState.value = false
-        }
+
         Box() {
             Column(
                 Modifier
                     .padding(innerpadding)
                     .background(Color.White)
             ) {
-                HorizontalPager(
-                    state = pagerState,
-                ) { ix ->
-                    val appIntro = listofIntro.value[ix]
-                    AppIntroItem(
-                        context,
-                        appIntro.img,
-                        appIntro.title,
-                        screenSize.height,
-                        appIntro.content
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .height(50.dp)
-                        .fillMaxWidth(),
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    var wsize = 20.dp
-                    var hsize = 20.dp
-                    var _shape = CircleShape
-                    var color = AppColors.greyLight
-                    repeat(sizeofAppIntro) { iteration ->
-
-                        if (pagerState.currentPage == iteration) {
-                            color = AppColors.blue_104
-                            _shape = RoundedCornerShape(24.dp)
-                            wsize = 44.dp
-                        } else {
-                            color = AppColors.greyLight
-                            _shape = CircleShape
-                            wsize = 20.dp
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .padding(2.dp)
-                                .clip(_shape)
-                                .background(color)
-                                .size(wsize, hsize)
-
+                if (listofIntro.value.isNotEmpty()) {
+                    HorizontalPager(
+                        state = pagerState,
+                    ) { ix ->
+                        val appIntro = listofIntro.value[ix]
+                        AppIntroItem(
+                            context,
+                            appIntro.img,
+                            appIntro.title,
+                            screenSize.height,
+                            appIntro.content
                         )
                     }
+                    Row(
+                        modifier = Modifier
+                            .height(50.dp)
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        var wsize = 20.dp
+                        var hsize = 20.dp
+                        var _shape = CircleShape
+                        var color = AppColors.greyLight
+                        repeat(sizeofAppIntro.value) { iteration ->
 
+                            if (pagerState.currentPage == iteration) {
+                                color = AppColors.blue_104
+                                _shape = RoundedCornerShape(24.dp)
+                                wsize = 44.dp
+                            } else {
+                                color = AppColors.greyLight
+                                _shape = CircleShape
+                                wsize = 20.dp
+                            }
+
+                            Box(
+                                modifier = Modifier
+                                    .padding(2.dp)
+                                    .clip(_shape)
+                                    .background(color)
+                                    .size(wsize, hsize)
+
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -171,8 +174,8 @@ fun AppIntro(navController: NavController) {
                 Button(
                     onClick = {
                         scope.launch {
-                            if (pagerState.currentPage <= sizeofAppIntro)
-                                if (pagerState.currentPage == sizeofAppIntro - 1) {
+                            if (pagerState.currentPage <= sizeofAppIntro.value)
+                                if (pagerState.currentPage == sizeofAppIntro.value - 1) {
                                     progressState.value = true
                                     delay(300L)
                                     navController.navigate(Screen.SignUp.route)
@@ -194,6 +197,9 @@ fun AppIntro(navController: NavController) {
                 }
             }
         }
+    }
+    if (listofIntro.value.isNotEmpty()) {
+        progressState.value = false
     }
     AppProgress(progressState)
 }

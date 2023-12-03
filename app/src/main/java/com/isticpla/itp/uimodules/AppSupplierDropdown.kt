@@ -80,46 +80,47 @@ fun AppSupplierDropdown(
             supplierList.value.forEach { a -> a.second.value = false }
         //Log.v("MainActivity2", "selectedSuppliers2 : ${selectedSuppliers.size}")
     }
+    if(enabled.value) {
+        TextField(
+            value = txtvalue.value,
+            onValueChange = {
+                txtvalue.value = it
 
-    TextField(
-        value = txtvalue.value,
-        onValueChange = {
-            txtvalue.value = it
-
-        },
-        readOnly = true,
-        modifier = Modifier
-            .border(
-                width = 1.dp,
-                color = if (isError.value) AppColors.red_0xffe23e3e else AppColors.secondaryGrey,
-                shape = RoundedCornerShape(10)
-            )
-            .then(modifier),
-        label = label,
-        enabled = enabled.value,
-        singleLine = false,
-        minLines = 2,
-        maxLines = 5,
-        colors = AppTextFieldDefaults.TextFieldDefaultsColors(),
-        trailingIcon = {
-            Column(
-                verticalArrangement = Arrangement.Top
-            ) {
-                IconButton(onClick = {
-                    if (enabled.value) {
-                        scope.launch {
-                            showBottomSheet = !showBottomSheet
+            },
+            readOnly = true,
+            modifier = Modifier
+                .border(
+                    width = 1.dp,
+                    color = if (isError.value) AppColors.red_0xffe23e3e else AppColors.secondaryGrey,
+                    shape = RoundedCornerShape(10)
+                )
+                .then(modifier),
+            label = label,
+            enabled = enabled.value,
+            singleLine = false,
+            minLines = 2,
+            maxLines = 5,
+            colors = AppTextFieldDefaults.TextFieldDefaultsColors(),
+            trailingIcon = {
+                Column(
+                    verticalArrangement = Arrangement.Top
+                ) {
+                    IconButton(onClick = {
+                        if (enabled.value) {
+                            scope.launch {
+                                showBottomSheet = !showBottomSheet
+                            }
                         }
+                    }) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.round_expand_more_24),
+                            contentDescription = null
+                        )
                     }
-                }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_expand_more_24),
-                        contentDescription = null
-                    )
                 }
             }
-        }
-    )
+        )
+    }
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = {
