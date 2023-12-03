@@ -102,12 +102,12 @@ class OfferViewModel @Inject constructor(@ApplicationContext private val context
         }
     }
 
-    val getSupplierList = flow<List<String>> {
-        val list = mutableListOf<String>()
+    val getSupplierList = flow<MutableList<Pair<String, MutableState<Boolean>>>> {
+        val list = mutableListOf<Pair<String, MutableState<Boolean>>>()
         listofMyStore.forEach { s ->
-            list.add(s.title)
+            list.add(Pair(s.title, mutableStateOf(false)))
         }
-        emit(list.toList())
+        emit(list)
     }
 
     /*val serviceContentDB = flowOf<List<ServiceContentType>>(listOfServiceContentType)

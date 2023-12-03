@@ -1,5 +1,6 @@
 package com.isticpla.itp.uimodules
 
+import android.util.Log
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Checkbox
@@ -19,6 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -31,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -61,17 +66,27 @@ fun AppSupplierDropdown(
     var showBottomSheet by remember { mutableStateOf(false) }
 
     val offerviewModel = hiltViewModel<OfferViewModel>()
-    val supplierList =
-        offerviewModel.getSupplierList.collectAsStateWithLifecycle(initialValue = emptyList())
+    var supplierList =
+        offerviewModel.getSupplierList.collectAsStateWithLifecycle(initialValue = mutableStateListOf<Pair<String, MutableState<Boolean>>>())
     var selectedSuppliers = remember { mutableStateListOf<String>() }
+    //Log.v("MainActivity2", "enabled : ${enabled.value}")
     if (!enabled.value) {
-        selectedSuppliers = mutableStateListOf<String>()
-        txtvalue.value=""
+        txtvalue.value = ""
+        selectedSuppliers.clear()
+        supplierList.value.forEach { a -> a.second.value = false }
+        //Log.v("MainActivity2", "selectedSuppliers1 : ${selectedSuppliers.size}")
+    } else {
+        if (selectedSuppliers.isEmpty())
+            supplierList.value.forEach { a -> a.second.value = false }
+        //Log.v("MainActivity2", "selectedSuppliers2 : ${selectedSuppliers.size}")
     }
 
     TextField(
         value = txtvalue.value,
-        onValueChange = { txtvalue.value = it },
+        onValueChange = {
+            txtvalue.value = it
+
+        },
         readOnly = true,
         modifier = Modifier
             .border(
@@ -113,16 +128,13 @@ fun AppSupplierDropdown(
             sheetState = sheetState
         ) {
             // Sheet content
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
             ) {
                 if (supplierList.value.isNotEmpty())
-                    supplierList.value.forEach { a ->
-                        var (checkedState, onStateChange) = remember { mutableStateOf(false) }
-                        val supplierAtTheList = selectedSuppliers.any { b -> b == a }
-                        checkedState = supplierAtTheList
-                        onStateChange(supplierAtTheList)
+                    items(supplierList.value) { a ->
+                        var (checkedState, onStateChange) = remember { mutableStateOf(a.second.value) }
                         Row(
                             Modifier
                                 .fillMaxWidth()
@@ -131,17 +143,21 @@ fun AppSupplierDropdown(
                                     value = checkedState,
                                     onValueChange = {
                                         onStateChange(!checkedState)
-                                        if (!checkedState)
-                                            selectedSuppliers.add(a)
-                                        else
-                                            selectedSuppliers.remove(a)
+                                        if (!checkedState) {
+                                            selectedSuppliers.add(a.first)
+                                            a.second.value = true
+                                        } else {
+                                            a.second.value = false
+                                            selectedSuppliers.remove(a.first)
+                                        }
                                         txtvalue.value = ""
                                         if (selectedSuppliers.isNotEmpty()) {
                                             txtvalue.value = selectedSuppliers.joinToString("\n")
-                                            println(selectedSuppliers.joinToString("\n"))
-                                        } else
+                                            //println(selectedSuppliers.joinToString("\n"))
+                                        } else {
+                                            selectedSuppliers.clear()
                                             txtvalue.value = ""
-
+                                        }
                                     },
                                     role = Role.Checkbox
                                 )
@@ -158,7 +174,7 @@ fun AppSupplierDropdown(
                                 )
                             )
                             Text(
-                                text = a,
+                                text = a.first,
                                 style = TextStyle(
                                     fontFamily = poppinFamily,
                                     fontSize = 14.sp,
