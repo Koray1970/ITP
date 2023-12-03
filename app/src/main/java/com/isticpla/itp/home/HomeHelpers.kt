@@ -2,8 +2,10 @@ package com.isticpla.itp.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -24,22 +26,28 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,7 +55,13 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -55,21 +69,31 @@ import com.isticpla.itp.R
 import com.isticpla.itp.database.Account
 import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.dummydata.BusinessTypeItem
+import com.isticpla.itp.dummydata.ShopItem
+import com.isticpla.itp.poppinFamily
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppShopDropdown
 import com.isticpla.itp.uimodules.Carousel
 import com.isticpla.itp.uimodules.CarouselPagerRequest
 import com.isticpla.itp.uimodules.CarouselRequest
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
-fun HomeSectionHeader() {
+fun HomeSectionHeader(
+    buttomSheetScaffoldState: BottomSheetScaffoldState
+) {
+    val scope = rememberCoroutineScope()
     val homeViewModel = hiltViewModel<HomeViewMode>()
-    val listofShops =
-        homeViewModel.shopList.collectAsState(initial = emptyList())
-
+    val selectedShop =
+        homeViewModel.selectedShop.collectAsStateWithLifecycle(
+            initialValue = mutableStateOf(
+                ShopItem(0, "", "")
+            )
+        )
 
     val carouselListState = homeViewModel.carouselList.collectAsState(initial = emptyList())
     val carouselRequest = CarouselRequest(
@@ -80,13 +104,54 @@ fun HomeSectionHeader() {
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
             .requiredHeight(220.dp),
-        pager = CarouselPagerRequest(true, 18.dp,  AppColors.blue_0xFF0495f1,AppColors.greyLight)
+        pager = CarouselPagerRequest(true, 18.dp, AppColors.blue_0xFF0495f1, AppColors.greyLight)
     )
 
     Column {
-        AppShopDropdown(
-            listofShop=listofShops.value
-        )
+
+        OutlinedCard(
+            modifier = Modifier
+                .clickable {
+                    scope.launch {
+                        buttomSheetScaffoldState.bottomSheetState.expand()
+                    }
+                }
+                .fillMaxWidth(),
+            shape = RoundedCornerShape(6.dp),
+            border = BorderStroke(1.dp, AppColors.secondaryGrey),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            )
+        ) {
+            Row(
+                modifier=Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(
+                            style = SpanStyle(
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = AppColors.blue_0xFF0495f1
+                            )
+                        ) { append("${selectedShop.value.value.name}\n") }
+                        append(selectedShop.value.value.address)
+                    },
+                    style = TextStyle(
+                        fontFamily = poppinFamily,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Normal
+                    ),
+                    //modifier = Modifier.weight(1f)
+
+                )
+                Icon(painter= painterResource(id = R.drawable.round_expand_more_24), contentDescription = null,tint=AppColors.secondaryGrey)
+            }
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
         Carousel(requests = carouselRequest)
@@ -98,7 +163,7 @@ fun HomeSectionHeader() {
 fun HomeSectionSectors(
     navController: NavController,
 ) {
-    val accountViewModel= hiltViewModel<AccountViewModel>()
+    val accountViewModel = hiltViewModel<AccountViewModel>()
     val account = accountViewModel.getAccount.collectAsStateWithLifecycle(initialValue = Account())
     var sectorList = remember { mutableListOf<BusinessTypeItem>() }
     LaunchedEffect(Unit) {
@@ -117,7 +182,7 @@ fun HomeSectionSectors(
 
 
     Column(
-        modifier=Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.Start
     ) {
         Spacer(modifier = Modifier.height(40.dp))
@@ -249,20 +314,20 @@ fun HomeSectionCampaigns(
         homeViewModel.campaignList.collectAsState(initial = emptyList())
     Column {
 
-            Spacer(modifier = Modifier.height(40.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+        Spacer(modifier = Modifier.height(40.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text("Kampanyalar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
+            Spacer(modifier = Modifier.weight(1f))
+            TextButton(
+                onClick = { navController.navigate("campaigns") },
             ) {
-                Text("Kampanyalar", modifier = Modifier.wrapContentSize(), style = homeSectionTitle)
-                Spacer(modifier = Modifier.weight(1f))
-                TextButton(
-                    onClick = { navController.navigate("campaigns") },
-                ) {
-                    Text("Hepsini Göster", style = homeSectorShowAll)
-                }
+                Text("Hepsini Göster", style = homeSectorShowAll)
             }
-            Spacer(modifier = Modifier.height(3.dp))
+        }
+        Spacer(modifier = Modifier.height(3.dp))
         Column(
             modifier = Modifier.wrapContentSize(),
             verticalArrangement = Arrangement.Center,

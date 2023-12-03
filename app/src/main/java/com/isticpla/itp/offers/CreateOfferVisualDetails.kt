@@ -256,7 +256,8 @@ fun CreateOfferVisualDetails(
                 }*/
                 }
             }
-        }) { innerpadding ->
+        })
+    { innerpadding ->
         Column(
             modifier = Modifier
                 .padding(innerpadding)
@@ -446,8 +447,11 @@ fun CreateOfferVisualDetails(
     }
     if (openImageDialog.value) {
         BasicAlertDialog(
-            modifier=Modifier.fillMaxSize(),
-            properties = DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false),
+            modifier = Modifier.fillMaxSize(),
+            properties = DialogProperties(
+                usePlatformDefaultWidth = false,
+                decorFitsSystemWindows = false
+            ),
             onDismissRequest = {
                 selectedUri.value = Uri.EMPTY
                 openImageDialog.value = false
@@ -460,17 +464,20 @@ fun CreateOfferVisualDetails(
             ) {
                 //selectedUri.value
                 Column(
-                    modifier= Modifier
+                    modifier = Modifier
                         .padding(horizontal = 10.dp)
                         .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(20.dp,Alignment.CenterVertically),
+                    verticalArrangement = Arrangement.spacedBy(20.dp, Alignment.CenterVertically),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text="Görsel Sil", style= TextStyle(
-                        fontFamily = poppinFamily,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color=AppColors.green_103))
+                    Text(
+                        text = "Görsel Sil", style = TextStyle(
+                            fontFamily = poppinFamily,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = AppColors.green_103
+                        )
+                    )
                     AsyncImage(
                         modifier = Modifier
                             .fillMaxWidth(),
@@ -479,9 +486,9 @@ fun CreateOfferVisualDetails(
                         contentScale = ContentScale.Fit
                     )
                     Row(
-                        modifier=Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp,Alignment.End)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.End)
                     ) {
                         Button(
                             shape = RoundedCornerShape(7.dp),

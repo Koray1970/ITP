@@ -2,6 +2,7 @@ package com.isticpla.itp.home
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,6 +35,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val carouselList = flowOf<List<Int>>(listofCarousel)
 
     val employeePositions = flowOf<List<Pair<String, String>>>(listofEmployeePosition)
+
     @OptIn(ExperimentalCoroutinesApi::class)
     fun getEmployeePositionResul(id: String) =
         employeePositions.mapLatest { i -> i.filter { it.first == id } }
@@ -57,6 +59,14 @@ class HomeViewMode @Inject constructor() : ViewModel() {
         }
         emit(listofShop.toList())
     }
+
+    private var _selectedShop = mutableStateOf(listofShops.first())
+    var selectedShop = flowOf(_selectedShop)
+    fun updateSelectedShop(shopItem: ShopItem) {
+        _selectedShop.value = shopItem
+    }
+
+
 
     var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.filter { a -> !a.except }
         .toMutableList())
@@ -89,7 +99,7 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     val panelDrafts = flowOf<List<PanelOfferDraftItem>>(listofPanelOfferDraft)
     val panelCompletedOffers = flowOf<List<PanelOfferCompletedItem>>(listofPanelOfferCompleted)
 
-    val appIntroList= flowOf<List<AppIntroDataModel>>(AppIntroData)
+    val appIntroList = flowOf<List<AppIntroDataModel>>(AppIntroData)
     fun mystores(isfiltered: Boolean) = flow<List<MyStoreItem>> {
         if (isfiltered)
             this.emit(listofMyStore.filter { a -> a.isactive })
