@@ -171,6 +171,7 @@ fun CreateOfferVisualDetails(
         sheetContent = {
             if (showGalleryBottomSheet.value) {
                 ModalBottomSheet(
+                    scrimColor = Color.Black.copy(.8f),
                     onDismissRequest = {
                         showGalleryBottomSheet.value = false
                     },

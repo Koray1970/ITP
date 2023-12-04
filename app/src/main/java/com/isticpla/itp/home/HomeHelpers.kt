@@ -37,6 +37,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.VerticalDivider
@@ -84,7 +85,8 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.R)
 @Composable
 fun HomeSectionHeader(
-    buttomSheetScaffoldState: BottomSheetScaffoldState
+    buttomSheetScaffoldState: SheetState,
+    showModal:MutableState<Boolean> = mutableStateOf(false)
 ) {
     val scope = rememberCoroutineScope()
     val homeViewModel = hiltViewModel<HomeViewMode>()
@@ -113,7 +115,8 @@ fun HomeSectionHeader(
             modifier = Modifier
                 .clickable {
                     scope.launch {
-                        buttomSheetScaffoldState.bottomSheetState.expand()
+                        showModal.value=true
+                        buttomSheetScaffoldState.show()
                     }
                 }
                 .fillMaxWidth(),
