@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import com.isticpla.itp.R
+import com.isticpla.itp.Screen
 
 data class AppCultureDataModel(
     val id: Int,
@@ -511,20 +512,20 @@ val listofChatMessages = listOf<OfferChatItem>(
 data class ProfileMenuItem(val icon: Int, val label: String, val navuri: String)
 
 val listofProfileMenu = listOf<ProfileMenuItem>(
-    ProfileMenuItem(R.drawable.ico_edit, "Profil Düzenle", "profile/edit"),
-    ProfileMenuItem(R.drawable.ico_settings, "Ayarlar", "profile/settings"),
-    ProfileMenuItem(R.drawable.ico_mystores, "Mağazalarım", "profile/mystores"),
+    ProfileMenuItem(R.drawable.ico_edit, "Profil Düzenle", Screen.ProfileDashboard.route),
+    ProfileMenuItem(R.drawable.ico_settings, "Ayarlar", Screen.ProfileSettings.route),
+    ProfileMenuItem(R.drawable.ico_mystores, "Mağazalarım", Screen.MyStores.route),
     ProfileMenuItem(
         R.drawable.ico_contractedsuppliers,
         "Anlaşmalı Tedarikçiler",
-        "profile/contractedSuppliers"
+        Screen.ContractedSuppliers.route
     ),
     ProfileMenuItem(
         R.drawable.ico_collectionandtags,
         "Kolleksiyonlarım & Etiketlerim",
-        "profile/collectionsandtags"
+        Screen.MyPanelCollections.route
     ),
-    ProfileMenuItem(R.drawable.ico_helpandsupport, "Yardım ve Destek", "profile/helpandsupport"),
+    ProfileMenuItem(R.drawable.ico_helpandsupport, "Yardım ve Destek", Screen.HelpAndSupport.route),
 )
 
 data class MyStoreItem(
