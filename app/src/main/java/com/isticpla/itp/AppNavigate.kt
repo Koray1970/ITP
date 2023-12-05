@@ -22,7 +22,7 @@ import com.isticpla.itp.views.*
 fun AppNavigate() {
 
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = Screen.Home.route) {
+    NavHost(navController = navController, startDestination = Screen.CreateUserAccount.route) {
         /*composable("splash") { Splash(navController) }*/
         composable(Screen.StartSelectCulture.route) { StartSelectCulture(navController) }
         composable(Screen.AppIntro.route) { AppIntro(navController) }

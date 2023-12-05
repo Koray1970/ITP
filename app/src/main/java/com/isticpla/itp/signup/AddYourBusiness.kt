@@ -11,6 +11,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,6 +59,7 @@ import coil.request.ErrorResult
 import coil.request.ImageRequest
 import coil.request.SuccessResult
 import com.isticpla.itp.R
+import com.isticpla.itp.Screen
 import com.isticpla.itp.database.Account
 import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.home.HomeViewMode
@@ -164,6 +166,9 @@ fun AddYourBusiness(
             ) {
                 Box(
                     modifier = Modifier
+                        .clickable {
+                            navController.navigate(Screen.CreateUserAccount.route)
+                        }
                         .weight(.33f)
                         .height(10.dp)
                         .background(color = AppColors.yellow_100)

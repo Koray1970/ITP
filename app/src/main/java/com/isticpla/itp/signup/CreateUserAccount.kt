@@ -118,7 +118,7 @@ fun CreateUserAccount(navController: NavController) {
             .fillMaxWidth()
             .background(Color.White)
             .padding(0.dp),
-        containerColor = Color.White
+        containerColor = Color.White,
     ) { innerpadding ->
         Column(
             modifier = Modifier

@@ -1,6 +1,7 @@
 package com.isticpla.itp.signup
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -53,6 +54,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.isticpla.itp.R
+import com.isticpla.itp.Screen
 import com.isticpla.itp.database.Account
 import com.isticpla.itp.database.AccountViewModel
 import com.isticpla.itp.dummydata.BusinessTypeItem
@@ -106,6 +108,9 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
             ) {
                 Box(
                     modifier = Modifier
+                        .clickable {
+                            navController.navigate(Screen.CreateUserAccount.route)
+                        }
                         .weight(.33f)
                         .height(10.dp)
                         .background(color = AppColors.yellow_100)
@@ -113,6 +118,9 @@ fun ChooseBusinessSalesAreas(navController: NavController) {
                 Spacer(modifier = Modifier.weight(.05f))
                 Box(
                     modifier = Modifier
+                        .clickable {
+                            navController.navigate(Screen.AddYourBusiness.route)
+                        }
                         .weight(.33f)
                         .height(10.dp)
                         .background(color = AppColors.yellow_100)
