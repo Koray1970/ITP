@@ -1,5 +1,7 @@
 package com.isticpla.itp.signup
 
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,9 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,6 +43,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -91,7 +96,8 @@ fun SignUp(navController: NavController) {
         pcontractCheckedState = getAccountdb.value.contractapproved
         onStateChangepContract(getAccountdb.value.contractapproved)
     }
-
+    val url="https://itpturkiye.com.tr/privacy_policy.html"
+    val webViewClient = WebViewClient()
     BottomSheetScaffold(
         scaffoldState = bottomSheetScaffoldState,
         modifier = Modifier
@@ -100,9 +106,21 @@ fun SignUp(navController: NavController) {
         containerColor = Color.White,
         sheetContent = {
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize()
             ) {
-                Text("Üyelik Sözleşmesi")
+                //Text("Üyelik Sözleşmesi")
+                AndroidView(
+                    factory = { context ->
+                        WebView(context).apply {
+                            this.webViewClient = webViewClient
+                        }
+                    },
+                    update = { webView ->
+                        webView.loadUrl(url)
+                    }
+                )
             }
         }
     ) { innerpadding ->
@@ -268,5 +286,14 @@ fun SignUp(navController: NavController) {
                 modifier = Modifier.padding(start = 16.dp)
             )
         }
+    }
+}
+class CustomWebViewClient: WebViewClient(){
+    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+        if(url != null && url.startsWith("https://example.com")){
+            view?.loadUrl(url)
+            return true
+        }
+        return false
     }
 }
