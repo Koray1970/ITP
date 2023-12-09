@@ -59,6 +59,8 @@ fun StartSelectCulture(
 
     val listOfAppCulture =
         homeViewModel.appCultures.collectAsStateWithLifecycle(initialValue = mutableListOf<AppCultureDataModel>())
+    val firstCulture = homeViewModel.firstCulture()
+        .collectAsStateWithLifecycle(initialValue = AppCultureDataModel(0, 0, "", false))
     var expanded = remember { mutableStateOf(false) }
     var selectedOptionValue = remember {
         mutableStateOf(
@@ -72,7 +74,7 @@ fun StartSelectCulture(
     }
     LaunchedEffect(Unit) {
         delay(200)
-        selectedOptionValue.value = listOfAppCulture.value.first { a -> a.isdefault }
+        selectedOptionValue.value = firstCulture.value
     }
     Scaffold(
         modifier = Modifier

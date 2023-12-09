@@ -30,6 +30,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewMode @Inject constructor() : ViewModel() {
+    fun firstCulture() = flow<AppCultureDataModel> {
+        emit(listOfAppCulture.first { a -> a.isdefault })
+    }
+
     val appCultures = flowOf<List<AppCultureDataModel>>(listOfAppCulture)
 
     val carouselList = flowOf<List<Int>>(listofCarousel)
@@ -65,7 +69,6 @@ class HomeViewMode @Inject constructor() : ViewModel() {
     fun updateSelectedShop(shopItem: ShopItem) {
         _selectedShop.value = shopItem
     }
-
 
 
     var sectorList = flowOf<MutableList<BusinessTypeItem>>(listofBusiness.filter { a -> !a.except }

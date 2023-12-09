@@ -51,24 +51,29 @@ class AccountViewModel @Inject constructor(
         //viewModelScope.launch {
             while (true) {
                 getAccount.collect {
-                    if (it.cultureid == null) {
+                    if(it==null) {
                         emit(Pair(false, Screen.StartSelectCulture.route))
-                    } else {
-                        if (it.phonenumber == null)
-                            emit(Pair(false, Screen.SignUp.route))
-                        else {
-                            if (it.name == null || it.lastname == null || it.email == null || it.country == null)
-                                emit(Pair(false, Screen.CreateUserAccount.route))
+                    }
+                    else {
+                        if (it.cultureid == null) {
+                            emit(Pair(false, Screen.StartSelectCulture.route))
+                        } else {
+                            if (it.phonenumber == null)
+                                emit(Pair(false, Screen.SignUp.route))
                             else {
-                                if (it.companyname == null)
-                                    emit(Pair(false, Screen.AddYourBusiness.route))
+                                if (it.name == null || it.lastname == null || it.email == null || it.country == null)
+                                    emit(Pair(false, Screen.CreateUserAccount.route))
                                 else {
-                                    if (it.sectors == null)
-                                        emit(Pair(false, Screen.ChooseBusinessSalesAreas.route))
-                                    else
-                                        emit(Pair(true, null))
-                                }
+                                    if (it.companyname == null)
+                                        emit(Pair(false, Screen.AddYourBusiness.route))
+                                    else {
+                                        if (it.sectors == null)
+                                            emit(Pair(false, Screen.ChooseBusinessSalesAreas.route))
+                                        else
+                                            emit(Pair(true, null))
+                                    }
 
+                                }
                             }
                         }
                     }
