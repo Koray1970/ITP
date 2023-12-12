@@ -1,7 +1,5 @@
 package com.isticpla.itp.profile
 
-import android.graphics.BlurMaskFilter
-import android.graphics.MaskFilter
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -14,16 +12,11 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -35,23 +28,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarColors
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.NativePaint
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
@@ -60,23 +49,28 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.isticpla.itp.MainActivity
 import com.isticpla.itp.R
 import com.isticpla.itp.dummydata.ProfileMenuItem
 import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.offers.offerTopBarTitle
 import com.isticpla.itp.uimodules.AppColors
+import com.isticpla.itp.uimodules.AppGallery
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileDashboard(
-    navController: NavController
+    navController: NavController,
 ) {
     val homeviewModel = hiltViewModel<HomeViewMode>()
     val lst = listOf<Pair<String, String>>(
         Pair("1124", "Taslaklar"), Pair("492", "Teklifler"), Pair("329", "Siparişler")
     )
     val menuItems by homeviewModel.profileMenu.collectAsStateWithLifecycle(initialValue = emptyList<ProfileMenuItem>())
+
+    var appGalleryShowState = remember { mutableStateOf(false) }
+
     Scaffold(
         containerColor = Color.White,
         topBar = {
@@ -113,7 +107,8 @@ fun ProfileDashboard(
                     }
                 }
             )
-        }) { innerpadding ->
+        })
+    { innerpadding ->
         Column(
             modifier = Modifier
                 .padding(innerpadding)
@@ -122,7 +117,8 @@ fun ProfileDashboard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProfilePhotoViewer()
+
+            ProfilePhotoViewer(appGalleryShowState)
             Text(text = "Julia Bright, 24", style = profileName)
             Row(
                 Modifier.padding(top = 3.dp),
@@ -138,7 +134,9 @@ fun ProfileDashboard(
                 Text(text = "Berlin,DB", style = profileTitleLocation)
             }
             Row(
-                Modifier.padding(top=20.dp).fillMaxWidth(),
+                Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -167,7 +165,7 @@ fun ProfileDashboard(
                 }
             }
             Column(
-                modifier=Modifier
+                modifier = Modifier
                     .fillMaxWidth(.90f)
                     .padding(top = 30.dp)
             ) {
@@ -178,7 +176,7 @@ fun ProfileDashboard(
                             .clickable {
                                 navController.navigate(itm.navuri)
                             },
-                        colors=ListItemDefaults.colors(containerColor = Color.Transparent),
+                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                         headlineContent = { Text(text = itm.label, style = profileMenuItemLabel) },
                         leadingContent = {
                             Icon(
@@ -197,13 +195,18 @@ fun ProfileDashboard(
                             activity.finish()
                             java.lang.System.exit(0)
                         },
-                    colors=ListItemDefaults.colors(containerColor = Color.Transparent),
-                    headlineContent = { Text(text = "Çıkış Yap", style = profileMenuItemExitLabel) },
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                    headlineContent = {
+                        Text(
+                            text = "Çıkış Yap",
+                            style = profileMenuItemExitLabel
+                        )
+                    },
                     leadingContent = {
                         Icon(
                             painter = painterResource(id = R.drawable.ico_signout),
                             contentDescription = null,
-                            tint=AppColors.red_100
+                            tint = AppColors.red_100
                         )
                     }
                 )
@@ -211,64 +214,63 @@ fun ProfileDashboard(
 
         }
     }
+    AppGallery(appGalleryShowState)
 }
 
 @Composable
-internal fun ProfilePhotoViewer() = Row(
-    Modifier
-        .fillMaxWidth()
-        .padding(bottom = 20.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.Center
-) {
-    Box {
+internal fun ProfilePhotoViewer(
+    showGalleryState: MutableState<Boolean> = mutableStateOf(false),
+) = Row() {
+    Box(
+        contentAlignment = Alignment.Center
+    ) {
         Box(
             modifier = Modifier
-                .requiredSize(100.dp)
+                .size(168.dp)
                 .clip(CircleShape)
-                .background(
-                    brush = Brush.radialGradient(
-                        colors = listOf(Color.DarkGray, Color.White)
-                    )
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Box(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .fillMaxSize(.8f)
-                    .border(border = BorderStroke(4.dp, Color.White), CircleShape)
-
-            ) {
-                Image(
-                    painter = painterResource(id = R.mipmap.profilephoto),
-                    contentScale = ContentScale.Crop,
-                    contentDescription = null
+                .shadow(
+                    elevation = 5.dp,
+                    shape = CircleShape,
+                    clip = true,
+                    ambientColor = Color.Black,
+                    spotColor = Color.White
                 )
-            }
+        ) {}
+        Image(
+            painter = painterResource(id = R.mipmap.profilephoto),
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier
+                .size(140.dp)
+                .clip(CircleShape)
+                .border(BorderStroke(2.dp, Color.White), CircleShape)
+        )
+        Box(
+            modifier = Modifier
+                .size(152.dp)
+                .clip(CircleShape)
+                .border(BorderStroke(6.dp, Color.White), CircleShape)
+        ) {
 
         }
-        Box(
-            Modifier.absoluteOffset(66.dp, 62.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .clickable { }
-                    .background(AppColors.green_106, CircleShape)
-                    .requiredSize(26.dp)
-                    .clip(CircleShape)
-                    .border(border = BorderStroke(2.dp, Color.White), CircleShape),
-                contentAlignment = Alignment.Center
 
+        Box(
+            Modifier.absoluteOffset(52.dp, 54.dp)
+        ) {
+            IconButton(
+                onClick = { showGalleryState.value = true },
+                modifier = Modifier
+                    .background(AppColors.green_106, CircleShape)
+                    .requiredSize(46.dp)
+                    .border(border = BorderStroke(3.dp, Color.White), CircleShape),
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ico_edit),
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(12.dp)
+                    modifier = Modifier.size(23.dp)
                 )
             }
         }
-
     }
 }

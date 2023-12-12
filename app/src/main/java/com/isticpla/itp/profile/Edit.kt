@@ -45,6 +45,7 @@ import com.isticpla.itp.home.HomeViewMode
 import com.isticpla.itp.offers.*
 import com.isticpla.itp.uimodules.AppColors
 import com.isticpla.itp.uimodules.AppDatePicker
+import com.isticpla.itp.uimodules.AppGallery
 import com.isticpla.itp.uimodules.DropDownTextField
 import com.isticpla.itp.uimodules.DropDowndTextFieldRequest
 import com.isticpla.itp.uimodules.defaultTextFieldColor
@@ -58,7 +59,7 @@ fun Edit(
 ) {
     val homeviewModel = hiltViewModel<HomeViewMode>()
 
-    val textfieldColor=TextFieldDefaults.colors(
+    val textfieldColor = TextFieldDefaults.colors(
         focusedContainerColor = Color.White,
         unfocusedContainerColor = Color.White,
         focusedIndicatorColor = Color.Transparent,
@@ -87,11 +88,18 @@ fun Edit(
     val dateofBirthPickerState = rememberDatePickerState(initialDisplayMode = DisplayMode.Picker)
     Scaffold(
         containerColor = Color.White,
-        topBar = { ProfileTopBar(navController, "Profili Düzenle", "profile/dashboard", "home") }
-    ) { innerpadding ->
+        topBar = {
+            ProfileTopBar(
+                navController,
+                "Profili Düzenle",
+                "profile/dashboard",
+                "home"
+            )
+        }
+    ) {
         Column(
             modifier = Modifier
-                .padding(innerpadding)
+                .padding(it)
                 .padding(top = 30.dp)
                 .padding(horizontal = 10.dp)
                 .verticalScroll(rememberScrollState()),
@@ -223,10 +231,10 @@ fun Edit(
                         disabledLeadingIconColor = AppColors.primaryGrey,
                         disabledTrailingIconColor = AppColors.primaryGrey
                     ),
-                    menuItemModifier =Modifier
+                    menuItemModifier = Modifier
                 )
             )
-            Spacer(modifier=Modifier.height(26.dp))
+            Spacer(modifier = Modifier.height(26.dp))
             Button(
                 onClick = { navController.navigate("offer/create/publish") },
                 shape = RoundedCornerShape(8.dp),
@@ -245,7 +253,7 @@ fun Edit(
                     tint = Color.White
                 )
             }
-            Spacer(modifier=Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
     if (showDatePicker) {
@@ -253,4 +261,5 @@ fun Edit(
             onDateSelected = { txtPDateofBirth.value = it },
             onDismiss = { showDatePicker = false })*/
     }
+
 }
